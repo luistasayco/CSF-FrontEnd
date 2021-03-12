@@ -1,0 +1,221 @@
+<p-card>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-1">
+            <strong>Nro. Venta</strong>
+            <input id="float-input-tc" type="text" pInputText placeholder="Nro Venta">
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">Tipo Comprobante: </label>
+            <app-modal-busqueda-tipo-comprobante></app-modal-busqueda-tipo-comprobante>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">Para quien: </label>
+            <app-modal-busqueda-tipo-comprobante></app-modal-busqueda-tipo-comprobante>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">Card Code: </label>
+            <input id="float-input-tc" type="text" pInputText placeholder="Card Code">
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <!-- <label class="label-custom" for="float-input-estado">Electronica: </label> -->
+            <p-checkbox binary="true" label="Electronica"></p-checkbox>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">Comprobante: </label>
+            <input id="float-input-tc" type="text" pInputText>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
+            <button pButton type="button" label="Pago Visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
+            <button pButton type="button" label="Anular pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+        </div>
+        <!-- <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">. </label>
+            <button pButton type="button" label="Operación no financiera Visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+        </div> -->
+        <div class="ui-g-12 ui-md-1">
+            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
+            <button pButton type="button" label="Duplicado ticket" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
+            <button pButton type="button" label="Buscar pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
+            <p-splitButton label="Generar y Paga" icon="{{globalConstants.icoImprimir}}" [model]="items" (click)="onConfirmGrabar()" styleClass="ui-button-success"></p-splitButton>
+        </div>
+
+    </div>
+
+    <div class="ui-g ui-fluid">
+
+        <div class="ui-g-12 ui-md-10">
+            <p-fieldset legend="Paciente">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12 ui-md-3">
+                        <label class="label-custom" for="float-input-tc">A nombre de: </label>
+                        <app-modal-busqueda-tipo-comprobante></app-modal-busqueda-tipo-comprobante>
+                    </div>
+                    <div class="ui-g-12 ui-md-3">
+                        <label class="label-custom" for="float-input-tc">Dirección: </label>
+                        <input id="float-input-tc" type="number" pInputText>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label class="label-custom" for="float-input-tc">Documento Identidad: </label>
+                        <app-modal-busqueda-almacen></app-modal-busqueda-almacen>
+                    </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom" for="float-input-tc">Nro. Documento: </label>
+                        <input id="float-input-tc" type="number" pInputText>
+                    </div>
+                    <div class="ui-g-12 ui-md-3">
+                        <label class="label-custom" for="float-input-tc">Correo: </label>
+                        <input id="float-input-tc" type="number" pInputText>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label class="label-custom" for="float-input-tc">Tipo Cliente: </label>
+                        <input id="float-input-tc" type="number" pInputText>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label class="label-custom" for="float-input-tc">R.U.C: </label>
+                        <input id="float-input-tc" type="number" pInputText>
+                    </div>
+                    <div class="ui-g-12 ui-md-2">
+                        <label class="label-custom" for="float-input-tc">Fecha Emisión </label>
+                        <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
+                    </div>
+                    <div class="ui-g-12 ui-md-6">
+                        <label class="label-custom" for="float-input-tc">Tipo afectación igv (gratuitos): </label>
+                        <app-modal-busqueda-almacen></app-modal-busqueda-almacen>
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+
+        <div class="ui-g-12 ui-md-2">
+            <p-fieldset legend="Plan">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12 ui-md-12">
+                        <label class="label-custom" for="float-input-tc">Plan: </label>
+                        <input id="float-input-tc" type="number" pInputText placeholder="Plan">
+                    </div>
+                    <div class="ui-g-12 ui-md-6">
+                        <label class="label-custom" for="float-input-tc">Dscto Plan: </label>
+                        <input id="float-input-tc" type="number" pInputText placeholder="Dscto">
+                    </div>
+                    <div class="ui-g-12 ui-md-6">
+                        <label class="label-custom" for="float-input-tc">Coaseguro: </label>
+                        <input id="float-input-tc" type="number" pInputText placeholder="Coaseguro">
+                    </div>
+                </div>
+            </p-fieldset>
+        </div>
+    </div>
+
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-6">
+            <p-panel header="Detalle Producto" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+                <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
+                    <ng-template pTemplate="header" let-columns>
+                        <tr>
+                            <!-- <th colspan="1">Acciones</th> -->
+                            <th *ngFor="let col of columns">
+                                {{col.header}}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                        <tr>
+                            <!-- <td class="action-td">
+                                <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger"></button>
+                            </td> -->
+                            <td *ngFor="let col of columns">
+                                {{rowData[col.field]}}
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+        </div>
+        <!-- <div class="ui-g-12 ui-md-1">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-12">
+                    <button pButton type="button" label="Buscar pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+                </div>
+                <div class="ui-g-12 ui-md-12">
+                    <button pButton type="button" label="Buscar pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+                </div>
+                <div class="ui-g-12 ui-md-12">
+                    <button pButton type="button" label="Buscar pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+                </div>
+            </div>
+        </div> -->
+        <div class="ui-g-12 ui-md-6">
+            <p-panel header="Pago" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+                <div class="ui-g ui-fluid">
+                    <div class="ui-g-12 ui-md-2">
+                        <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" class="btn btn-block"></button>
+                    </div>
+                    <div class="ui-g-12 ui-md-10">
+                        <p-table [value]="listModeloPago" [columns]="columnasPago" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th colspan="1">Acciones</th>
+                                    <th *ngFor="let col of columns">
+                                        {{col.header}}
+                                    </th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                                <tr>
+                                    <td class="action-td">
+                                        <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger"></button>
+                                    </td>
+                                    <td *ngFor="let col of columns">
+                                        {{rowData[col.field]}}
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </div>
+            </p-panel>
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-sub-total">Sub Total: </label>
+            <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total">
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-sub-total">IGV: </label>
+            <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total">
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-sub-total">Total: </label>
+            <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total">
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <p-checkbox binary="true" label="Gratuito"></p-checkbox>
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-sub-total">Monto Soles: </label>
+            <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total">
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-sub-total">Dolores: </label>
+            <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total">
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-sub-total">Vuelto: </label>
+            <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total">
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <p-checkbox binary="true" label="Dolar"></p-checkbox>
+        </div>
+    </div>
+</p-card>
+
+<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>

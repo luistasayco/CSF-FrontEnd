@@ -1,0 +1,50 @@
+<p-panel header="Opción de busqueda de Receta" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <label class="label-custom" for="float-input-nro">Tipo Consulta Médica: </label>
+            <input id="float-input-nro" type="text" pInputText placeholder="Ingresar Código">
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom" for="float-input-fecha-ini">Fec. Inicio: </label>
+            <p-calendar id="float-input-fecha-ini" placeholder="Seleccionar Fecha Inicio" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" [appendTo]="append"></p-calendar>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom" for="float-input-fecha-fin">Fec. Fin: </label>
+            <p-calendar id="float-input-fecha-fin" placeholder="Seleccionar Fecha Fin" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" [appendTo]="append"></p-calendar>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom" for="float-input-nro">Por Receta: </label>
+            <input id="float-input-nro" type="text" pInputText placeholder="Ingresar Nombre">
+        </div>
+        <div class="ui-g-12 ui-md-1">
+
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom" for="float-input-nro">. </label>
+            <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block"></button>
+        </div>
+    </div>
+</p-panel>
+
+<p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="fecha" selectionMode="single" autoLayout="true" [responsive]="true">
+    <ng-template pTemplate="header" let-columns>
+        <tr>
+            <th *ngFor="let col of columns">
+                {{col.header}}
+            </th>
+            <th>
+                ...
+            </th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData">
+            <td *ngFor="let col of columns">
+                {{rowData[col.field]}}
+            </td>
+            <td class="action-td">
+                <button pButton icon="{{globalConstants.icoPDF}}" class="ui-button-danger"></button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

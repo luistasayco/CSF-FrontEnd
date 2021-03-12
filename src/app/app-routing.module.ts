@@ -1,0 +1,43 @@
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { LayoutComponent } from './layout/layout.component';
+import { LoginComponent } from './modulos/modulo-login/components/login/login.component';
+import { AuthGuard } from './guards/auth.guard';
+
+
+const routes: Routes = [
+  {path: 'login',  component: LoginComponent},
+  {path: 'main',
+    component: LayoutComponent,
+    children: [
+      { path: 'dashboard' , loadChildren:
+      () => import('./modulos/modulo-dashboard/components/dashboard/dashboard.module').then(m => m.DashboardModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-ve' , loadChildren:
+      () => import('./modulos/modulo-venta/modulo-venta.module').then(m => m.VentaModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-se' , loadChildren:
+      () => import('./modulos/modulo-seguridad/modulo-seguridad.module').then(m => m.SeguridadModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-re' , loadChildren:
+      () => import('./modulos/modulo-requerimiento/modulo-requerimiento.module').then(m => m.ModuloRequerimientoModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-so' , loadChildren:
+      () => import('./modulos/modulo-solicitud-vale/modulo-solicitud-vale.module').then(m => m.SolicitudValeModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-ad' , loadChildren:
+      () => import('./modulos/modulo-administracion/modulo-administracion.module').then(m => m.ModuloAdministracionModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-oc' , loadChildren:
+      () => import('./modulos/modulo-orden-compra/modulo-orden-compra.module').then(m => m.OrdenCompraModule),
+      canActivate: [AuthGuard]},
+    ]
+  },
+  { path: '', redirectTo: 'login', pathMatch: 'full'}
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }

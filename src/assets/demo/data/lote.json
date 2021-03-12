@@ -1,0 +1,7 @@
+{
+    "data": [
+        { "codigo": "XLSKT", "nombre": "PANADOL ANTIGRIPAL", "ubicacion": "FILA 1", "fecha": "13/03/2021", "stock": 45 },
+        { "codigo": "PEOEL", "nombre": "PANADOL ANTIGRIPAL", "ubicacion": "FILA 2", "fecha": "13/03/2021", "stock": 20 },
+        { "codigo": "AS22D", "nombre": "PANADOL ANTIGRIPAL", "ubicacion": "FILA 3", "fecha": "13/03/2021", "stock": 35 }
+    ]
+}
