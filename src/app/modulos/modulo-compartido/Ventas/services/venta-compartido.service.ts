@@ -15,6 +15,7 @@ export class VentaCompartidoService {
 
   constructor(private http: HttpClient) { }
 
+
   getListWarehousesContains(warehouseName: string) {
     let parametros = new HttpParams();
     parametros = parametros.append('warehouseName', warehouseName);
@@ -54,6 +55,7 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}PersonalClinica/GetListPersonalClinicaPorNombre/`, { params: parametros });
   }
 
+  
   getListMedicoPorNombre(nombre: string) {
     let parametros = new HttpParams();
     parametros = parametros.append('nombre', nombre);
