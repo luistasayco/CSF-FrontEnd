@@ -23,10 +23,10 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit {
 
     this.columnas = [
       { field: 'codigo', header: 'Código' },
-      { field: 'tipoProducto', header: 'Tipo' },
+      { field: 'tipoProducto', header: 'Tipo Producto' },
       { field: 'nombre', header: 'Nombre' },
-      { field: 'lote', header: 'Lote' },
-      { field: 'ubicacion', header: 'Ubicación' },
+      // { field: 'lote', header: 'Lote' },
+      // { field: 'ubicacion', header: 'Ubicación' },
       { field: 'cantidad', header: 'Cantidad' },
       { field: 'laboratorio', header: 'Laboratorio' }
     ];

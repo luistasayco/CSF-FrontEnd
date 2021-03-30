@@ -8,7 +8,8 @@ import { PanelModule } from 'primeng/panel';
 import { CalendarModule } from 'primeng/calendar';
 import { TreeModule } from 'primeng/tree';
 import { RadioButtonModule } from 'primeng/radiobutton';
-
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 @NgModule({
   exports: [
     TableModule,
@@ -19,7 +20,9 @@ import { RadioButtonModule } from 'primeng/radiobutton';
     PanelModule,
     CalendarModule,
     TreeModule,
-    RadioButtonModule
+    RadioButtonModule,
+    DropdownModule,
+    InputTextareaModule
   ],
 })
 export class VentasCompartidoPrimeNgModule {}

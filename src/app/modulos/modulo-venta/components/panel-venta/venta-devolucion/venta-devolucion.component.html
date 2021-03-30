@@ -31,7 +31,7 @@
     <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-2">
             <label class="label-custom" for="float-input-tipo-venta">Devolución: </label>
-            <input id="float-input-tipo-venta" type="number" pInputText placeholder="Tipo de Venta">
+            <input id="float-input-tipo-venta" type="number" pInputText placeholder="Devolución">
         </div>
         <div class="ui-g-12 ui-md-2">
             <label class="label-custom" for="float-input-fecha">Fecha Devolución: </label>
@@ -39,7 +39,7 @@
         </div>
         <div class="ui-g-12 ui-md-2">
             <label class="label-custom" for="float-input-tipo-venta">Venta Origen: </label>
-            <input id="float-input-tipo-venta" type="number" pInputText placeholder="Tipo de Venta">
+            <input id="float-input-tipo-venta" type="number" pInputText placeholder="Venta Origen">
         </div>
         <div class="ui-g-12 ui-md-4">
             <label class="label-custom" for="float-input-almacen">Almacen: </label>
@@ -297,11 +297,15 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-rowData let-columns="columns">
                                 <tr>
-                                    <td class="action-td">
+                                    <td class="custom-td-ico">
                                         <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger"></button>
                                     </td>
-                                    <td *ngFor="let col of columns">
-                                        {{rowData[col.field]}}
+                                    <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                                        <span class="p-column-title">{{col.header}}</span>
+
+                                        <span *ngSwitchCase="'codProd'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                                        <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codProd']"></app-modal-consulta-lote></span>
+                                        <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                                     </td>
                                 </tr>
                             </ng-template>
@@ -355,7 +359,7 @@
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog header="Ventas por Atención" [(visible)]="isVisible" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000">
+<p-dialog header="Ventas por Atención" [(visible)]="isVisible" [modal]="true">
     <app-modal-busqueda-venta-por-atencion></app-modal-busqueda-venta-por-atencion>
 </p-dialog>
 

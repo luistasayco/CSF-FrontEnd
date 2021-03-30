@@ -8,10 +8,11 @@ import { ProgressBarModule } from 'primeng/progressbar';
 import { MessageModule } from 'primeng/message';
 import { MessagesModule } from 'primeng/messages';
 import { MessageService } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
     declarations: [LoginComponent],
-    imports: [ CommonModule, LoginRoutingModule, ReactiveFormsModule, MessageModule, MessagesModule, DialogModule, ProgressBarModule ],
+    imports: [ CommonModule, LoginRoutingModule, ReactiveFormsModule, MessageModule, MessagesModule, DialogModule, ProgressBarModule, DropdownModule],
     exports: [],
     providers: [MessageService],
 })

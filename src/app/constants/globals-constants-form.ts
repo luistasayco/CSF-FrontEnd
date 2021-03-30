@@ -19,6 +19,7 @@ export class GlobalsConstantsForm {
     cCheck: string;
     cPedido: string;
     cProcesar: string;
+    cSalir: string;
 
     // Modulos
     cModuloRequerimiento: string;
@@ -58,6 +59,7 @@ export class GlobalsConstantsForm {
     icoProcesar: string;
     icoPlus: string;
     icoMinus: string;
+    icoSalir: string;
 
     // Variables titulos
     titleEliminar: string;
@@ -86,6 +88,7 @@ export class GlobalsConstantsForm {
 
     // Variables size Page
     sizePage: number;
+    sizePageModal: number;
 
     constructor() {
         // Etiqueta de Controles
@@ -108,6 +111,7 @@ export class GlobalsConstantsForm {
         this.cCheck = 'Check';
         this.cPedido = 'Pedido';
         this.cProcesar = 'Procesar';
+        this.cSalir = 'Salir';
 
 
         // Módulos
@@ -145,6 +149,7 @@ export class GlobalsConstantsForm {
         this.icoProcesar = 'fa fa-cog';
         this.icoPlus = 'fa fa-plus';
         this.icoMinus = 'fa fa-minus';
+        this.icoSalir = 'fa fa-power-off';
 
         // Titulo
         this.titleEliminar = 'Confirmación de Eliminación';
@@ -173,5 +178,6 @@ export class GlobalsConstantsForm {
 
         // Numero de Filas
         this.sizePage = 10;
+        this.sizePageModal = 5;
     }
 }

@@ -351,9 +351,34 @@ table {
     }
 }
 
+.custom-td-checkbox {
+    text-align: center;
+    width: 2em;
+}
+
 .custom-td-1 {
     text-align: center;
     width: 4em;
+}
+
+.custom-td-producto {
+    text-align: left;
+    width: 8em;
+}
+
+.custom-td-descripcion {
+    text-align: left;
+    width: 20em;
+}
+
+.custom-td-lote {
+    text-align: center;
+    width: 2em;
+}
+
+.custom-td-ico {
+    text-align: center;
+    width: 2em;
 }
 
 .custom-td-number-1 {
@@ -369,4 +394,19 @@ table {
 .custom-td-fecha {
     text-align: center;
     width: 10em;
+}
+
+.estado_venta_cancelado {
+    @include label-estado();
+    background: blue;
+}
+
+.estado_venta_generado {
+    @include label-estado();
+    background: rgb(72, 174, 67);
+}
+
+.estado_venta_anulado {
+    @include label-estado();
+    background: red;
 }

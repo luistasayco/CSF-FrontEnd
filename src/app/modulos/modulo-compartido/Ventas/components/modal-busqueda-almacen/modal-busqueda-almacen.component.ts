@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, OnDestroy, Input } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { IWarehouses } from '../../interfaces/warehouses.interface';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -19,6 +19,8 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
 
   // Variable de visualizar tabla
   isVisualizar: boolean = false;
+  @Input() isVenta: boolean = false;
+  @Input() isWarehouseCode: string;
 
   //Columnas de la tabla
   columnas: any;
@@ -37,6 +39,7 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
     this.buildForm();
     this.buildFormVisor();
     this.buildColumnas();
+    this.goObtieneAlmacen();
   }
 
   private buildForm() {
@@ -51,11 +54,29 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
     });
   }
 
+  private goObtieneAlmacen() {
+    if (this.isWarehouseCode !== null || this.isWarehouseCode.trim() !== '') {
+      this.getWarehousesPorCodigo();
+    }
+  }
+
   private buildColumnas() {
     this.columnas = [
       { field: 'warehouseCode', header: 'Código' },
       { field: 'warehouseName', header: 'Nombre' }
     ];
+  }
+
+  getWarehousesPorCodigo() {
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getWarehousesPorCodigo(this.isWarehouseCode)
+    .subscribe((data: IWarehouses) => {
+      this.seleccionItem = data;
+      this.clickAceptar();
+    },
+    (error) => {
+      this.seleccionItem = null;
+    });
   }
 
   getListWarehousesContains() {

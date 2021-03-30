@@ -13,6 +13,8 @@ export class HeaderComponent implements OnInit {
   nombre: string;
   imagen: string;
 
+  isVisibleInformacionGeneral: boolean;
+
   constructor(public app: LayoutComponent,
               private readonly userContextService: UserContextService,
               private sessionService: SessionService) { }
@@ -33,6 +35,10 @@ export class HeaderComponent implements OnInit {
   onLogout(event) {
     event.preventDefault();
     this.userContextService.logout();
+  }
+
+  onMuestraInformacionGeneral() {
+    this.isVisibleInformacionGeneral = !this.isVisibleInformacionGeneral;
   }
 
 }

@@ -7,6 +7,8 @@ import { ICliente } from '../interfaces/cliente.interface';
 import { IPersonalClinica } from '../interfaces/personal-clinica.interface';
 import { IMedico } from '../interfaces/medico.interface';
 import { IAtencion } from '../interfaces/atencion.interface';
+import { IProducto } from '../interfaces/producto.interface';
+import { ISeriePorMaquina } from '../interfaces/serie-por-maquina.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +23,13 @@ export class VentaCompartidoService {
     parametros = parametros.append('warehouseName', warehouseName);
     return this.http.get<IWarehouses[]>
     (`${environment.url_api_venta}Warehouses/GetListWarehousesContains/`, { params: parametros });
+  }
+
+  getWarehousesPorCodigo(warehouseCode: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('warehouseCode', warehouseCode);
+    return this.http.get<IWarehouses>
+    (`${environment.url_api_venta}Warehouses/GetWarehousesPorCodigo/`, { params: parametros });
   }
 
   getListPacientePorFiltros(opcion: string, codpaciente: string, nombres: string) {
@@ -61,5 +70,25 @@ export class VentaCompartidoService {
     parametros = parametros.append('nombre', nombre);
     return this.http.get<IMedico[]>
     (`${environment.url_api_venta}Medico/GetListMedicoPorNombre/`, { params: parametros });
+  }
+
+  getListProductoPorFiltro(codigo: string, nombre: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codigo', codigo);
+    parametros = parametros.append('nombre', nombre);
+    return this.http.get<IProducto[]>
+    (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
+  }
+
+  getListProductoGenericoPorCodigo(codigo: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codigo', codigo);
+    return this.http.get<IProducto[]>
+    (`${environment.url_api_venta}Producto/GetListProductoGenericoPorCodigo/`, { params: parametros });
+  }
+
+  getListSeriePorMaquina() {
+    return this.http.get<ISeriePorMaquina[]>
+    (`${environment.url_api_venta}SeriePorMaquina/GetListSeriePorMaquina`);
   }
 }

@@ -1,6 +1,6 @@
 {
     "data": [{
-            "estado": "Generado",
+            "estado": "Observado",
             "codVenta": "50293849",
             "codPedido": "0000001020202",
             "codAtencion": "H0176873",
@@ -11,10 +11,10 @@
             "centroCosto": "EDIFICO B HOSPITAL",
             "observacion": "**********SSSSS**************",
             "usuario": "ASTO CARRAZCO LESLY",
-            "almacen": "FARMACIA HOSPITALARIA"
+            "almacen": "EMERGENCIA"
         },
         {
-            "estado": "Generado",
+            "estado": "Observado",
             "codVenta": "50293849",
             "codPedido": "0000001020202",
             "codAtencion": "H0176873",
@@ -25,7 +25,7 @@
             "centroCosto": "EDIFICO B HOSPITAL",
             "observacion": "**********SSSSS**************",
             "usuario": "ASTO CARRAZCO LESLY",
-            "almacen": "FARMACIA HOSPITALARIA"
+            "almacen": "ENDOSCOPIA"
         }
     ]
 }

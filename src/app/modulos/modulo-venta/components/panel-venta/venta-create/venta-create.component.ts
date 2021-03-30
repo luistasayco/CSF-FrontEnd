@@ -15,6 +15,10 @@ import { IPersonalClinica } from '../../../../modulo-compartido/Ventas/interface
 import { IMedico } from '../../../../modulo-compartido/Ventas/interfaces/medico.interface';
 import { Subscription } from 'rxjs';
 import { IAtencion } from '../../../../modulo-compartido/Ventas/interfaces/atencion.interface';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { SessionService } from '../../../../../services/session.service';
+import { VentaDataService } from '../../../services/venta-data.service';
+import { ITipoAutorizacion } from '../../../interface/venta.interface';
 
 @Component({
   selector: 'app-venta-create',
@@ -30,9 +34,10 @@ export class VentaCreateComponent implements OnInit {
 
   listModelo: any[];
   listMedicosPorAtencion: SelectItem[];
+  listTipoAutorizacion: SelectItem[];
 
   columnas: any;
-
+  isWarehouseCode: string;
   isAutenticar: boolean = false;
   isVisibleReceta: boolean = false;
   isVisiblePedido: boolean = false;
@@ -40,6 +45,7 @@ export class VentaCreateComponent implements OnInit {
 
   // Formulario
   formularioCabecera: FormGroup;
+  formularioTotales: FormGroup;
 
   // Tipo de Cliente
   isTipoCliente: string;
@@ -51,7 +57,9 @@ export class VentaCreateComponent implements OnInit {
               public router: Router,
               private demoService: DemoService,
               private readonly ventasService: VentasService,
+              private readonly ventaDataService: VentaDataService,
               private confirmationService: ConfirmationService,
+              private sessionService: SessionService,
               private readonly fb: FormBuilder) {     
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
@@ -63,12 +71,14 @@ export class VentaCreateComponent implements OnInit {
     
     // Contruye Formulario
     this.buildForm();
+    this.buildFormTotales();
 
     this.goInicializaVariables();
 
     this.onOpcionesCabecera();
 
     this.onColumnasGrilla();
+    this.goGetTipoAutorizacion();
 
     this.demoService.getCarsLarge().then(cars => this.listModelo = cars);
   }
@@ -142,12 +152,34 @@ export class VentaCreateComponent implements OnInit {
       observacionPaciente: [null],
       observacionAtencion: [null],
       diagnostico: [null],
-      medicoOtros: [null]
+      medicoOtros: [null],
+      observacionGeneral: [null]
+    });
+  }
+
+  private buildFormTotales() {
+    this.formularioTotales = this.fb.group({
+      montoDescuentoPlan: [{value:0, disabled: true}],
+      montoGNC: [{value:0, disabled: true}],
+      montoSubTotal: [{value:0, disabled: true}],
+      montoSubTotalPaciente: [{value:0, disabled: true}],
+      montoSubTotalAseguradora: [{value:0, disabled: true}],
+      montoIGV: [{value:0, disabled: true}],
+      montoIGVPaciente: [{value:0, disabled: true}],
+      montoIGVAseguradora: [{value:0, disabled: true}],
+      montoTotal: [{value:0, disabled: true}],
+      montoTotalPaciente: [{value:0, disabled: true}],
+      montoTotalAseguradora: [{value:0, disabled: true}],
     });
   }
 
   private goInicializaVariables() {
     this.isTipoCliente = '01';
+
+    if (this.sessionService.getItem('estacion')) {
+      let estacion = this.sessionService.getItem('estacion');
+      this.isWarehouseCode = estacion.value.codalmacen;
+    }
   }
 
   goTipoClienteChange() {
@@ -229,25 +261,45 @@ export class VentaCreateComponent implements OnInit {
 
   private onColumnasGrilla() {
     this.columnas = [
+      { field: 'codProd', header: 'Código' },
+      { field: 'lote', header: 'Lote' },
       { field: 'descripcion', header: 'Descripción' },
       { field: 'can-m', header: 'Cantidad' },
       { field: 'pvp', header: 'PVP' },
       { field: 'dctoProd', header: 'Dscto. Prd.' },
       { field: 'dctoPlan', header: 'Dscto. Plan' },
-      { field: 'totalSigv', header: 'Total S/IGV' },
+      
       { field: 'montoPac', header: 'Monto Pac.' },
       { field: 'montoAseg', header: 'Monto Aseg.' },
       { field: 'costoVVF', header: 'Costo VVF' },
-      { field: 'precioUnid', header: 'Precio Uni.' },
+      // { field: 'precioUnid', header: 'Precio Uni.' },
       { field: 'vvp', header: 'VVP' },
+      { field: 'totalSigv', header: 'Total S/IGV' },
       { field: 'totalCigv', header: 'Total C/IGV' },
-      { field: 'igvProd', header: 'IGV Prod' },
-      { field: 'noCubierto', header: 'NoCubierto' },
-      { field: 'nroPedido', header: 'NroPedido' },
+      // { field: 'igvProd', header: 'IGV Prod' },
+      { field: 'noCubierto', header: 'No Cubierto' },
+      // { field: 'nroPedido', header: 'NroPedido' },
       { field: 'tipoAutorizacion', header: 'Tipo Autorización' },
       { field: 'nroAutorizacion', header: 'Nro Autorización' },
-      { field: 'tipoProducto', header: 'Tipo Prod.' }
+      // { field: 'tipoProducto', header: 'Tipo Prod.' }
     ];
+  }
+
+  private goGetTipoAutorizacion() {
+    this.ventaDataService.getTipoAutorizacion().then((data: ITipoAutorizacion[]) => {
+      this.listTipoAutorizacion = [];
+
+      data.forEach(x => {
+        this.listTipoAutorizacion.push({
+          label: x.name,
+          value: x.code
+        });
+      });
+    });
+  }
+
+  goChangeTipoAutorizacion(data: any, index: number ) {
+    this.listModelo[index].tipoAutorizacion =  data.value.value;
   }
 
   onConsultarVenta() {

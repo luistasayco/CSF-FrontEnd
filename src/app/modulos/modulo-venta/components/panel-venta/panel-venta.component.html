@@ -2,21 +2,21 @@
     <h1><strong>{{titulo}}</strong></h1>
 
     <!-- Filtros -->
-    <!-- Filtros -->
     <p-panel header="Opción de busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
-                <div class="ui-g-12 ui-md-4">
+                <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-nro-venta">Cod. Venta: </label>
                     <input id="float-input-nro-venta" type="text" pInputText placeholder="Nro Venta" formControlName="codventa">
                 </div>
-                <div class="ui-g-12 ui-md-4">
+                <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-nro-comprobante">Comprobante: </label>
                     <input id="float-input-nro-comprobante" type="text" pInputText placeholder="Nro Comprobante" formControlName="codcomprobante">
                 </div>
-                <div class="ui-g-12 ui-md-4">
-                    <label class="label-custom" for="float-input-nro-venta"> .</label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="onListar()"></button>
+                <div class="ui-g-12 ui-md-6"></div>
+                <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-nro-venta">.</label>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goListar()"></button>
                 </div>
             </div>
         </form>
@@ -26,14 +26,13 @@
     <!-- Grilla de Datos     -->
     <p-panel header="Lista de {{titulo}}">
 
-        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codVenta" autoLayout="true" [responsive]="true">
+        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codventa" autoLayout="true" [responsive]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th colspan="1">Acciones</th>
                     <th *ngFor="let col of columns">
                         {{col.header}}
                     </th>
-
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
@@ -42,7 +41,7 @@
                         <p-splitButton class="ui-splitbutton-button" label="Detalle" icon="fa fa-list-ol " (onDropdownClick)="onItemElegido(rowData)" (onClick)="onDetalle(rowData)" [model]="items" appendTo="body"></p-splitButton>
                     </td>
                     <td class="custom-td-1">
-                        {{rowData.codVenta}}
+                        {{rowData.codventa}}
                     </td>
                     <td class="custom-td-1">
                         {{rowData.tipomovimiento}}
@@ -57,7 +56,7 @@
                         {{rowData.codcomprobante}}
                     </td>
                     <td class="custom-td-1">
-                        {{rowData.nombreestado}}
+                        <app-label-estado [isEstado]="rowData.nombreestado"></app-label-estado>
                     </td>
                     <td>
                         {{rowData.nombre}}
@@ -87,7 +86,7 @@
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog [header]="tituloDetalle" [(visible)]="isVerModalDetalle" [modal]="true">
-    <app-venta-ver [isVisibleAnular]="isAnular">
+<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true">
+    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem">
     </app-venta-ver>
 </p-dialog>

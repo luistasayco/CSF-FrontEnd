@@ -1,11 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { MenuItem } from 'primeng';
 import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
 import { LanguageService } from '../../../../../services/language.service';
-import { Router } from '@angular/router';
-import { DemoService } from '../../../../../services/demo.service';
-import { VentasService } from '../../../services/ventas.service';
+import { IVentaCabeceraSingle } from '../../../interface/venta.interface';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-venta-ver',
@@ -17,20 +15,20 @@ export class VentaVerComponent implements OnInit {
   titulo = 'Consulta Ventas';
   
   @Input() isVisibleAnular: boolean 
+  // Venta
+  @Input() modeloItem: IVentaCabeceraSingle;
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm;
 
-  items: MenuItem[];
-
-  listModelo: any[];
+  // Formulario
+  formularioCabecera: FormGroup;
 
   columnas: any;
 
   isVerModalDetalle: boolean
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
-              public router: Router,
-              private demoService: DemoService) {     
+              private readonly fb: FormBuilder) {     
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Venta', routerLink: ['module-ve/venta-create'] }
@@ -38,86 +36,64 @@ export class VentaVerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.items = [
-      {label: this.globalConstants.cGrabar, icon: this.globalConstants.icoGrabar, 
-       command: () => { 
-        this.update();
-      }},
-      {label: this.globalConstants.cImprimir, icon: this.globalConstants.icoImprimir, 
-        command: () => {
-          this.update();
-      }},
-      {label: this.globalConstants.cConsultar, icon: this.globalConstants.icoConsultar,
-        command: () => {
-        this.update();
-      }},
-      {label: this.globalConstants.cCaja, icon: this.globalConstants.icoCaja,
-        command: () => {
-        this.update();
-      }},
-      {label: this.globalConstants.cPedido, icon: this.globalConstants.icoPedido,
-        command: () => {
-        this.goPedido();
-      }},
-      {separator: true},
-      {label: this.globalConstants.cGanancia, icon: this.globalConstants.icoGanancia,
-        command: () => {
-        this.update();
-      }},
-      {label: this.globalConstants.cGenerico, icon: this.globalConstants.icoGenerico,
-        command: () => {
-        this.update();
-      }},
-      {label: this.globalConstants.cSimulacion, icon: this.globalConstants.icoSimulacion,
-        command: () => {
-        this.update();
-      }},
-    ];
+    this.buildColumnas();
+    this.buildForm();
+    this.buildFormSetValue();
+  }
 
+  private buildForm() {
+    this.formularioCabecera = this.fb.group({
+      codventa: [{value: null, disabled: true}],
+      tipomovimiento: [{value: null, disabled: true}],
+      codcomprobante: [{value: null, disabled: true}],
+      codpresotor: [{value: null, disabled: true}],
+      nombrealmacen: [{value: null, disabled: true}],
+      fechagenera: [{value: null, disabled: true}],
+      observacion: [{value: null, disabled: true}],
+      montodctoplan: [{value: null, disabled: true}],
+      montototal: [{value: null, disabled: true}],
+      montopaciente: [{value: null, disabled: true}],
+      montoaseguradora: [{value: null, disabled: true}],
+      montoigv: [{value: null, disabled: true}],
+      montoneto: [{value: null, disabled: true}]
+    });
+  }
+
+  private buildFormSetValue() {
+      this.formularioCabecera.controls.codventa.setValue(this.modeloItem.codventa);
+      this.formularioCabecera.controls.tipomovimiento.setValue(this.modeloItem.tipomovimiento);
+      this.formularioCabecera.controls.codcomprobante.setValue(this.modeloItem.codcomprobante);
+      this.formularioCabecera.controls.codpresotor.setValue(this.modeloItem.codpresotor);
+      this.formularioCabecera.controls.nombrealmacen.setValue(this.modeloItem.nombrealmacen);
+      this.formularioCabecera.controls.fechagenera.setValue(new Date(this.modeloItem.fechagenera));
+      this.formularioCabecera.controls.observacion.setValue(this.modeloItem.observacion);
+
+      this.formularioCabecera.controls.montodctoplan.setValue(this.modeloItem.montodctoplan);
+
+      this.formularioCabecera.controls.montototal.setValue(this.modeloItem.montototal);
+      this.formularioCabecera.controls.montopaciente.setValue(this.modeloItem.montopaciente);
+      this.formularioCabecera.controls.montoaseguradora.setValue(this.modeloItem.montoaseguradora);
+
+      this.formularioCabecera.controls.montoigv.setValue(this.modeloItem.montoigv);
+      this.formularioCabecera.controls.montoneto.setValue(this.modeloItem.montoneto);
+  }
+
+  private buildColumnas() {
     this.columnas = [
-      { field: 'descripcion', header: 'Descripción' },
-      // { field: 'can-e', header: 'Can-E' },
-      { field: 'can-m', header: 'Cantidad' },
-      // { field: 'dev-m', header: 'Dev-M' },
-      { field: 'pvp', header: 'PVP' },
-      { field: 'dctoProd', header: 'Dscto.Prd.' },
-      { field: 'dctoPlan', header: 'Dscto.Plan' },
-      { field: 'totalSigv', header: 'Total' },
-      { field: 'montoPac', header: 'Monto Pac.' },
-      { field: 'montoAseg', header: 'Monto Aseg.' },
-      { field: 'codProd', header: 'Cod. Prod.' },
-      // { field: 'stockF', header: 'Stock F.' },
-      // { field: 'moneda', header: 'Moneda' },
-     
-      
-      { field: 'vvp', header: 'VVP' },
-       { field: 'costoVVF', header: 'Costo VVF' },
-      // { field: 'totalCigv', header: 'Total C/IGV' },
-      { field: 'precioUnid', header: 'Precio Uni.' },
-      // { field: 'igvProd', header: 'IGV Prod' },
-      // { field: 'noCubierto', header: 'NoCubierto' },
-      // { field: 'nroPedido', header: 'NroPedido' },
-      // { field: 'qtyAlmE', header: 'Qty Alm-E' },
-      // { field: 'qtyAlmM', header: 'Qty Alm-M' },
-
-      // { field: 'tipoAutorizacion', header: 'Tipo Autorización' },
-      // { field: 'nroAutorizacion', header: 'Nro Autorización' },
-      // { field: 'tipoProducto', header: 'Tipo Prod.' },
-      // { field: 'pedCanE', header: 'Ped Can. E' },
-      // { field: 'pedCanM', header: 'Ped Can. M' }
+      { field: 'codproducto', header: 'Cod. Prod.' },
+      { field: 'lote', header: 'Lote' },
+      { field: 'nombreproducto', header: 'Descripción' },
+      { field: 'cantidad_fraccion', header: 'Cantidad' },
+      { field: 'precioventaPVP', header: 'PVP' },
+      { field: 'porcentajedctoproducto', header: 'Dscto.Prd.' },
+      { field: 'porcentajedctoplan', header: 'Dscto.Plan' },
+      { field: 'montototal', header: 'Total' },
+      { field: 'montopaciente', header: 'Monto Pac.' },
+      { field: 'montoaseguradora', header: 'Monto Aseg.' },
+      { field: 'valorVVP', header: 'VVP' },
     ];
-
-    this.demoService.getCarsLarge().then(cars => this.listModelo = cars);
   }
 
-  update() {
-
-  }
-
-  goPedido() {
-    this.router.navigate(['/main/modulo-ve/panel-pedido'])
-  }
-  
   getAnular() {
     this.isVerModalDetalle = !this.isVerModalDetalle;
   }

@@ -55,4 +55,19 @@ export class SessionService {
   clear() {
     localStorage.clear();
   }
+
+  logout() {
+    let estacion = null;
+    let usuario = '';
+    if (this.getItem('estacion')) {
+      estacion = this.getItem('estacion');
+    }
+    if (this.getItem('usuario')) {
+      usuario = this.getItem('usuario')
+    }
+    this.clear();
+
+    this.setItem('estacion', estacion);
+    this.setItem('usuario', usuario);
+  }
 }

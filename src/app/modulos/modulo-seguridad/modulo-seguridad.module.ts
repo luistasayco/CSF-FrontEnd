@@ -16,6 +16,7 @@ import { PanelSistemaComponent } from './components/panel-sistema/panel-sistema.
 import { PanelConexionComponent } from './components/panel-conexion/panel-conexion.component';
 import { PanelRecuperarClaveComponent } from './components/panel-recuperar-clave/panel-recuperar-clave.component';
 import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimiento/modulo-requerimiento-compartido.module';
+import { PersonaVerComponent } from './components/panel-persona/persona-ver/persona-ver.component';
 
 @NgModule({
     declarations: [PanelPerfilComponent,
@@ -29,14 +30,15 @@ import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimient
         PanelOpcionPorPerfilComponent,
         PanelConexionComponent,
         PanelSistemaComponent,
-        PanelRecuperarClaveComponent],
+        PanelRecuperarClaveComponent,
+        PersonaVerComponent],
     imports: [ CommonModule,
         SeguridadPrimeNgModule,
         SeguridadRoutingModule,
         FormsModule,
         ReactiveFormsModule,
         RequerimientoCompartidoModule ],
-    exports: [],
+    exports: [PersonaVerComponent],
     providers: [],
 })
 export class SeguridadModule {}

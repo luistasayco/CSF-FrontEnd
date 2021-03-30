@@ -17,8 +17,12 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr [pSelectableRow]="rowData">
-                    <td *ngFor="let col of columns">
-                        {{rowData[col.field]}}
+                    <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                        <span class="p-column-title">{{col.header}}</span>
+
+                        <span *ngSwitchCase="'codigo'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                        <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codigo']"></app-modal-consulta-lote></span>
+                        <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                     </td>
                 </tr>
             </ng-template>

@@ -13,9 +13,9 @@ export class LayoutComponent implements OnInit {
 
   menuMode = 'horizontal';
 
-  theme = 'blue-light';
+  theme = 'green-light';
 
-  selectedColor = 'blue';
+  selectedColor = 'green';
 
   topbarMenuActive: boolean;
 

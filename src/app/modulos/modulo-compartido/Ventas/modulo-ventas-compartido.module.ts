@@ -20,6 +20,10 @@ import { ModalBusquedaPedidosPorPacienteComponent } from './components/modal-bus
 import { ModalBusquedaGenericoComponent } from './components/modal-busqueda-generico/modal-busqueda-generico.component';
 import { ModalBusquedaPedidoDevolucionComponent } from './components/modal-busqueda-pedido-devolucion/modal-busqueda-pedido-devolucion.component';
 import { ModalBusquedaNotaCreditoDevolucionComponent } from './components/modal-busqueda-nota-credito-devolucion/modal-busqueda-nota-credito-devolucion.component';
+import { ModalConsultaProductoComponent } from './components/modal-consulta-producto/modal-consulta-producto.component';
+import { ModalConsultaLoteComponent } from './components/modal-consulta-lote/modal-consulta-lote.component';
+import { LabelEstadoComponent } from './components/label-estado/label-estado.component';
+import { ModalRecetaObservacionComponent } from './components/modal-receta-observacion/modal-receta-observacion.component';
 
 @NgModule({
     declarations: [
@@ -40,7 +44,11 @@ import { ModalBusquedaNotaCreditoDevolucionComponent } from './components/modal-
         ModalBusquedaPedidosPorPacienteComponent,
         ModalBusquedaGenericoComponent,
         ModalBusquedaPedidoDevolucionComponent,
-        ModalBusquedaNotaCreditoDevolucionComponent
+        ModalBusquedaNotaCreditoDevolucionComponent,
+        ModalConsultaProductoComponent,
+        ModalConsultaLoteComponent,
+        LabelEstadoComponent,
+        ModalRecetaObservacionComponent
     ],
     imports: [ 
         CommonModule,
@@ -65,7 +73,11 @@ import { ModalBusquedaNotaCreditoDevolucionComponent } from './components/modal-
         ModalBusquedaPedidosPorPacienteComponent,
         ModalBusquedaGenericoComponent,
         ModalBusquedaPedidoDevolucionComponent,
-        ModalBusquedaNotaCreditoDevolucionComponent
+        ModalBusquedaNotaCreditoDevolucionComponent,
+        ModalConsultaProductoComponent,
+        ModalConsultaLoteComponent,
+        LabelEstadoComponent,
+        ModalRecetaObservacionComponent
     ],
     providers: [],
 })

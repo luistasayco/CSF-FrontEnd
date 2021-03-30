@@ -19,3 +19,7 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.ui-dropdown {
+    height: auto;
+}

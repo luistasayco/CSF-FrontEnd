@@ -16,6 +16,10 @@ export class ModalBusquedaRecetaComponent implements OnInit {
   isVisualizar: boolean = false;
   columnas: any;
   listModelo: any[];
+
+  isVisualizarObservacion: boolean;
+  isAtencionObservacion: string;
+
   constructor(private demoService: DemoService,
               public lenguageService: LanguageService) { }
 
@@ -31,5 +35,10 @@ export class ModalBusquedaRecetaComponent implements OnInit {
       { field: 'nombreMedico', header: 'Medido' },
       { field: 'tipoConsumo', header: 'Tip. Cons. Med.' }
     ];
+  }
+
+  goVisualizarObservacion(atencion: string) {
+    this.isVisualizarObservacion = !this.isVisualizarObservacion;
+    this.isAtencionObservacion = atencion;
   }
 }

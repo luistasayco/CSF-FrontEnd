@@ -66,7 +66,7 @@ export class UserContextService {
 
   public logout()
   {
-    this.sessionService.clear();
+    this.sessionService.logout();
     this.user$.next(defaultUser);
     this.redirecciona();
   }

@@ -77,39 +77,30 @@ export class VentaDevolucionComponent implements OnInit {
     ];
 
     this.columnas = [
+      { field: 'codProd', header: 'Código' },
+      { field: 'lote', header: 'Lote' },
       { field: 'descripcion', header: 'Descripción' },
-      // { field: 'can-e', header: 'Can-E' },
-      { field: 'can-m', header: 'Can-M' },
-      { field: 'dev-m', header: 'Dev-M' },
+      { field: 'can-m', header: 'Cantidad' },
       { field: 'pvp', header: 'PVP' },
-      { field: 'dctoProd', header: 'Dscto.Prd.' },
-      { field: 'dctoPlan', header: 'Dscto.Plan' },
-      { field: 'totalSigv', header: 'Total' },
+      { field: 'dctoProd', header: 'Dscto. Prd.' },
+      { field: 'dctoPlan', header: 'Dscto. Plan' },
+      
       { field: 'montoPac', header: 'Monto Pac.' },
       { field: 'montoAseg', header: 'Monto Aseg.' },
-      { field: 'codProd', header: 'Cod. Prod.' },
-      // { field: 'stockF', header: 'Stock F.' },
-      // { field: 'moneda', header: 'Moneda' },
-     
-      
+      { field: 'costoVVF', header: 'Costo VVF' },
+      // { field: 'precioUnid', header: 'Precio Uni.' },
       { field: 'vvp', header: 'VVP' },
-       { field: 'costoVVF', header: 'Costo VVF' },
-      // { field: 'totalCigv', header: 'Total C/IGV' },
-      { field: 'precioUnid', header: 'Precio Uni.' },
-      { field: 'igvProd', header: 'IGV Prod' },
-      // { field: 'noCubierto', header: 'NoCubierto' },
+      { field: 'totalSigv', header: 'Total S/IGV' },
+      { field: 'totalCigv', header: 'Total C/IGV' },
+      // { field: 'igvProd', header: 'IGV Prod' },
+      { field: 'noCubierto', header: 'No Cubierto' }
       // { field: 'nroPedido', header: 'NroPedido' },
-      // { field: 'qtyAlmE', header: 'Qty Alm-E' },
-      // { field: 'qtyAlmM', header: 'Qty Alm-M' },
-
       // { field: 'tipoAutorizacion', header: 'Tipo Autorización' },
       // { field: 'nroAutorizacion', header: 'Nro Autorización' },
-      // { field: 'tipoProducto', header: 'Tipo Prod.' },
-      // { field: 'pedCanE', header: 'Ped Can. E' },
-      // { field: 'pedCanM', header: 'Ped Can. M' }
+      // { field: 'tipoProducto', header: 'Tipo Prod.' }
     ];
 
-    this.demoService.getCarsLarge().then(cars => this.listModelo = cars);
+    // this.demoService.getCarsLarge().then(cars => this.listModelo = cars);
   }
 
   update() {

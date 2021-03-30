@@ -11,6 +11,9 @@ import { estadoInternetService } from '../../../modulo-estado-internet/estadoInt
 import { CifrarDataService } from '../../../../services/cifrar-data.service';
 import { VariablesGlobales } from '../../../../interface/variables-globales';
 import { MenuDinamicoService } from '../../../../services/menu-dinamico.service';
+import { VentaCompartidoService } from '../../../modulo-compartido/Ventas/services/venta-compartido.service';
+import { ISeriePorMaquina } from '../../../modulo-compartido/Ventas/interfaces/serie-por-maquina.interface';
+import { SelectItem } from 'primeng';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +23,7 @@ import { MenuDinamicoService } from '../../../../services/menu-dinamico.service'
 export class LoginComponent implements OnInit {
 
   modeloLogin: LoginModel;
-
+  listSeriePorMaquina: SelectItem[];
   formularioLogin: FormGroup;
 
   subscripcionInternet: Subscription;
@@ -37,6 +40,7 @@ export class LoginComponent implements OnInit {
               private readonly sessionService: SessionService,
               private readonly fb: FormBuilder,
               private readonly servicioInternet: estadoInternetService,
+              private readonly ventaCompartidoService: VentaCompartidoService,
               private readonly cifrarDataService: CifrarDataService,
               private readonly menuDinamicoService: MenuDinamicoService) { }
 
@@ -44,6 +48,8 @@ export class LoginComponent implements OnInit {
     this.modeloLogin = new LoginModel();
     this.iniciarObservableEstadoInternet();
     this.instanciarFormulario();
+    this.onSeriePorEstacion();
+    
   }
 
   iniciarObservableEstadoInternet() {
@@ -56,6 +62,7 @@ export class LoginComponent implements OnInit {
 
   instanciarFormulario() {
     this.formularioLogin = this.fb.group({
+      estacion: [null],
       login: new FormControl('', [
         Validators.minLength(4),
         Validators.required
@@ -65,6 +72,34 @@ export class LoginComponent implements OnInit {
         Validators.required
       ])
     });
+  }
+
+  onSeriePorEstacion() {
+    this.subscripcion = new Subscription();
+    this.subscripcion = this.ventaCompartidoService.getListSeriePorMaquina()
+    .subscribe((res: ISeriePorMaquina[]) => {
+        this.listSeriePorMaquina = [];
+        res.forEach(data => {
+          this.listSeriePorMaquina.push({label:data.nombremaquina, value:data});
+        });
+        this.onObtieneEstacionLocal();
+      },
+      (err) => {
+        this.displayAutenticacion = false;
+        this.mensajePrimeNgService.onToErrorMsg(null, err.error);
+      }
+    );
+  }
+
+  onObtieneEstacionLocal() {
+    if (this.sessionService.getItem('estacion')) {
+      let estacion = this.sessionService.getItem('estacion');
+      this.formularioLogin.controls.estacion.setValue(estacion);
+    }
+    if (this.sessionService.getItem('usuario')) {
+      let usuarioLocal = this.sessionService.getItemDecrypt('usuario');
+      this.formularioLogin.controls.login.setValue(usuarioLocal);
+    }
   }
 
   onClickLogin()
@@ -80,9 +115,6 @@ export class LoginComponent implements OnInit {
     this.subscripcion = this.loginService.autentica(this.modeloLogin)
     .subscribe((res: any) => {
       localStorage.setItem('token', res.token);
-        // this.onEncriptaData(res);
-        // this.onGeneraMenu();
-        // this.displayAutenticacion = false;
         this.onObtienePermisosPorUsuario();
       },
       (err) => {
@@ -120,6 +152,9 @@ export class LoginComponent implements OnInit {
     this.sessionService.setItemEncrypt('desCentroCosto', res.desCentroCosto);
     this.sessionService.setItem('pass', this.modeloLogin.clave);
     this.userContextService.setUser(res.usuario);
+    
+    // Guarda la estacion de trabajo
+    this.sessionService.setItem('estacion', this.formularioLogin.value.estacion);
 
     this.onFinalizaProceso();
   }

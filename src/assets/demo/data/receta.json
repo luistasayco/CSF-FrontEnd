@@ -3,19 +3,19 @@
             "receta": "4420293",
             "atencion": "H0179089",
             "fecha": "30/01/2021 12:11:09 AM",
-            "paciente": "0100000039306DD757D6CE9B71D699AB843291A9B5B2734A3B1285E23214",
+            "paciente": "TELLO DE PINA VICTORIA GIANNINA",
             "telefono": "932123123",
             "nombreMedico": "SUMMERS GARCIA PERSY",
-            "tipoConsumo": ""
+            "tipoConsumo": "CONSULTA MEDICA VIRTUAL"
         },
         {
             "receta": "4240293",
             "atencion": "H0179091",
             "fecha": "30/01/2021 14:11:09 AM",
-            "paciente": "0100000039306DD757D6CE9B71D699AB843291A9B5B2734A3B1285E23214",
+            "paciente": "PORRAS CORDOVA JOSE LUIS",
             "telefono": "932123123",
             "nombreMedico": "SUMMERS GARCIA PERSY",
-            "tipoConsumo": ""
+            "tipoConsumo": "CONSULTA MEDICA VIRTUAL"
         }
     ]
 }

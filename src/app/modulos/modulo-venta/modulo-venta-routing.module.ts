@@ -15,12 +15,17 @@ import { PlanesCreateComponent } from './components/panel-planes/planes-create/p
 import { PanelSalaOperacionComponent } from './components/panel-sala-operacion/panel-sala-operacion.component';
 import { SalaOperacionCreateComponent } from './components/panel-sala-operacion/sala-operacion-create/sala-operacion-create.component';
 import { SalaOperacionLecturaComponent } from './components/panel-sala-operacion/sala-operacion-lectura/sala-operacion-lectura.component';
+import { VentaSinStockComponent } from './components/panel-venta/venta-sin-stock/venta-sin-stock.component';
+import { PanelConsolidadoPedidoComponent } from './components/panel-consolidado-pedido/panel-consolidado-pedido.component';
+import { PanelVentaAutomaticoComponent } from './components/panel-venta/panel-venta-automatico/panel-venta-automatico.component';
+import { PanelConfigTrxVentaComponent } from './components/panel-config-trx-venta/panel-config-trx-venta.component';
 
 const routes: Routes = [
-    {path: 'panel-venta', component: PanelVentaComponent},
+    {path: 'panel-venta', component: PanelConfigTrxVentaComponent},
     {path: 'venta-create', component: VentaCreateComponent},
     {path: 'venta-pendiente', component: VentaPendienteComponent},
     {path: 'venta-devolucion', component: VentaDevolucionComponent},
+    {path: 'venta-sin-stock', component: VentaSinStockComponent},
     {path: 'panel-comprobante', component: PanelComprobanteComponent},
     {path: 'panel-caja', component: PanelCajaComponent},
     {path: 'panel-pedido-paciente', component: PanelPedidosPorPacienteComponent},
@@ -29,6 +34,10 @@ const routes: Routes = [
     {path: 'panel-planillas', component: PanelPlanillaComponent},
     {path: 'panel-seguimiento', component: PanelSeguimientoComponent},
     {path: 'panel-pedido', component: PanelPedidoComponent},
+    {path: 'panel-consolidado-pedido', component: PanelConsolidadoPedidoComponent},
+    {path: 'panel-venta-automatico', component: PanelVentaAutomaticoComponent},
+    {path: 'panel-trx-venta', component: PanelConfigTrxVentaComponent},
+    
     // Sala de Operación
     {path: 'panel-sala-operacion', component: PanelSalaOperacionComponent},
     {path: 'sala-operacion-create', component: SalaOperacionCreateComponent},

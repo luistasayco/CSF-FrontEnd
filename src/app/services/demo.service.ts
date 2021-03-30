@@ -120,4 +120,18 @@ export class DemoService {
                 .then(data => data);
   }
 
+  getRecetaObservacion() {
+    return this.http.get<any>('assets/demo/data/receta-observacion.json')
+                .toPromise()
+                .then(res => res.data as any[])
+                .then(data => data);
+  }
+
+  gettrx() {
+    return this.http.get<any>('assets/demo/data/trx.json')
+                .toPromise()
+                .then(res => res.data as any[])
+                .then(data => data);
+  }
+
 }

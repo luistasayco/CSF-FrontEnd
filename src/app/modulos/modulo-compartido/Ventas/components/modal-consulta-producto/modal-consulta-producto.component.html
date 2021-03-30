@@ -1,0 +1,5 @@
+<i class="fa fa-arrow-right" aria-hidden="true" (click)="goChangeVisibleRegistro()"></i>
+
+<p-dialog header="Buscar Producto" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '60vw'}">
+    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goChangeVisibleRegistro()"></button>
+</p-dialog>

@@ -1,20 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { MenuItem } from 'primeng';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
 import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
 import { VentasService } from '../../services/ventas.service';
-import { IResultBusquedaVenta } from '../../models/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle } from '../../interface/venta.interface';
 import { map } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ConfirmationService } from 'primeng/api';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-panel-venta',
   templateUrl: './panel-venta.component.html',
   styleUrls: ['./panel-venta.component.css']
 })
-export class PanelVentaComponent implements OnInit {
+export class PanelVentaComponent implements OnInit, OnDestroy {
   // Titulo del componente
   titulo = 'Consulta Ventas';
   tituloDetalle = "Venta"
@@ -22,6 +23,7 @@ export class PanelVentaComponent implements OnInit {
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
   listModelo: IResultBusquedaVenta[];
+  modeloItem: IVentaCabeceraSingle;
 
   columnas: any;
 
@@ -35,6 +37,8 @@ export class PanelVentaComponent implements OnInit {
   // Visualizar registro seleccionado
   isVerModalDetalle: boolean;
   isAnular: boolean;
+
+  subscription$: Subscription;
 
   constructor(private readonly breadcrumbService: BreadcrumbService,
               public readonly mensajePrimeNgService: MensajePrimeNgService,
@@ -55,7 +59,7 @@ export class PanelVentaComponent implements OnInit {
 
     this.onOpcionesGrilla();
     
-    this.onListar();
+    this.goListar();
   }
 
   private buildForm() {
@@ -67,7 +71,7 @@ export class PanelVentaComponent implements OnInit {
 
   private onHeaderGrilla() {
     this.columnas = [
-      { field: 'codVenta', header: 'Cod.Venta' },
+      { field: 'codventa', header: 'Cod.Venta' },
       { field: 'tipomovimiento', header: 'T.Mov' },
       { field: 'nombretipocliente', header: 'T.Cliente' },
       { field: 'codatencion', header: 'Cod.Atención' },
@@ -108,10 +112,11 @@ export class PanelVentaComponent implements OnInit {
     ];
   }
 
-  onListar() {
+  goListar() {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
-    this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa)
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa)
     .pipe(
       map((resp: IResultBusquedaVenta[]) => {
         this.listModelo = resp;
@@ -122,37 +127,31 @@ export class PanelVentaComponent implements OnInit {
   }
 
   onDetalle(data: IResultBusquedaVenta) {
-    this.isVerModalDetalle = !this.isVerModalDetalle;
-    this.isAnular = false;
+    this.goGetVentaPorCodVenta(data.codventa,'DETALLE');
   }
 
-  // onAnular() {
-  //   if (this.itemSeleccionadoGrilla.codcomprobante.trim() === '') {
-  //     this.onConfirmAnular();
-  //   } else {
-  //     this.mensajePrimeNgService.onToInfoMsg(null, 'No puede ANULAR la venta, tiene comprobante asociado');
-  //   }
-  // }
-
-  // private onConfirmAnular() {
-  //   this.confirmationService.confirm({
-  //       message: this.globalConstants.subTitleAnular,
-  //       header: this.globalConstants.titleAnular,
-  //       icon: 'pi pi-info-circle',
-  //       acceptLabel: 'Si',
-  //       rejectLabel: 'No',
-  //       accept: () => {
-  //         this.setAnular();
-  //       },
-  //       reject: () => {
-  //         this.mensajePrimeNgService.onToCancelMsg(this.globalConstants.msgCancelSummary, this.globalConstants.msgCancelDetail);
-  //       }
-  //   });
-  // }
+  goGetVentaPorCodVenta(codventa: string, opcion: string) {
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getVentaPorCodVenta(codventa)
+    .pipe(
+      map((resp: IVentaCabeceraSingle) => {
+        this.modeloItem = resp;
+        this.isVerModalDetalle = !this.isVerModalDetalle;
+        if (opcion === 'DETALLE')
+          {
+            this.isAnular = false;
+          }
+        if (opcion === 'ANULAR')
+        {
+          this.isAnular = true;
+        }
+      })
+    )
+    .subscribe();
+  }
 
   private setAnular() {
-    this.isVerModalDetalle = !this.isVerModalDetalle;
-    this.isAnular = true;
+    this.goGetVentaPorCodVenta(this.itemSeleccionadoGrilla.codventa,'ANULAR');
   }
 
   onCaja() {
@@ -171,4 +170,9 @@ export class PanelVentaComponent implements OnInit {
     this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenc');
   }
 
+  ngOnDestroy() {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+  }
 }

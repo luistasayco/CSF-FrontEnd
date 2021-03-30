@@ -2,11 +2,11 @@
     <p-panel header="Paciente" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <div class="ui-g ui-fluid">
             <div class="ui-g-12 ui-md-2">
-                <label for="float-input">Atención</label>
-                <app-modal-busqueda-atencion-paciente></app-modal-busqueda-atencion-paciente>
+                <label for="float-input">Id Borrador</label>
+                <input id="float-input-nro" type="number" pInputText placeholder="Nombre">
             </div>
             <div class="ui-g-12 ui-md-6">
-                <label for="float-input">Nombre</label>
+                <label for="float-input">Id Operacion</label>
                 <input id="float-input-nro" type="number" pInputText placeholder="Nombre">
             </div>
             <div class="ui-g-12 ui-md-4">
@@ -19,10 +19,6 @@
     <p-panel header="Lectura" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <div class="ui-g ui-fluid">
             <input id="float-input-nro" type="number" pInputText placeholder="Barra" style="font-size: 2em;">
-        </div>
-        <div class="ui-g ui-fluid">
-            <label for="float-input">Lote</label>
-            <input id="float-input-nro" type="number" pInputText placeholder="Lote">
         </div>
         <p-footer>
             <div class="ui-grid ui-fluid">

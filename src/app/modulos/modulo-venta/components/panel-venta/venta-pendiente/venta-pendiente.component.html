@@ -4,19 +4,21 @@
     <!-- Filtros -->
     <!-- Filtros -->
     <p-panel header="Opción de busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
-        <div class="ui-g ui-fluid">
-            <div class="ui-g-12 ui-md-2">
-                <label class="label-custom" for="float-input-fecha">Fecha Venta: </label>
-                <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
-            </div>
-            <div class="ui-g-12 ui-md-8">
+        <form [formGroup]="formularioBusqueda">
+            <div class="ui-g ui-fluid">
+                <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-fecha">Fecha Venta: </label>
+                    <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fecha"></p-calendar>
+                </div>
+                <div class="ui-g-12 ui-md-8">
 
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-nro-venta"> .</label>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" (click)="goListar()" class="btn btn-block"></button>
+                </div>
             </div>
-            <div class="ui-g-12 ui-md-2">
-                <label class="label-custom" for="float-input-nro-venta"> .</label>
-                <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block"></button>
-            </div>
-        </div>
+        </form>
     </p-panel>
 
     <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
@@ -34,11 +36,17 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
-                <td class="action-td">
-                    <p-splitButton label="Detalle" icon="fa fa-list-ol " (onClick)="save('info')" [model]="items"></p-splitButton>
+                <td class="custom-td-splitButton">
+                    <p-splitButton label="Detalle" icon="fa fa-list-ol " (onDropdownClick)="onItemElegido(rowData)" (onClick)="onDetalle(rowData)" [model]="items" appendTo="body"></p-splitButton>
                 </td>
-                <td *ngFor="let col of columns">
-                    {{rowData[col.field]}}
+                <td *ngFor="let col of columns" [ngClass]="col.field === 'montopaciente' || col.field === 'montoaseguradora' 
+                                                            ? 'custom-td-number-1': col.field === 'fechagenera' || col.field === 'fechaemision' 
+                                                            ? 'custom-td-fecha':col.field !== 'nombre' 
+                                                            ? 'custom-td-1':null" [ngSwitch]="col.field">
+                    <span *ngSwitchCase="'nombreestado'"><app-label-estado [isEstado]="rowData['nombreestado']"></app-label-estado></span>
+                    <span *ngSwitchCase="'fechagenera'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
+                    <span *ngSwitchCase="'fechaemision'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
+                    <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                 </td>
             </tr>
         </ng-template>
@@ -47,3 +55,8 @@
 
 <!-- Para Eliminar -->
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
+
+<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true">
+    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem">
+    </app-venta-ver>
+</p-dialog>

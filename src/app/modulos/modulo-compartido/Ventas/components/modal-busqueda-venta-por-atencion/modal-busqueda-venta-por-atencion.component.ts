@@ -24,11 +24,11 @@ export class ModalBusquedaVentaPorAtencionComponent implements OnInit {
     this.columnas = [
       { field: 'codigo', header: 'Código' },
       { field: 'nombre', header: 'Nombre' },
-      { field: 'lote', header: 'Lote' },
-      { field: 'ubicacion', header: 'Ubicación' },
+      // { field: 'lote', header: 'Lote' },
+      // { field: 'ubicacion', header: 'Ubicación' },
       { field: 'cantidad', header: 'Cantidad' },
-      { field: 'cantidadDevuelta', header: 'Qty. Dev' },
-      { field: 'laboratorio', header: 'Laboratorio' }
+      { field: 'observacion', header: 'Observación' },
+      // { field: 'laboratorio', header: 'Laboratorio' }
     ];
   }
 

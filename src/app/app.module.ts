@@ -14,7 +14,7 @@ import { HeaderBreadcrumbComponent } from './layout/header-breadcrumb/header-bre
 import { MenuComponent } from './layout/menu/menu.component';
 import { LayoutComponent } from './layout/layout.component';
 import { MenuitemComponent } from './layout/menu/menuitem/menuitem.component';
-
+import { DialogModule } from 'primeng/dialog';
 // PrimeNG
 import { ProgressBarModule } from 'primeng/progressbar';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -27,6 +27,7 @@ import { LoginModule } from './modulos/modulo-login/module-login.module';
 import { ModuloEstadoInternetModule } from './modulos/modulo-estado-internet/modulo-estado-internet.module';
 import { HeaderInterceptorService } from './interceptor/header-interceptor.service';
 import { DomSeguroImagenBase64Pipe } from './pipes/dom-seguro-imagen-base64.pipe';
+import { SeguridadModule } from './modulos/modulo-seguridad/modulo-seguridad.module';
 
 registerLocaleData(localePy, 'es');
 
@@ -55,7 +56,9 @@ registerLocaleData(localePy, 'es');
     InputSwitchModule,
     TabViewModule,
     LoginModule,
-    ModuloEstadoInternetModule
+    ModuloEstadoInternetModule,
+    SeguridadModule,
+    DialogModule
   ],
   providers: [ DatePipe,
               { provide: LOCALE_ID, useValue: 'es' },

@@ -25,25 +25,29 @@
             <input id="float-input-tc" type="text" pInputText>
         </div>
         <div class="ui-g-12 ui-md-1">
-            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
-            <button pButton type="button" label="Pago Visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
-        </div>
-        <div class="ui-g-12 ui-md-1">
-            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
-            <button pButton type="button" label="Anular pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+            <label class="label-custom" for="float-input-estado">Condición de Pago: </label>
+            <input id="float-input-tc" type="text" pInputText [ngModel]="'Contado'">
         </div>
         <!-- <div class="ui-g-12 ui-md-1">
             <label class="label-custom" for="float-input-estado">. </label>
-            <button pButton type="button" label="Operación no financiera Visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+            <button pButton type="button" label="Pago Visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
+        </div>
+        <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">. </label>
+            <button pButton type="button" label="Anular pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
         </div> -->
+        <div class="ui-g-12 ui-md-2">
+            <!-- <label class="label-custom" for="float-input-estado">. </label>
+            <button pButton type="button" label="Operación no financiera Visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button> -->
+        </div>
         <div class="ui-g-12 ui-md-1">
             <!-- <label class="label-custom" for="float-input-estado">. </label> -->
             <button pButton type="button" label="Duplicado ticket" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
         </div>
-        <div class="ui-g-12 ui-md-1">
-            <!-- <label class="label-custom" for="float-input-estado">. </label> -->
+        <!-- <div class="ui-g-12 ui-md-1">
+            <label class="label-custom" for="float-input-estado">. </label>
             <button pButton type="button" label="Buscar pago visa" icon="{{globalConstants.icoCaja}}" class="btn btn-block"></button>
-        </div>
+        </div> -->
         <div class="ui-g-12 ui-md-2">
             <!-- <label class="label-custom" for="float-input-estado">. </label> -->
             <p-splitButton label="Generar y Paga" icon="{{globalConstants.icoImprimir}}" [model]="items" (click)="onConfirmGrabar()" styleClass="ui-button-success"></p-splitButton>

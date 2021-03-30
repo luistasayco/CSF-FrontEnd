@@ -22,6 +22,11 @@ import { SalaOperacionCreateComponent } from './components/panel-sala-operacion/
 import { SalaOperacionLecturaComponent } from './components/panel-sala-operacion/sala-operacion-lectura/sala-operacion-lectura.component';
 import { VentaVerComponent } from './components/panel-venta/venta-ver/venta-ver.component';
 import { PanelAutenticacionComponent } from './components/panel-autenticacion/panel-autenticacion.component';
+import { VentaDatosComponent } from './components/panel-venta/venta-datos/venta-datos.component';
+import { VentaSinStockComponent } from './components/panel-venta/venta-sin-stock/venta-sin-stock.component';
+import { PanelConsolidadoPedidoComponent } from './components/panel-consolidado-pedido/panel-consolidado-pedido.component';
+import { PanelVentaAutomaticoComponent } from './components/panel-venta/panel-venta-automatico/panel-venta-automatico.component';
+import { PanelConfigTrxVentaComponent } from './components/panel-config-trx-venta/panel-config-trx-venta.component';
 @NgModule({
     declarations: [PanelVentaComponent,
         VentaCreateComponent,
@@ -39,7 +44,12 @@ import { PanelAutenticacionComponent } from './components/panel-autenticacion/pa
         SalaOperacionCreateComponent,
         SalaOperacionLecturaComponent,
         VentaVerComponent,
-        PanelAutenticacionComponent
+        PanelAutenticacionComponent,
+        VentaDatosComponent,
+        VentaSinStockComponent,
+        PanelConsolidadoPedidoComponent,
+        PanelVentaAutomaticoComponent,
+        PanelConfigTrxVentaComponent
         ],
     imports: [ CommonModule,
         VentaPrimeNgModule,

@@ -10,12 +10,24 @@
                     <div class="login-container">
                         <span class="title">
                             Iniciar sesión</span>
-
                         <div class="ui-g ui-fluid">
                             <form [formGroup]="formularioLogin">
                                 <div class="ui-g-12">
                                     <div class="ui-inputgroup">
-                                        <span class="ui-inputgroup-addon"><i class="pi pi-user" style="line-height: 1.25;"></i></span>
+                                        <span class="ui-inputgroup-addon"><i class="fa fas fa-desktop" style="line-height: 1.25;"></i></span>
+                                        <p-dropdown class="ui-dropdown" [options]="listSeriePorMaquina" placeholder="Seleccionar Estación" optionLabel="label" [showClear]="true" filter="true" formControlName="estacion" selectId="value">
+                                            <ng-template let-item pTemplate="item">
+                                                <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                                                    <i class="fa fas fa-desktop" style="width:24px;position:absolute;top:4px;left:5px"></i>
+                                                    <div style="font-size:14px;float:right;margin-top:4px">{{item.label}}</div>
+                                                </div>
+                                            </ng-template>
+                                        </p-dropdown>
+                                    </div>
+                                </div>
+                                <div class="ui-g-12">
+                                    <div class="ui-inputgroup">
+                                        <span class="ui-inputgroup-addon"><i class="fa fa-user" style="line-height: 1.25;"></i></span>
                                         <input id="id-usuario" type="text" class="ui-inputtext ui-widget" placeholder="Usuario" formControlName="login" autocomplete="off">
 
                                     </div>
@@ -26,7 +38,7 @@
                                 </div>
                                 <div class="ui-g-12">
                                     <div class="ui-inputgroup">
-                                        <span class="ui-inputgroup-addon"><i class="pi pi-key" style="line-height: 1.25;"></i></span>
+                                        <span class="ui-inputgroup-addon"><i class="fa fas fa-key" style="line-height: 1.25;"></i></span>
                                         <input type="password" class="ui-inputtext ui-widget" placeholder="Contraseña" formControlName="password" autocomplete="off" feedback="false" />
                                     </div>
                                     <div *ngIf="formularioLogin.controls['password'].errors && formularioLogin.controls['password'].dirty">

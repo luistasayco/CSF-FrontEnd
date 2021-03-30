@@ -1,11 +1,14 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta } from '../models/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
 import { IMedico } from '../../modulo-compartido/Ventas/interfaces/medico.interface';
+import { UtilService } from '../../../services/util.service';
+import { IResultBusquedaComprobante } from '../interface/comprobante.interface';
+import { IResultBusquedaPedido } from '../interface/pedido.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,8 @@ import { IMedico } from '../../modulo-compartido/Ventas/interfaces/medico.interf
 export class VentasService {
 
   constructor(private http: HttpClient,
-              private userContextService: UserContextService) { }
+              private userContextService: UserContextService,
+              private utils: UtilService) { }
 
   // Ventas
   getTipoVenta() {
@@ -35,7 +39,38 @@ export class VentasService {
     (`${environment.url_api_venta}Medico/GetListMedicoPorAtencion/`, { params: parametros });
   }
 
+  getVentaPorCodVenta(codventa: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codventa', codventa);
+    return this.http.get<IVentaCabeceraSingle>
+    (`${environment.url_api_venta}Venta/GetVentaPorCodVenta/`, { params: parametros });
+  }
 
+  getVentaCabeceraPendientePorFiltro(fecha: Date) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fecha', this.utils.fecha_AAAAMMDD(fecha));
+    return this.http.get<IResultBusquedaVenta[]>
+    (`${environment.url_api_venta}Venta/GetVentaCabeceraPendientePorFiltro/`, { params: parametros });
+  }
+
+  getListaComprobantesPorFiltro(codcomprobante: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codcomprobante', codcomprobante);
+    return this.http.get<IResultBusquedaComprobante[]>
+    (`${environment.url_api_venta}Comprobante/getListaComprobantesPorFiltro/`, { params: parametros });
+  }
+
+  getListaPedidosSeguimientoPorFiltro(fechainicio: Date, fechaFin: Date, ccosto: string, opcion: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechaFin', this.utils.fecha_AAAAMMDD(fechaFin));
+    parametros = parametros.append('ccosto', ccosto);
+    parametros = parametros.append('opcion', opcion.toString());
+    return this.http.get<IResultBusquedaPedido[]>
+    (`${environment.url_api_venta}Pedido/GetListaPedidosSeguimientoPorFiltro/`, { params: parametros });
+  }
+
+  //
 
   // Planes
   getPlanesGetByFiltros(value: PlanesModel) {

@@ -26,7 +26,7 @@ export class SalaOperacionCreateComponent implements OnInit {
             { field: 'codigo', header: 'Codigo' },
             { field: 'nombre', header: 'Nombre' },
             { field: 'lote', header: 'Lote' },
-            { field: 'ubicacion', header: 'Ubicación' },
+            // { field: 'ubicacion', header: 'Ubicación' },
             { field: 'sala', header: 'Sala' },
             { field: 'adicional', header: 'Cantidad' },
         ];
