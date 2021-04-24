@@ -139,8 +139,8 @@
     text-align: center;
     color: white;
     font-weight: bold;
-    padding: 5px 12px;
-    border-radius: 8px;
+    padding: 6px 12px;
+    border-radius: 10px;
 }
 
 table {
@@ -361,6 +361,11 @@ table {
     width: 4em;
 }
 
+.custom-td-2 {
+    text-align: center;
+    width: 8em;
+}
+
 .custom-td-producto {
     text-align: left;
     width: 8em;
@@ -403,10 +408,18 @@ table {
 
 .estado_venta_generado {
     @include label-estado();
-    background: rgb(72, 174, 67);
+    background: rgb(110, 188, 59);
 }
 
 .estado_venta_anulado {
     @include label-estado();
     background: red;
+}
+
+.sba-button {
+    margin-top: 1.3em !important;
+}
+
+.sba-checked {
+    top: 2em !important;
 }

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ModalBusquedaPisoComponent } from './modal-busqueda-piso.component';
+import { PageInicialComponent } from './page-inicial.component';
 
-describe('ModalBusquedaPisoComponent', () => {
-  let component: ModalBusquedaPisoComponent;
-  let fixture: ComponentFixture<ModalBusquedaPisoComponent>;
+describe('PageInicialComponent', () => {
+  let component: PageInicialComponent;
+  let fixture: ComponentFixture<PageInicialComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ModalBusquedaPisoComponent ]
+      declarations: [ PageInicialComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ModalBusquedaPisoComponent);
+    fixture = TestBed.createComponent(PageInicialComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

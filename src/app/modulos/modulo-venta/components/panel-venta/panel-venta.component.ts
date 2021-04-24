@@ -2,13 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { MenuItem } from 'primeng';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
-import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
 import { VentasService } from '../../services/ventas.service';
 import { IResultBusquedaVenta, IVentaCabeceraSingle } from '../../interface/venta.interface';
 import { map } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import { LanguageService } from '../../../../services/language.service';
 
 @Component({
   selector: 'app-panel-venta',
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class PanelVentaComponent implements OnInit, OnDestroy {
   // Titulo del componente
-  titulo = 'Consulta Ventas';
+  titulo = 'Venta Consulta';
   tituloDetalle = "Venta"
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
@@ -40,11 +40,15 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
 
   subscription$: Subscription;
 
+  // Toast
+  intervaloToast;
+
   constructor(private readonly breadcrumbService: BreadcrumbService,
-              public readonly mensajePrimeNgService: MensajePrimeNgService,
+              public readonly messageService: MessageService,
               private readonly formBuilder: FormBuilder,
               private readonly confirmationService: ConfirmationService,
-              private readonly ventasService: VentasService) {
+              private readonly ventasService: VentasService,
+              public lenguageService: LanguageService) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Consulta', routerLink: ['module-ve/panel-venta'] }
@@ -65,7 +69,9 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
   private buildForm() {
     this.formularioBusqueda = this.formBuilder.group({
       codcomprobante: [''],
-      codventa: ['']
+      codventa: [''],
+      fechaIni: [new Date],
+      fechaFin: [new Date]
     });
   }
 
@@ -82,7 +88,10 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
       { field: 'montoaseguradora', header: 'Monto Aseg.' },
       { field: 'flg_gratuito', header: 'Gratuito' },
       { field: 'fechagenera', header: 'F.Generado' },
-      { field: 'fechaemision', header: 'F.Emisión' }
+      { field: 'fechaemision', header: 'F.Emisión' },
+      { field: 'codpedido', header: 'Nro.Pedido' },
+      { field: 'codcliente', header: 'Cod.Cliente' },
+      { field: 'codpaciente', header: 'Cod.Paciente' }
     ];
   }
 
@@ -92,21 +101,24 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
 
   private onOpcionesGrilla() {
     this.items = [
-      {label: 'Anular', icon: 'fa fa-times', command: () => {
-          this.setAnular();
+      {label: this.globalConstants.cAnular, icon: this.globalConstants.icoCancelar, command: () => {
+        this.onAnular();
       }},
       {separator: true},
-      {label: 'Caja', icon: 'fa fa-credit-card-alt', command: () => {
-          this.onCaja();
+      {label: this.globalConstants.cCaja, icon: this.globalConstants.icoCaja, command: () => {
+        this.onCaja();
       }},
       {separator: true},
-      {label: 'Imp.Venta', icon: 'fa fa-print ', command: () => {
+      {label: this.globalConstants.cImprimir, icon: this.globalConstants.icoImprimir, command: () => {
         this.onImpVenta();
       }},
-      {label: 'Imp.Comp', icon: 'fa fa-print ', command: () => {
+      {label: this.globalConstants.cImprimirComprobante, icon: this.globalConstants.icoImprimir, command: () => {
         this.onImpComp();
       }},
-      {label: 'Imp.Venc.', icon: 'fa fa-print ', command: () => {
+      {label: this.globalConstants.cImprimirVencimiento, icon: this.globalConstants.icoImprimir, command: () => {
+        this.onImpVenc();
+      }},
+      {label: this.globalConstants.cPdfElectronico, icon: this.globalConstants.icoImprimir, command: () => {
         this.onImpVenc();
       }}
     ];
@@ -116,14 +128,17 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa)
+    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa, body.fechaIni, body.fechaFin)
     .pipe(
       map((resp: IResultBusquedaVenta[]) => {
         this.listModelo = resp;
-        console.log('this.listModelo', this.listModelo );
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail: error.error});
+    });
   }
 
   onDetalle(data: IResultBusquedaVenta) {
@@ -150,29 +165,51 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
     .subscribe();
   }
 
-  private setAnular() {
+  goCerrarDetalle() {
+    this.isVerModalDetalle = !this.isVerModalDetalle;
+  }
+
+  private onAnular() {
+
+    if (this.itemSeleccionadoGrilla.estado === 'C' && this.itemSeleccionadoGrilla.codcomprobante.trim() !== '') {
+      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`No puede anular la venta ${this.itemSeleccionadoGrilla.codventa}, tiene comprobante`});
+      return;
+    }
+
+    if (this.itemSeleccionadoGrilla.tipomovimiento !== 'DV') {
+      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`No puede anular la venta  ${this.itemSeleccionadoGrilla.codventa}, no es una venta`});
+      return;
+    }
+
+    if (this.itemSeleccionadoGrilla.usuarioanulacion.trim() !== '') {
+      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`La venta ${this.itemSeleccionadoGrilla.codventa} se encuentra ANULADA`});
+      return;
+    }
+
     this.goGetVentaPorCodVenta(this.itemSeleccionadoGrilla.codventa,'ANULAR');
   }
 
   onCaja() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onCaja');
+    // this.mensajePrimeNgService.onToExitoMsg(null, 'onCaja');
   }
 
   onImpVenta() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenta');
+    // this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenta');
   }
 
   onImpComp() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpComp');
+    // this.mensajePrimeNgService.onToExitoMsg(null, 'onImpComp');
   }
 
   onImpVenc() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenc');
+    // this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenc');
   }
 
   ngOnDestroy() {
     if (this.subscription$) {
       this.subscription$.unsubscribe();
     }
+
+    this.messageService.clear();
   }
 }

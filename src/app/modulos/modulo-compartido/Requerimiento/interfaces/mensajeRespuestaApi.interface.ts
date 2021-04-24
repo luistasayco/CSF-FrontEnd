@@ -1,8 +1,8 @@
 export interface IMensajeResultadoApi {
     idRegistro: number;
     nombreEstacion: string;
-    resultadoAplicacion: string;
+    nombreAplicacion: string;
     resultadoCodigo: number;
     resultadoDescripcion: string;
-    resultadoMetodo: string;
+    nombreMetodo: string;
   }  

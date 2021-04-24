@@ -9,6 +9,7 @@ import { IMedico } from '../interfaces/medico.interface';
 import { IAtencion } from '../interfaces/atencion.interface';
 import { IProducto } from '../interfaces/producto.interface';
 import { ISeriePorMaquina } from '../interfaces/serie-por-maquina.interface';
+import { IPedidoPorAtencion, IDetallePedidoPorPedido } from '../interfaces/pedido-por-atencion.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -91,4 +92,20 @@ export class VentaCompartidoService {
     return this.http.get<ISeriePorMaquina[]>
     (`${environment.url_api_venta}SeriePorMaquina/GetListSeriePorMaquina`);
   }
+
+  getListPedidosPorAtencion(codatencion: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codatencion', codatencion);
+    parametros = parametros.append('codtercero', '000004');
+    return this.http.get<IPedidoPorAtencion[]>
+    (`${environment.url_api_venta}Pedido/GetListPedidosPorAtencion/`, { params: parametros });
+  }
+
+  getListPedidoDetallePorPedido(codpedido: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codpedido', codpedido);
+    return this.http.get<IDetallePedidoPorPedido[]>
+    (`${environment.url_api_venta}Pedido/GetListPedidoDetallePorPedido/`, { params: parametros });
+  }
+
 }

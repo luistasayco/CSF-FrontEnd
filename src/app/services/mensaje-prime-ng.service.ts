@@ -9,7 +9,6 @@ import { UtilService } from './util.service';
 })
 export class MensajePrimeNgService {
 
-
   msgs: Message[] = [];
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
   intervalo;

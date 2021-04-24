@@ -10,6 +10,7 @@ import { map } from 'rxjs/operators';
 import { VentasService } from '../../services/ventas.service';
 import { IVentaCabeceraSingle } from '../../interface/venta.interface';
 import { IResultBusquedaComprobante } from '../../interface/comprobante.interface';
+import { LanguageService } from '../../../../services/language.service';
 
 @Component({
   selector: 'app-panel-comprobante',
@@ -22,7 +23,7 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
-  listModelo: any[];
+  listModelo: IResultBusquedaComprobante[];
 
   columnas: any;
   modeloItem: IVentaCabeceraSingle;
@@ -39,7 +40,8 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   constructor(private breadcrumbService: BreadcrumbService,
               public mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
-              private readonly ventasService: VentasService) {
+              private readonly ventasService: VentasService,
+              public lenguageService: LanguageService) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Consulta', routerLink: ['module-ve/panel-venta'] }
@@ -56,7 +58,9 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.formularioBusqueda = this.formBuilder.group({
-      codcomprobante: ['']
+      codcomprobante: [''],
+      fechaIni: [new Date],
+      fechaFin: [new Date]
     });
   }
 
@@ -64,12 +68,15 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
     this.columnas = [
       { field: 'codcomprobante', header: 'Comprobante' },
       { field: 'nombreestado', header: 'Estado' },
+      { field: 'nombretipocliente', header: 'Tipo Cliente' },
       { field: 'codventa', header: 'Cod.Venta' },
       { field: 'codatencion', header: 'Cod.Atención' },
       { field: 'anombrede', header: 'Nombre' },
       { field: 'montototal', header: 'Monto sIGV (S/.).' },
       { field: 'montototaldolares', header: 'Monto sIGV ($).' },
       { field: 'moneda', header: 'Moneda' },
+      { field: 'flg_gratuito', header: 'Gratuito' },
+      { field: 'numeroplanilla', header: 'Nro Planilla' },
       { field: 'fechagenera', header: 'F.Generado' },
       { field: 'fechacancelacion', header: 'F.Cancelación' },
       { field: 'fechaanulacion', header: 'F.Anulación' }
@@ -107,13 +114,18 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getListaComprobantesPorFiltro(body.codcomprobante)
+    this.subscription$ = this.ventasService.getListaComprobantesPorFiltro(body.codcomprobante, body.fechaIni, body.fechaFin)
     .pipe(
       map((resp: IResultBusquedaComprobante[]) => {
-        this.listModelo = resp;
-      })
+          this.listModelo = resp;
+        }
+      )
     )
-    .subscribe();
+    .subscribe(  
+    (resp) => {},
+    (error) => {
+      console.log('error', error);
+    });
   }
 
   goGetVentaPorCodVenta(codventa: string, opcion: string) {
@@ -129,7 +141,14 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
           }
       })
     )
-    .subscribe();
+    .subscribe( (resp) => {},
+    (error) => {
+      console.log('error', error);
+    });
+  }
+
+  goCerrarDetalle() {
+    this.isVerModalDetalle = !this.isVerModalDetalle;
   }
 
   ngOnDestroy() {

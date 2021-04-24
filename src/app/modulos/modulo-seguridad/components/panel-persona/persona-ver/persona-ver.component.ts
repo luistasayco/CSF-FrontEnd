@@ -26,14 +26,10 @@ export class PersonaVerComponent implements OnInit, OnDestroy {
 
   modelo: PersonaModel = new PersonaModel();
 
-  themes: any[];
-
   idPersona: number;
-
   // Imagen
   sellersPermitString: string;
   sellersPermitFile;
-
   subscription: Subscription;
 
   constructor(private fb: FormBuilder,
@@ -75,7 +71,6 @@ export class PersonaVerComponent implements OnInit, OnDestroy {
     this.subscription = this.seguridadService.getPersonaPorId(this.idPersona)
     .subscribe(data => {
       this.modelo = data;
-      console.log('this.modelo', this.modelo);
       this.modeloForm.controls['apellidoPaterno'].setValue(this.modelo.apellidoPaterno);
       this.modeloForm.controls['apellidoMaterno'].setValue(this.modelo.apellidoMaterno);
       this.modeloForm.controls['nombre'].setValue(this.modelo.nombre);

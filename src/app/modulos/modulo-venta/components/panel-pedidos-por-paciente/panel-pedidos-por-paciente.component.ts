@@ -1,31 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { SelectItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
 import { DemoService } from '../../../../services/demo.service';
 import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ITabla } from '../../interface/tabla.interface';
+import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { VentasService } from '../../services/ventas.service';
+import { IHospital } from '../../interface/venta.interface';
 
 @Component({
   selector: 'app-panel-pedidos-por-paciente',
   templateUrl: './panel-pedidos-por-paciente.component.html',
   styleUrls: ['./panel-pedidos-por-paciente.component.css']
 })
-export class PanelPedidosPorPacienteComponent implements OnInit {
+export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
   // Titulo del componente
   titulo = 'Paciente de Clínica';
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
-  listModelo: any[];
+  listModelo: IHospital[];
+  listTablaPiso: SelectItem[];
+  listTablaPabellon: SelectItem[];
 
   columnas: any;
-  isVisible: boolean = false;
-  // PrimeNG
-  items: MenuItem[];
+
+  // Formulario
+  formularioBusqueda: FormGroup;
+
+  subscription$: Subscription;
+
+  isVisible: boolean;
+
+  isModeloHospital: IHospital;
 
   constructor(private breadcrumbService: BreadcrumbService,
               public mensajePrimeNgService: MensajePrimeNgService,
-              private demoService: DemoService) {
+              private demoService: DemoService,
+              private readonly formBuilder: FormBuilder,
+              private readonly ventasService: VentasService) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Consulta', routerLink: ['module-ve/panel-venta'] }
@@ -33,34 +49,100 @@ export class PanelPedidosPorPacienteComponent implements OnInit {
   }
 
   ngOnInit(): void {
-  
-    this.items = [
-      // {label: 'P. Material', icon: 'fa fa-list', command: () => {
-      //     this.update();
-      // }}
-    ];
+    this.buildForm();
+    this.onHeaderGrilla();
 
+    this.onListarPabellon();
+    this.onListarPisos();
+  }
+
+  private buildForm() {
+    this.formularioBusqueda = this.formBuilder.group({
+      piso: [null],
+      pabellon: [null],
+    });
+  }
+
+  private onHeaderGrilla() {
     this.columnas = [
       { field: 'cama', header: 'Cama' },
-      { field: 'atencion', header: 'Atención' },
-      { field: 'fechaIngresa', header: 'Fecha Ing.' },
-      { field: 'apellidosNombres', header: 'Apellidos y Nombres' },
+      { field: 'codatencion', header: 'Atención' },
+      { field: 'fechainicio', header: 'Fecha Ing.' },
+      { field: 'nombres', header: 'Apellidos y Nombres' },
       { field: 'edad', header: 'Edad' },
       { field: 'sexo', header: 'Sexo' },
-      { field: 'medico', header: 'Medico' },
-      { field: 'poliza', header: 'Poliza' },
-      { field: 'historia', header: 'His. Cli.' },
-      { field: 'aseguradora', header: 'Nombre aseguradora' }
+      { field: 'nombremedico', header: 'Medico' },
+      { field: 'polizaplan', header: 'Poliza' },
+      { field: 'codpaciente', header: 'His. Cli.' },
+      { field: 'nombreaseguradora', header: 'Nombre aseguradora' }
     ];
-
-    this.demoService.getCarsMedium().then(cars => this.listModelo = cars);
   }
 
-  update() {
+  onListarPabellon(){
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getListTablaClinicaPorFiltros('PABELLON', '', 34, 0, 5)
+    .pipe(
+      map((resp: ITabla[]) => {
+        this.listTablaPabellon = [];
+        for (let item of resp) {
+          this.listTablaPabellon.push({ value: item.codigo.trim(), label: item.nombre.trim() })
+        }
+      })
+    )
+    .subscribe();
   }
 
-  save(severity: string) {
+  onListarPisos(){
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getListTablaClinicaPorFiltros('PISOS', '', 34, 0, 5)
+    .pipe(
+      map((resp: ITabla[]) => {
+        this.listTablaPiso = [];
+        for (let item of resp) {
+          this.listTablaPiso.push({ value: item.codigo.trim(), label: item.nombre.trim() })
+        }
+      })
+    )
+    .subscribe();
+  }
+
+  goListarPacienteClinica(){
+
+    const body = this.formularioBusqueda.value;
+
+    if (body.pabellon === null) {
+      return;
+    }
+
+    if (body.piso === null) {
+      return;
+    }
+
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getListHospitalPacienteClinicaPorFiltros(body.pabellon.value, body.piso.value, '0')
+    .pipe(
+      map((resp: IHospital[]) => {
+        this.listModelo = [];
+        this.listModelo = resp;
+      })
+    )
+    .subscribe();
+  }
+
+  goPedidosFarmaciaPorAtencion(hospital: IHospital) {
+    this.isModeloHospital = hospital;
     this.isVisible = !this.isVisible;
   }
+
+  goCerrarPedidosFarmaciaPorAtencion() {
+    this.isVisible = !this.isVisible;
+  }
+
+  ngOnDestroy() {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+  }
+
 
 }

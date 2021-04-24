@@ -14,8 +14,7 @@
 
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-nro-venta"> .</label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" (click)="goListar()" class="btn btn-block"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" (click)="goListar()" class="sba-button btn btn-block"></button>
                 </div>
             </div>
         </form>
@@ -56,7 +55,7 @@
 <!-- Para Eliminar -->
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true">
-    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem">
+<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true" [modal]="true" [closable]="false">
+    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem" (eventoCerrar)="goCerrarDetalle()">
     </app-venta-ver>
 </p-dialog>

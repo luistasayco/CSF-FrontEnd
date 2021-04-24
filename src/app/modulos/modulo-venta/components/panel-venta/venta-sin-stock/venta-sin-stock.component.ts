@@ -9,6 +9,7 @@ import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.
 import { ConfirmationService } from 'primeng/api';
 import { VentasService } from '../../../services/ventas.service';
 import { map } from 'rxjs/operators';
+import { LanguageService } from '../../../../../services/language.service';
 
 @Component({
   selector: 'app-venta-sin-stock',
@@ -44,7 +45,8 @@ export class VentaSinStockComponent implements OnInit {
               public readonly mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
               private readonly confirmationService: ConfirmationService,
-              private readonly ventasService: VentasService) {
+              private readonly ventasService: VentasService,
+              public lenguageService: LanguageService) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Seguimiento de Vale de Ventas - Sin Stock', routerLink: ['module-ve/panel-venta'] }
@@ -65,7 +67,9 @@ export class VentaSinStockComponent implements OnInit {
   private buildForm() {
     this.formularioBusqueda = this.formBuilder.group({
       codcomprobante: [''],
-      codventa: ['']
+      codventa: [''],
+      fechaIni: [new Date],
+      fechaFin: [new Date]
     });
   }
 
@@ -103,7 +107,7 @@ export class VentaSinStockComponent implements OnInit {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa)
+    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa, body.fechaIni, body.fechaFin)
     .pipe(
       map((resp: IResultBusquedaVenta[]) => {
         this.listModelo = resp;

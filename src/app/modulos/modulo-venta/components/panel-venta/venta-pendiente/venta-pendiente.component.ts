@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
-import { DemoService } from '../../../../../services/demo.service';
 import { LanguageService } from '../../../../../services/language.service';
 import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -72,7 +71,10 @@ export class VentaPendienteComponent implements OnInit {
       { field: 'montopaciente', header: 'Monto Pac.' },
       { field: 'montoaseguradora', header: 'Monto Aseg.' },
       { field: 'fechagenera', header: 'F.Generado' },
-      { field: 'fechaemision', header: 'F.Emisión' }
+      { field: 'fechaemision', header: 'F.Emisión' },
+      { field: 'codpedido', header: 'Nro.Pedido' },
+      { field: 'codcliente', header: 'Cod.Cliente' },
+      { field: 'codpaciente', header: 'Cod.Paciente' }
     ];
   }
 
@@ -121,6 +123,10 @@ export class VentaPendienteComponent implements OnInit {
     .subscribe();
   }
 
+  goCerrarDetalle() {
+    this.isVerModalDetalle = !this.isVerModalDetalle;
+  }
+  
   private goCaja() {
 
   }

@@ -17,4 +17,5 @@ export interface IResultBusquedaComprobante {
     nombreestado: string;
     nombretipocliente: string;
     codatencion: string;
+    flg_gratuito: boolean;
 }

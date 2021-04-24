@@ -6,6 +6,14 @@
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-fecha-ini">Fecha Inicio: </label>
+                    <p-calendar id="float-input-fecha-ini" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaIni"></p-calendar>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-fecha-fin">Fecha Fin: </label>
+                    <p-calendar id="float-input-fecha-fin" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaFin"></p-calendar>
+                </div>
+                <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-nro-venta">Cod. Venta: </label>
                     <input id="float-input-nro-venta" type="text" pInputText placeholder="Nro Venta" formControlName="codventa">
                 </div>
@@ -13,10 +21,9 @@
                     <label class="label-custom" for="float-input-nro-comprobante">Comprobante: </label>
                     <input id="float-input-nro-comprobante" type="text" pInputText placeholder="Nro Comprobante" formControlName="codcomprobante">
                 </div>
-                <div class="ui-g-12 ui-md-6"></div>
+                <div class="ui-g-12 ui-md-2"></div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-nro-venta">.</label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goListar()"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="goListar()"></button>
                 </div>
             </div>
         </form>
@@ -76,17 +83,26 @@
                     <td class="custom-td-fecha">
                         {{rowData.fechaemision | date: 'dd/MM/yyyy HH:mm'}}
                     </td>
+                    <td class="custom-td-1">
+                        {{rowData.codpedido}}
+                    </td>
+                    <td class="custom-td-1">
+                        {{rowData.codcliente}}
+                    </td>
+                    <td class="custom-td-1">
+                        {{rowData.codpaciente}}
+                    </td>
                 </tr>
             </ng-template>
         </p-table>
     </p-panel>
 </div>
 
-<p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
+<p-toast class="ui-toast-bottom-right" position="bottom-right"></p-toast>
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true">
-    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem">
+<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true" [closable]="false">
+    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem" (eventoCerrar)="goCerrarDetalle()">
     </app-venta-ver>
 </p-dialog>

@@ -44,7 +44,7 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
 
   private buildForm() {
     this.formularioBusqueda = this.fb.group({
-      nombre: [null],
+      nombre: [''],
     });
   }
 

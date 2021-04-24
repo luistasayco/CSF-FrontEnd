@@ -32,6 +32,7 @@ export class ModalBusquedaRecetaComponent implements OnInit {
       { field: 'fecha', header: 'Fecha' },
       { field: 'paciente', header: 'Paciente' },
       { field: 'telefono', header: 'Telefono' },
+      { field: 'telefono', header: 'Telefono2' },
       { field: 'nombreMedico', header: 'Medido' },
       { field: 'tipoConsumo', header: 'Tip. Cons. Med.' }
     ];

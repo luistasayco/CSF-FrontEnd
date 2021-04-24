@@ -4,12 +4,14 @@ import { LayoutComponent } from './layout/layout.component';
 import { LoginComponent } from './modulos/modulo-login/components/login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 
-
 const routes: Routes = [
   {path: 'login',  component: LoginComponent},
   {path: 'main',
     component: LayoutComponent,
     children: [
+      { path: 'csfe' , loadChildren:
+      () => import('./modulos/modulo-page-bienvenida/modulo-page-bienvenida.module').then(m => m.PageBienvenidaModule),
+      canActivate: [AuthGuard]},
       { path: 'dashboard' , loadChildren:
       () => import('./modulos/modulo-dashboard/components/dashboard/dashboard.module').then(m => m.DashboardModule),
       canActivate: [AuthGuard]},

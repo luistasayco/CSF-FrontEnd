@@ -27,6 +27,7 @@ export class ModalBusquedaPedidoComponent implements OnInit {
       { field: 'codVenta', header: 'codVenta' },
       { field: 'codPedido', header: 'codPedido' },
       { field: 'codAtencion', header: 'codAtencion' },
+      { field: 'nombrePacinete', header: 'Nombre' },
       { field: 'fechaGenerado', header: 'Fec. Genera' },
       { field: 'fechaAtencion', header: 'Fec. Atención' },
       { field: 'cama', header: 'Cama' },

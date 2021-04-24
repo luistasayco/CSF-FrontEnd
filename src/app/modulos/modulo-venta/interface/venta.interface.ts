@@ -7,6 +7,7 @@ export interface IResultBusquedaVenta {
     nombretipocliente: string;
     codatencion: string;
     codcomprobante: string;
+    estado: string;
     nombreestado: string;
     nombre: string;
     montopaciente: number;
@@ -17,6 +18,7 @@ export interface IResultBusquedaVenta {
     codpaciente: string;
     codcliente: string;
     codpedido: string;
+    usuarioanulacion: string;
 }
 
 export interface IVentaCabeceraSingle {
@@ -81,7 +83,7 @@ export interface IVentaCabeceraSingle {
     nombreplan: string;
     autorizado: string;
     codcomprobantee: string;
-    tienedevolucion: string;
+    tienedevolucion: boolean;
     ruccliente: string;
     dircliente: string;
     tipdocidentidad: string;
@@ -206,4 +208,25 @@ export interface IVentaCabeceraDatos {
 export interface ITipoAutorizacion {
     code: string;
     name: string;
+}
+
+export interface IHospitalDatos {
+    codmedicoemergencia: string;
+}
+
+export interface IHospitalExclusiones {
+    coddiagnostico: string;
+    nombrediagnostico: string;
+}
+
+export interface IHospital {
+    cama: string;
+    codatencion: string;
+    fechainicio: Date;
+    codpaciente: string;
+    codmedico: string;
+    codpoliza: string;
+    codaseguradora: string;
+    planpoliza: string;
+    polizaplan: string;
 }

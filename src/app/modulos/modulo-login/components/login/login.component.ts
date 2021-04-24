@@ -164,7 +164,7 @@ export class LoginComponent implements OnInit {
   }
 
   onFinalizaProceso() {
-    this.router.navigate(['/main/dashboard']);
+    this.router.navigate(['/main/csfe/bienvenido']);
   }
 
   onRecuperarContrasena() {

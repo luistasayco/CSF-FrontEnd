@@ -8,7 +8,7 @@
     <p-panel header="Opción de busqueda de Producto" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
-                <div class="ui-g-12 ui-md-6">
+                <div class="ui-g-12 ui-md-4">
                     <label class="label-custom" for="float-input-nombre">Por Nombre: </label>
                     <input id="float-input-nombre" type="text" pInputText placeholder="Ingresar Nombre" style="text-transform:uppercase;" formControlName="nombre" autocomplete="off" (keyup.enter)="getListProductoPorFiltro()">
                 </div>
@@ -23,6 +23,10 @@
                 <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-nro">. </label>
                     <button pButton type="button" label="{{globalConstants.cGenerico}}" icon="{{globalConstants.icoGenerico}}" class="btn btn-block" (click)="getListProductoGenericoPorCodigo()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-nro">. </label>
+                    <button pButton type="button" label="{{globalConstants.cAlternatico}}" icon="{{globalConstants.icoGenerico}}" class="btn btn-block" (click)="getListProductoGenericoPorCodigo()"></button>
                 </div>
             </div>
         </form>
@@ -53,7 +57,7 @@
         </ng-template>
     </p-table>
     <br>
-    <p-panel header="Generico" [style]="{'margin-bottom':'20px'}">
+    <p-panel header="Generico/Alternativo" [style]="{'margin-bottom':'20px'}">
         <p-table [value]="listModeloLote" [loading]="loadingGenerico" [columns]="columnasLote" [paginator]="true" [rows]="globalConstants.sizePageModal" [(selection)]="seleccionItem" dataKey="itemCode" selectionMode="single" autoLayout="true" [responsive]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>

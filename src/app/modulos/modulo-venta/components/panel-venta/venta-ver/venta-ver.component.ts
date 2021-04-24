@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
 import { LanguageService } from '../../../../../services/language.service';
@@ -17,6 +17,7 @@ export class VentaVerComponent implements OnInit {
   @Input() isVisibleAnular: boolean 
   // Venta
   @Input() modeloItem: IVentaCabeceraSingle;
+  @Output() eventoCerrar = new EventEmitter();
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm;
 
@@ -55,7 +56,10 @@ export class VentaVerComponent implements OnInit {
       montopaciente: [{value: null, disabled: true}],
       montoaseguradora: [{value: null, disabled: true}],
       montoigv: [{value: null, disabled: true}],
-      montoneto: [{value: null, disabled: true}]
+      montoneto: [{value: null, disabled: true}],
+      tienedevolucion: [{value: false, disabled: true}],
+      moneda: [{value: false, disabled: true}],
+      flggratuito: [{value: false, disabled: true}]
     });
   }
 
@@ -76,6 +80,9 @@ export class VentaVerComponent implements OnInit {
 
       this.formularioCabecera.controls.montoigv.setValue(this.modeloItem.montoigv);
       this.formularioCabecera.controls.montoneto.setValue(this.modeloItem.montoneto);
+      this.formularioCabecera.controls.tienedevolucion.setValue(this.modeloItem.tienedevolucion);
+      this.formularioCabecera.controls.moneda.setValue(this.modeloItem.moneda === "S" ? true: false);
+      this.formularioCabecera.controls.flggratuito.setValue(this.modeloItem.flg_gratuito);
   }
 
   private buildColumnas() {
@@ -92,6 +99,10 @@ export class VentaVerComponent implements OnInit {
       { field: 'montoaseguradora', header: 'Monto Aseg.' },
       { field: 'valorVVP', header: 'VVP' },
     ];
+  }
+
+  goCerrar() {
+    this.eventoCerrar.emit();
   }
 
   getAnular() {

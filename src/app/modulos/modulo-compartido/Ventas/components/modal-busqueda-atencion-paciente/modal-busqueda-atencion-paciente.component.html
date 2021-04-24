@@ -1,26 +1,25 @@
 <form [formGroup]="formularioVisor">
     <div class="ui-inputgroup">
-        <input id="float-input" type="text" size="30" pInputText style="background-color: rgb(203, 243, 198);" formControlName="nombreVisor">
-        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="isVisualizar = true" class="btn btn-block" [disabled]="isHabilitaControl"></button>
+        <input id="float-input" type="text" size="30" pInputText style="background-color: rgb(203, 243, 198);" formControlName="nombreVisor" (keyup.enter)="goEnterPacientePorAtencion()">
+        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="habilitarBusqueda()" class="btn btn-block" [disabled]="isHabilitaControl"></button>
     </div>
 </form>
 
-<p-dialog header="Paciente" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}">
+<p-dialog header="Paciente" [(visible)]="isVisualizar" [modal]="true">
 
     <p-panel header="Opción de busqueda de Paciente" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-3">
-                    <p-radioButton name="opcion" value="CODIGO" label="Por Código" inputId="optCODIGO" formControlName="opcion"></p-radioButton>
-                    <input id="float-input-por-codigo" type="text" formControlName="codigo" pInputText placeholder="Ingresar Código">
+                    <p-radioButton name="opcion" value="CODIGO" label="Por Código" inputId="CODIGO" formControlName="opcion"></p-radioButton>
+                    <input type="text" formControlName="codigo" pInputText placeholder="Ingresar Código">
                 </div>
                 <div class="ui-g-12 ui-md-7">
-                    <p-radioButton name="opcion" value="NOMBRE" label="Por Nombre" inputId="optNOMBRE" formControlName="opcion"></p-radioButton>
-                    <input id="float-input-por-nombre" type="text" formControlName="nombre" pInputText placeholder="Ingresar Nombre">
+                    <p-radioButton name="opcion" value="NOMBRE" label="Por Nombre" inputId="NOMBRE" formControlName="opcion"></p-radioButton>
+                    <input type="text" formControlName="nombre" pInputText placeholder="Ingresar Nombre">
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-punto">. </label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="getListWarehousesContains()"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="getListPacientePorFiltros()"></button>
                 </div>
             </div>
         </form>

@@ -27,6 +27,9 @@ import { VentaSinStockComponent } from './components/panel-venta/venta-sin-stock
 import { PanelConsolidadoPedidoComponent } from './components/panel-consolidado-pedido/panel-consolidado-pedido.component';
 import { PanelVentaAutomaticoComponent } from './components/panel-venta/panel-venta-automatico/panel-venta-automatico.component';
 import { PanelConfigTrxVentaComponent } from './components/panel-config-trx-venta/panel-config-trx-venta.component';
+import { PanelEstacionTrabajoComponent } from './components/panel-estacion-trabajo/panel-estacion-trabajo.component';
+import { ConfigTrxVentaCreateComponent } from './components/panel-config-trx-venta/config-trx-venta-create/config-trx-venta-create.component';
+import { EstacionTrabajoCreateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-create/estacion-trabajo-create.component';
 @NgModule({
     declarations: [PanelVentaComponent,
         VentaCreateComponent,
@@ -49,7 +52,10 @@ import { PanelConfigTrxVentaComponent } from './components/panel-config-trx-vent
         VentaSinStockComponent,
         PanelConsolidadoPedidoComponent,
         PanelVentaAutomaticoComponent,
-        PanelConfigTrxVentaComponent
+        PanelConfigTrxVentaComponent,
+        ConfigTrxVentaCreateComponent,
+        PanelEstacionTrabajoComponent,
+        EstacionTrabajoCreateComponent
         ],
     imports: [ CommonModule,
         VentaPrimeNgModule,

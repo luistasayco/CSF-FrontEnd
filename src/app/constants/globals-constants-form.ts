@@ -10,6 +10,9 @@ export class GlobalsConstantsForm {
     cRegresar: string;
     cListar: string;
     cImprimir: string;
+    cImprimirComprobante: string;
+    cImprimirVencimiento: string;
+    cPdfElectronico: string;
     cCaja: string;
     cGanancia: string;
     cGenerico: string;
@@ -18,8 +21,12 @@ export class GlobalsConstantsForm {
     cAceptar: string;
     cCheck: string;
     cPedido: string;
+    cReceta: string;
     cProcesar: string;
     cSalir: string;
+    cAlternatico: string;
+    cCerrar: string;
+    cAnular: string;
 
     // Modulos
     cModuloRequerimiento: string;
@@ -102,7 +109,10 @@ export class GlobalsConstantsForm {
         this.cRegresar = 'Regresar';
         this.cListar = 'Listar';
         this.cFirmaUsuario = 'Firma Paciente';
-        this.cImprimir = 'Imprimir';
+        this.cImprimir = 'Imp. Venta';
+        this.cImprimirComprobante = 'Imp.Comprobante';
+        this.cImprimirVencimiento = 'Imp.Vencimiento';
+        this.cPdfElectronico = 'PDF Electronico';
         this.cGanancia = 'Gna x Cia';
         this.cGenerico = 'Ver Genérico';
         this.cSimulacion = 'Simulación Venta';
@@ -112,8 +122,10 @@ export class GlobalsConstantsForm {
         this.cPedido = 'Pedido';
         this.cProcesar = 'Procesar';
         this.cSalir = 'Salir';
-
-
+        this.cAlternatico = 'Ver Alternativo';
+        this.cReceta = 'Receta';
+        this.cCerrar = 'Cerrar';
+        this.cAnular = 'Anular';
         // Módulos
         this.cModuloRequerimiento = 'Gestión Requerimiento';
 
@@ -177,7 +189,7 @@ export class GlobalsConstantsForm {
         this.msgInfoDetail = 'Se informo con Éxito...!!!';
 
         // Numero de Filas
-        this.sizePage = 10;
-        this.sizePageModal = 5;
+        this.sizePage = 20;
+        this.sizePageModal = 10;
     }
 }

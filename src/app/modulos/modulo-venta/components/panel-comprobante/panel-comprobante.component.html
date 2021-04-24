@@ -2,20 +2,25 @@
     <h1><strong>{{titulo}}</strong></h1>
 
     <!-- Filtros -->
-    <!-- Filtros -->
     <p-panel header="Opción de busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-fecha-ini">Fecha Inicio: </label>
+                    <p-calendar id="float-input-fecha-ini" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaIni"></p-calendar>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <label class="label-custom" for="float-input-fecha-fin">Fecha Fin: </label>
+                    <p-calendar id="float-input-fecha-fin" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaFin"></p-calendar>
+                </div>
+                <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-nro-comprobante">Comprobante: </label>
                     <input id="float-input-nro-comprobante" type="text" pInputText placeholder="Nro Comprobante" formControlName="codcomprobante">
                 </div>
-                <div class="ui-g-12 ui-md-8">
-
+                <div class="ui-g-12 ui-md-4">
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-nro-venta"> .</label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goListar()"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="goListar()"></button>
                 </div>
             </div>
         </form>
@@ -26,7 +31,7 @@
     <!-- Grilla de Datos     -->
     <p-panel header="Lista de {{titulo}}">
 
-        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
+        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codcomprobante" editMode="row" autoLayout="true" [responsive]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th colspan="1">Acciones</th>
@@ -43,9 +48,11 @@
                     </td>
                     <td *ngFor="let col of columns" [ngClass]="col.field === 'montototal' || col.field === 'montototaldolares' 
                                                             ? 'custom-td-number-1': col.field === 'fechagenera' || col.field === 'fechacancelacion' || col.field === 'fechaanulacion' 
-                                                            ? 'custom-td-fecha':col.field !== 'anombrede' 
+                                                            ? 'custom-td-fecha':col.field === 'flg_gratuito' 
+                                                            ? 'custom-td-checkbox':col.field !== 'anombrede' 
                                                             ? 'custom-td-1':null" [ngSwitch]="col.field">
                         <span *ngSwitchCase="'nombreestado'"><app-label-estado [isEstado]="rowData['nombreestado']"></app-label-estado></span>
+                        <span *ngSwitchCase="'flg_gratuito'"><p-checkbox [(ngModel)]="rowData.flg_gratuito" binary="true"></p-checkbox></span>
                         <span *ngSwitchCase="'fechagenera'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
                         <span *ngSwitchCase="'fechacancelacion'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
                         <span *ngSwitchCase="'fechaanulacion'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
@@ -60,7 +67,7 @@
 <!-- Para Eliminar -->
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true">
-    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem">
+<p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true" [modal]="true" [closable]="false">
+    <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem" (eventoCerrar)="goCerrarDetalle()">
     </app-venta-ver>
 </p-dialog>

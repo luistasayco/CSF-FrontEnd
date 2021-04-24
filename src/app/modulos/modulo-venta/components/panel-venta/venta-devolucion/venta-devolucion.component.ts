@@ -81,6 +81,7 @@ export class VentaDevolucionComponent implements OnInit {
       { field: 'lote', header: 'Lote' },
       { field: 'descripcion', header: 'Descripción' },
       { field: 'can-m', header: 'Cantidad' },
+      { field: 'can-m', header: 'Max. Dev.' },
       { field: 'pvp', header: 'PVP' },
       { field: 'dctoProd', header: 'Dscto. Prd.' },
       { field: 'dctoPlan', header: 'Dscto. Plan' },

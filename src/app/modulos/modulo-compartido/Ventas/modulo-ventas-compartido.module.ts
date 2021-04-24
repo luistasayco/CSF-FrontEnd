@@ -8,8 +8,6 @@ import { ModalBusquedaClienteExternoComponent } from './components/modal-busqued
 import { ModalBusquedaAtencionPacienteComponent } from './components/modal-busqueda-atencion-paciente/modal-busqueda-atencion-paciente.component';
 import { ModalBusquedaMedicoComponent } from './components/modal-busqueda-medico/modal-busqueda-medico.component';
 import { ModalBusquedaTipoMotivoNotaCreditoComponent } from './components/modal-busqueda-tipo-motivo-nota-credito/modal-busqueda-tipo-motivo-nota-credito.component';
-import { ModalBusquedaPisoComponent } from './components/modal-busqueda-piso/modal-busqueda-piso.component';
-import { ModalBusquedaPabellonComponent } from './components/modal-busqueda-pabellon/modal-busqueda-pabellon.component';
 import { ModalBusquedaTipoComprobanteComponent } from './components/modal-busqueda-tipo-comprobante/modal-busqueda-tipo-comprobante.component';
 import { ModalBusquedaProductoComponent } from './components/modal-busqueda-producto/modal-busqueda-producto.component';
 import { ModalBusquedaRecetaComponent } from './components/modal-busqueda-receta/modal-busqueda-receta.component';
@@ -24,6 +22,8 @@ import { ModalConsultaProductoComponent } from './components/modal-consulta-prod
 import { ModalConsultaLoteComponent } from './components/modal-consulta-lote/modal-consulta-lote.component';
 import { LabelEstadoComponent } from './components/label-estado/label-estado.component';
 import { ModalRecetaObservacionComponent } from './components/modal-receta-observacion/modal-receta-observacion.component';
+import { BtnSalirComponent } from './components/btn-salir/btn-salir.component';
+import { ModalBusquedaHospitalExclusionesComponent } from './components/modal-busqueda-hospital-exclusiones/modal-busqueda-hospital-exclusiones.component';
 
 @NgModule({
     declarations: [
@@ -33,8 +33,6 @@ import { ModalRecetaObservacionComponent } from './components/modal-receta-obser
         ModalBusquedaAtencionPacienteComponent,
         ModalBusquedaMedicoComponent,
         ModalBusquedaTipoMotivoNotaCreditoComponent,
-        ModalBusquedaPisoComponent,
-        ModalBusquedaPabellonComponent,
         ModalBusquedaTipoComprobanteComponent,
         ModalBusquedaProductoComponent,
         ModalBusquedaRecetaComponent,
@@ -48,7 +46,9 @@ import { ModalRecetaObservacionComponent } from './components/modal-receta-obser
         ModalConsultaProductoComponent,
         ModalConsultaLoteComponent,
         LabelEstadoComponent,
-        ModalRecetaObservacionComponent
+        ModalRecetaObservacionComponent,
+        BtnSalirComponent,
+        ModalBusquedaHospitalExclusionesComponent
     ],
     imports: [ 
         CommonModule,
@@ -62,8 +62,6 @@ import { ModalRecetaObservacionComponent } from './components/modal-receta-obser
         ModalBusquedaAtencionPacienteComponent,
         ModalBusquedaMedicoComponent,
         ModalBusquedaTipoMotivoNotaCreditoComponent,
-        ModalBusquedaPisoComponent,
-        ModalBusquedaPabellonComponent,
         ModalBusquedaTipoComprobanteComponent,
         ModalBusquedaProductoComponent,
         ModalBusquedaRecetaComponent,
@@ -77,7 +75,9 @@ import { ModalRecetaObservacionComponent } from './components/modal-receta-obser
         ModalConsultaProductoComponent,
         ModalConsultaLoteComponent,
         LabelEstadoComponent,
-        ModalRecetaObservacionComponent
+        ModalRecetaObservacionComponent,
+        BtnSalirComponent,
+        ModalBusquedaHospitalExclusionesComponent
     ],
     providers: [],
 })

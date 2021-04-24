@@ -7,6 +7,8 @@ export interface IPaciente {
     fechafin : string;
     cama: string;
     nombresexo: string;
+    codplan: string;
+    porcentajeplan: number;
     edad: number;
     direccion: string;
     telefono: string;

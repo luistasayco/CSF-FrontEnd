@@ -27,7 +27,7 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
   subscription$: Subscription;
   loading: boolean;
 
-  @Input() isHabilitaControl: boolean;
+  @Input() isHabilitaControl: boolean = false;
   @Output() eventoResgistroSeleccionado = new EventEmitter<IPaciente>();
   @Output() eventoCancelar = new EventEmitter<IPaciente>();
 
@@ -54,13 +54,13 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
 
   private buildFormVisor() {
     this.formularioVisor = this.fb.group({
-      nombreVisor: [null],
+      nombreVisor: [''],
     });
   }
 
   private buildForm() {
     this.formularioBusqueda = this.fb.group({
-      opcion: [null],
+      opcion: ['CODIGO'],
       codigo: [null],
       nombre: [null],
     });
@@ -76,7 +76,7 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
     ];
   }
 
-  getListWarehousesContains() {
+  getListPacientePorFiltros() {
     const formBody = this.formularioBusqueda.value;
     this.loading = true;
     this.subscription$ = new Subscription();
@@ -96,33 +96,53 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
     this.formularioVisor.patchValue({
       nombreVisor: this.seleccionItem.atencion
     });
-    this.getPacientePorAtencion(this.seleccionItem.atencion);
-    
+    this.getPacientePorAtencion(this.seleccionItem.atencion, true);
+    this.habilitarBusqueda();
   }
 
-  getPacientePorAtencion(codAtencion: string) {
+  goEnterPacientePorAtencion() {
+    const body = this.formularioVisor.value;
+    if (body.nombreVisor.length === 8) {
+      this.getPacientePorAtencion(body.nombreVisor, false);
+    }
+  }
+
+  getPacientePorAtencion(codAtencion: string, modalVisible: boolean) {
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getPacientePorAtencion(codAtencion)
     .pipe(
       map(resp => {
         this.modeloPaciente = resp;
-        this.isVisualizar = false;
         this.eventoResgistroSeleccionado.emit(this.modeloPaciente);
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+      this.mensajePrimeNgService.onToErrorMsg(null, error.error);
+      if (modalVisible) {
+        this.clickCancelar();
+      }
+    });
+  }
+
+  habilitarBusqueda() {
+    this.isVisualizar =! this.isVisualizar;
   }
 
   clickCancelar() {
     this.LimpiarFiltroBusqueda();
-    this.isVisualizar = false;
+    this.habilitarBusqueda();
     this.eventoCancelar.emit();
   }
 
   private LimpiarFiltroBusqueda() {
     this.formularioBusqueda.patchValue({
+      opcion: 'CODIGO',
+      codigo: '',
       nombre: ''
     });
+    this.listModelo = [];
   }
 
   ngOnDestroy() {

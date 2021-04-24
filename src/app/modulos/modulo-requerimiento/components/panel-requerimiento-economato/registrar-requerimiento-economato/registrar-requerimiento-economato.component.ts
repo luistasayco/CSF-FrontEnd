@@ -246,10 +246,10 @@ export class RegistrarRequerimientoEconomatoComponent implements OnInit {
         validado = false;
         mensaje += `Debe especificar el Centro de Costo para el artículo ${el.codArticulo}<br>`;
       }
-      if (!el.codSocioNegocio) {
-        validado = false;
-        mensaje += `Debe especificar el Socio de Negocio para el artículo ${el.codArticulo}<br>`;
-      }      
+      // if (!el.codSocioNegocio) {
+      //   validado = false;
+      //   mensaje += `Debe especificar el Socio de Negocio para el artículo ${el.codArticulo}<br>`;
+      // }      
     });
 
     if (!validado) {

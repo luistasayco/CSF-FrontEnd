@@ -31,7 +31,7 @@ export class PanelPlanesComponent implements OnInit {
   listModelo: PlanesModel[];
 
   columnas: any[];
-
+  
   // Opcion Editar
   modelocloned: { [s: string]: any; } = {};
 

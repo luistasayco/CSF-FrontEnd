@@ -20,6 +20,8 @@ import { CardModule } from 'primeng/card';
 import { TabViewModule } from 'primeng/tabview';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FieldsetModule } from 'primeng/fieldset';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+
 // Sevices
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
@@ -44,7 +46,8 @@ import { MessageService } from 'primeng/api';
             CardModule,
             TabViewModule,
             RadioButtonModule,
-            FieldsetModule],
+            FieldsetModule,
+            ToggleButtonModule],
     providers: [MessageService, ConfirmationService],
 })
 export class VentaPrimeNgModule {}

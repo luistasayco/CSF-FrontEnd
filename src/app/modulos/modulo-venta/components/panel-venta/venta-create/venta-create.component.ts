@@ -14,11 +14,10 @@ import { ICliente } from '../../../../modulo-compartido/Ventas/interfaces/client
 import { IPersonalClinica } from '../../../../modulo-compartido/Ventas/interfaces/personal-clinica.interface';
 import { IMedico } from '../../../../modulo-compartido/Ventas/interfaces/medico.interface';
 import { Subscription } from 'rxjs';
-import { IAtencion } from '../../../../modulo-compartido/Ventas/interfaces/atencion.interface';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { SessionService } from '../../../../../services/session.service';
 import { VentaDataService } from '../../../services/venta-data.service';
-import { ITipoAutorizacion } from '../../../interface/venta.interface';
+import { ITipoAutorizacion, IHospitalExclusiones } from '../../../interface/venta.interface';
+import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
 
 @Component({
   selector: 'app-venta-create',
@@ -35,6 +34,7 @@ export class VentaCreateComponent implements OnInit {
   listModelo: any[];
   listMedicosPorAtencion: SelectItem[];
   listTipoAutorizacion: SelectItem[];
+  listHospitalExclusiones: IHospitalExclusiones[];
 
   columnas: any;
   isWarehouseCode: string;
@@ -42,6 +42,8 @@ export class VentaCreateComponent implements OnInit {
   isVisibleReceta: boolean = false;
   isVisiblePedido: boolean = false;
   isVisibleGenerico: boolean = false;
+  isValidaMedicoEmergencia: number;
+  isVisibleHospitalExcusiones: boolean;
 
   // Formulario
   formularioCabecera: FormGroup;
@@ -49,6 +51,11 @@ export class VentaCreateComponent implements OnInit {
 
   // Tipo de Cliente
   isTipoCliente: string;
+
+  // Mensaje
+  isMensajePolizaBCR: string;
+  isMensajeAviso: string;
+  isTabObservacion: string;
 
   subscription$: Subscription;
 
@@ -60,7 +67,8 @@ export class VentaCreateComponent implements OnInit {
               private readonly ventaDataService: VentaDataService,
               private confirmationService: ConfirmationService,
               private sessionService: SessionService,
-              private readonly fb: FormBuilder) {     
+              private readonly fb: FormBuilder,
+              public readonly mensajePrimeNgService: MensajePrimeNgService) {     
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Venta', routerLink: ['module-ve/venta-create'] }
@@ -68,14 +76,13 @@ export class VentaCreateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
     // Contruye Formulario
     this.buildForm();
     this.buildFormTotales();
 
     this.goInicializaVariables();
 
-    this.onOpcionesCabecera();
+    this.onOpcionesSplitButtonCabecera();
 
     this.onColumnasGrilla();
     this.goGetTipoAutorizacion();
@@ -83,48 +90,15 @@ export class VentaCreateComponent implements OnInit {
     this.demoService.getCarsLarge().then(cars => this.listModelo = cars);
   }
 
-  private onOpcionesCabecera() {
-    this.items = [
-      {label: this.globalConstants.cConsultar, icon: this.globalConstants.icoConsultar,
-        command: () => {
-        this.onConsultarVenta();
-      }},
-      {label: this.globalConstants.cCaja, icon: this.globalConstants.icoCaja,
-        command: () => {
-        this.update();
-      }},
-      {label: "Receta", icon: this.globalConstants.icoPedido,
-        command: () => {
-        this.goReceta();
-      }},
-      {label: this.globalConstants.cPedido, icon: this.globalConstants.icoPedido,
-        command: () => {
-        this.goPedido();
-      }},
-      {separator: true},
-      {label: this.globalConstants.cGanancia, icon: this.globalConstants.icoGanancia,
-        command: () => {
-        this.update();
-      }},
-      {label: this.globalConstants.cGenerico, icon: this.globalConstants.icoGenerico,
-        command: () => {
-        this.goGetProductosGenericos();
-      }},
-      {label: this.globalConstants.cSimulacion, icon: this.globalConstants.icoSimulacion,
-        command: () => {
-        this.update();
-      }},
-    ];
-  }
-
   private buildForm() {
     this.formularioCabecera = this.fb.group({
       codAlmacen: [null],
       desAlmacen: [null],
+      flggratuito: [false],
       fecha: [{value: new Date(), disabled: true}],
       tipoCambio: [{value: 3.3233, disabled: true}],
       sinStock:[false],
-      estado: [null],
+      estado: ['GENERADO'],
       tipoCliente: ['01'],
       codAtencion: [null],
       codClienteExterno: [null],
@@ -173,6 +147,37 @@ export class VentaCreateComponent implements OnInit {
     });
   }
 
+  private onOpcionesSplitButtonCabecera() {
+    this.items = [
+      {label: this.globalConstants.cConsultar, icon: this.globalConstants.icoConsultar,
+        command: () => {
+        this.onConsultarVenta();
+      }},
+      {label: this.globalConstants.cCaja, icon: this.globalConstants.icoCaja,
+        command: () => {
+        // this.update();
+      }},
+      {separator: true},
+      {label: this.globalConstants.cGanancia, icon: this.globalConstants.icoGanancia,
+        command: () => {
+        // this.update();
+      }},
+      {label: this.globalConstants.cGenerico, icon: this.globalConstants.icoGenerico,
+        command: () => {
+        this.goGetProductosGenericos();
+      }},
+      {label: this.globalConstants.cSimulacion, icon: this.globalConstants.icoSimulacion,
+        command: () => {
+        // this.update();
+      }},
+      {label: 'Vale Delivery', icon: this.globalConstants.icoSimulacion,
+        command: () => {
+        // this.update();
+      }},
+      
+    ];
+  }
+
   private goInicializaVariables() {
     this.isTipoCliente = '01';
 
@@ -194,6 +199,59 @@ export class VentaCreateComponent implements OnInit {
     }
   }
 
+  goNuevaVenta() {
+    this.formularioCabecera.patchValue({
+      fecha: new Date(),
+      sinStock:false,
+      estado: 'GENERADO',
+      tipoCliente: '01',
+      codAtencion: null,
+      codClienteExterno: null,
+      codPersonal: null,
+      codMedico: null,
+      listMedico: null,
+      paciente: null,
+      nombreClientePaciente: null,
+      direccion: null,
+      codAseguradora: null,
+      aseguradora: null,
+      plan: null,
+      descuentoPlan: null,
+      coaseguro: null,
+      titular: null,
+      poliza: null,
+      planPoliza: null,
+      codContratante: null,
+      contratante: null,
+      cama: null,
+      telefono: null,
+      codEmpresa: null,
+      empresa: null,
+      deducible: null,
+      observacionPaciente: null,
+      observacionAtencion: null,
+      diagnostico: null,
+      medicoOtros: null,
+      observacionGeneral: null
+    });
+
+    this.formularioTotales.patchValue({
+      montoDescuentoPlan: 0,
+      montoGNC: 0,
+      montoSubTotal: 0,
+      montoSubTotalPaciente: 0,
+      montoSubTotalAseguradora: 0,
+      montoIGV: 0,
+      montoIGVPaciente: 0,
+      montoIGVAseguradora: 0,
+      montoTotal: 0,
+      montoTotalPaciente: 0,
+      montoTotalAseguradora: 0,
+    });
+
+    this.listMedicosPorAtencion = [];
+  }
+
   goAlmacenSeleccionado(item: IWarehouses) {
     this.formularioCabecera.patchValue({
       codAlmacen: item.warehouseCode,
@@ -202,6 +260,31 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goAtencionSeleccionado(item: IPaciente) {
+    
+    if (item.codatencion.substring(0,1) === 'J') {
+      this.mensajePrimeNgService.onToExitoMsg(null, 'A Pacientes con tipo de atención J, se vende como tipo cliente EXTERNO ');
+      this.goNuevaVenta();
+      return;
+    }
+
+    if (item.activo !== 1) {
+      this.mensajePrimeNgService.onToExitoMsg(null, 'Atención desactivada');
+      this.goNuevaVenta();
+      return;
+    }
+
+    if (item.familiar === "S") {
+      this.mensajePrimeNgService.onToExitoMsg(null, 'No puede generar una venta a una atención familiar');
+      this.goNuevaVenta();
+      return;
+    }
+
+    if (item.traslado === "S") {
+      this.mensajePrimeNgService.onToExitoMsg(null, 'No puede generar una venta a una atención que ha sido trasladada a otra. Consultar nueva atención...!!!');
+      this.goNuevaVenta();
+      return;
+    }
+
     this.formularioCabecera.patchValue({
       codAtencion: item.codatencion,
       paciente: item.codpaciente,
@@ -214,6 +297,8 @@ export class VentaCreateComponent implements OnInit {
       contratante: item.nombrecontratante,
       titular: item.titular,
       poliza: item.poliza,
+      plan: item.codplan,
+      descuentoPlan: item.porcentajeplan,
       cama: item.cama,
       telefono: item.telefono,
       planPoliza: item.planpoliza,
@@ -222,10 +307,53 @@ export class VentaCreateComponent implements OnInit {
       observacionAtencion: item.observacionatencion
     });
 
-    this.getListMedicoPorAtencion (item.codatencion);
+    this.onListMedicoPorAtencion (item.codatencion);
+
+    if (item.poliza === '0019BCR*UNICA') {
+      this.isMensajePolizaBCR = 'Póliza BCR';
+    } else {
+      this.isMensajePolizaBCR = '';
+    }
+
+    if (item.codcia === '0000382') {
+      this.isMensajeAviso = 'Cia: CSF';
+    } else {
+      this.isMensajeAviso = '';
+    }
+
+    item.observacionatencion = item.observacionatencion === null ? '' : item.observacionatencion;
+    item.observacionespaciente = item.observacionespaciente === null ? '' : item.observacionespaciente;
+
+    if (item.observacionespaciente !== '' || item.observacionatencion !== '') {
+      this.isMensajeAviso = 'Observación';
+      this.isTabObservacion = "2";
+    } else {
+      this.isMensajeAviso = '';
+      this.isTabObservacion = "1";
+    }
+
+    this.onHospitalExclusionesPorAtencion(item.codatencion);
+
   }
 
-  private getListMedicoPorAtencion(codAtencion: string) {
+  private onHospitalExclusionesPorAtencion(codAtencion: string) {
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getListHospitalExclusionesPorAtencion(codAtencion)
+    .subscribe((data: IHospitalExclusiones[]) => {
+      this.listHospitalExclusiones = data;
+      if (data.length === 0) {
+        this.mensajePrimeNgService.onToInfoMsg(null, 'No cuenta con PRE-EXISTENCIA');
+      } else {
+        this.isVisibleHospitalExcusiones = true;
+      }
+    });
+  }
+
+  goCerrarHospitalExclusiones() {
+    this.isVisibleHospitalExcusiones = false;
+  }
+
+  private onListMedicoPorAtencion(codAtencion: string) {
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.getListMedicoPorAtencion(codAtencion)
     .subscribe((data: IMedico[]) => {
@@ -235,7 +363,6 @@ export class VentaCreateComponent implements OnInit {
       }
     });
   }
-
 
   goClienteExternoSeleccionado(item: ICliente) {
     this.formularioCabecera.patchValue({
@@ -253,10 +380,6 @@ export class VentaCreateComponent implements OnInit {
     this.formularioCabecera.patchValue({
       codMedico: item.codmedico
     });
-  }
-
-  private onListarTipoVenta() {
-    // this.ventasService.getTipoVenta().then(tipoVenta => this.);
   }
 
   private onColumnasGrilla() {
@@ -306,15 +429,11 @@ export class VentaCreateComponent implements OnInit {
     this.router.navigate(['/main/modulo-ve/panel-venta'])
   }
 
-  update() {
-
-  }
-
   goReceta() {
     this.isVisibleReceta =!this.isVisibleReceta;
   }
+
   goPedido() {
-    // this.router.navigate(['/main/modulo-ve/panel-pedido'])
     this.isVisiblePedido = !this.isVisiblePedido;
   }
 

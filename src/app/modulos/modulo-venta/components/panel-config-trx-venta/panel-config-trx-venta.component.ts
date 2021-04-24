@@ -1,50 +1,49 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
-import { MenuItem, ConfirmationService } from 'primeng/api';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
 import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
 import { VentasService } from '../../services/ventas.service';
 import { map } from 'rxjs/operators';
-import { DemoService } from '../../../../services/demo.service';
+import { IVentaConfiguracion, IVentaConfiguracionEliminar } from '../../interface/venta-configuracion.interface';
+import { ConfirmationService } from 'primeng/api';
+import { Router } from '@angular/router';
+import { IMensajeResultadoApi } from '../../../modulo-compartido/Requerimiento/interfaces/mensajeRespuestaApi.interface';
 
 @Component({
   selector: 'app-panel-config-trx-venta',
   templateUrl: './panel-config-trx-venta.component.html',
   styleUrls: ['./panel-config-trx-venta.component.css']
 })
-export class PanelConfigTrxVentaComponent implements OnInit {
+export class PanelConfigTrxVentaComponent implements OnInit, OnDestroy {
   // Titulo del componente
   titulo = 'Configuración de Transacciones de Ventas';
   tituloDetalle = "Venta"
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
-  listModelo: any[];
-  modeloItem: any;
+  listModelo: IVentaConfiguracion[];
+  modeloItem: IVentaConfiguracion;
 
   columnas: any;
-
-  // PrimeNG
-  items: MenuItem[];
-  itemSeleccionadoGrilla: any;
 
   // Formulario
   formularioBusqueda: FormGroup;
 
-  // Visualizar registro seleccionado
-  isVerModalDetalle: boolean;
-  isAnular: boolean;
-
   subscription$: Subscription;
+
+  // Opcion Eliminar
+  modeloEliminar: IVentaConfiguracionEliminar;
+
+  modelocloned: { [s: string]: IVentaConfiguracion; } = {};
 
   constructor(private readonly breadcrumbService: BreadcrumbService,
               public readonly mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
               private readonly confirmationService: ConfirmationService,
               private readonly ventasService: VentasService,
-              private demoService: DemoService) {
+              private readonly router: Router) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Configuración de Transacciones de Ventas', routerLink: ['module-ve/panel-trx-venta'] }
@@ -56,17 +55,13 @@ export class PanelConfigTrxVentaComponent implements OnInit {
     this.buildForm();    
 
     this.onHeaderGrilla();
-
-    this.onOpcionesGrilla();
     
-    // this.goListar();
-    this.demoService.gettrx().then(cars => this.listModelo = cars);
+    this.goListar();
   }
 
   private buildForm() {
     this.formularioBusqueda = this.formBuilder.group({
-      codcomprobante: [''],
-      codventa: ['']
+      nombre: ['']
     });
   }
 
@@ -82,88 +77,81 @@ export class PanelConfigTrxVentaComponent implements OnInit {
     ];
   }
 
-  onItemElegido(data: any) { 
-    this.itemSeleccionadoGrilla = data;
-  }
-
-  private onOpcionesGrilla() {
-    this.items = [
-      {label: 'Anular', icon: 'fa fa-times', command: () => {
-          this.setAnular();
-      }},
-      {separator: true},
-      {label: 'Caja', icon: 'fa fa-credit-card-alt', command: () => {
-          this.onCaja();
-      }},
-      {separator: true},
-      {label: 'Imp.Venta', icon: 'fa fa-print ', command: () => {
-        this.onImpVenta();
-      }},
-      {label: 'Imp.Comp', icon: 'fa fa-print ', command: () => {
-        this.onImpComp();
-      }},
-      {label: 'Imp.Venc.', icon: 'fa fa-print ', command: () => {
-        this.onImpVenc();
-      }}
-    ];
-  }
-
   goListar() {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa)
+    this.subscription$ = this.ventasService.getVentaConfiguracionGetByFiltros(body.nombre)
     .pipe(
-      map((resp: any[]) => {
+      map((resp: IVentaConfiguracion[]) => {
         this.listModelo = resp;
-        console.log('this.listModelo', this.listModelo );
       })
     )
     .subscribe();
   }
 
-  onDetalle(data: any) {
-    this.goGetVentaPorCodVenta(data.codventa,'DETALLE');
+  onRowEditInit(value: IVentaConfiguracion) {
+    this.modelocloned[value.idconfiguracion] = {...value};
   }
 
-  goGetVentaPorCodVenta(codventa: string, opcion: string) {
+  onRowEditSave(value: IVentaConfiguracion) {
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getVentaPorCodVenta(codventa)
-    .pipe(
-      map((resp: any) => {
-        this.modeloItem = resp;
-        this.isVerModalDetalle = !this.isVerModalDetalle;
-        if (opcion === 'DETALLE')
-          {
-            this.isAnular = false;
-          }
-        if (opcion === 'ANULAR')
-        {
-          this.isAnular = true;
+    this.subscription$ = this.ventasService.setVentaConfiguracionModificar(value)
+    .subscribe((resp: IMensajeResultadoApi) => {
+      delete this.modelocloned[value.idconfiguracion];
+      this.mensajePrimeNgService.onToExitoMsg(null, resp);
+    },
+      (error) => {
+        this.mensajePrimeNgService.onToErrorMsg(null, error);
+      });
+  }
+
+  onRowEditCancel(value: IVentaConfiguracion, index: number) {
+    this.listModelo[index] = this.modelocloned[value.idconfiguracion];
+    delete this.modelocloned[value.idconfiguracion];
+  }
+
+  goToRowSelectDelete(value: IVentaConfiguracion) {
+    this.modeloEliminar = value;
+    this.onConfirmDelete();
+  }
+
+  onConfirmDelete() {
+    this.confirmationService.confirm({
+        message: this.globalConstants.subTitleEliminar,
+        header: this.globalConstants.titleEliminar,
+        icon: 'pi pi-info-circle',
+        acceptLabel: 'Si',
+        rejectLabel: 'No',
+        accept: () => {
+          this.onToDelete();
+        },
+        reject: () => {
+          this.mensajePrimeNgService.onToCancelMsg(this.globalConstants.msgCancelSummary, this.globalConstants.msgCancelDetail);
         }
-      })
-    )
-    .subscribe();
+    });
   }
 
-  private setAnular() {
-    this.goGetVentaPorCodVenta(this.itemSeleccionadoGrilla.codventa,'ANULAR');
+  onToDelete() {
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.setVentaConfiguracionEliminar(this.modeloEliminar)
+    .subscribe((resp: IMensajeResultadoApi) => {
+      this.listModelo = this.listModelo.filter(datafilter => datafilter.idconfiguracion !== this.modeloEliminar.idconfiguracion );
+      this.mensajePrimeNgService.onToExitoMsg(null, resp);
+    },
+      (error) => {
+        this.mensajePrimeNgService.onToErrorMsg(null, error);
+      });
   }
 
-  onCaja() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onCaja');
+  goToCreate() {
+    this.router.navigate(['/main/modulo-ve/trx-venta-create']);
   }
 
-  onImpVenta() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenta');
-  }
-
-  onImpComp() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpComp');
-  }
-
-  onImpVenc() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenc');
+  ngOnDestroy() {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
   }
 
 }

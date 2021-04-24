@@ -4,9 +4,9 @@
             <div class="ui-g-12 ui-md-2">
                 <app-label-estado [isEstado]="modeloItem.nombreestado"></app-label-estado>
             </div>
-            <div class="ui-g-12 ui-md-6" *ngIf="!isVisibleAnular">
+            <div class="ui-g-12 ui-md-4" *ngIf="!isVisibleAnular">
             </div>
-            <div class="ui-g-12 ui-md-4" *ngIf="isVisibleAnular">
+            <div class="ui-g-12 ui-md-2" *ngIf="isVisibleAnular">
             </div>
             <div class="ui-g-12 ui-md-2" *ngIf="isVisibleAnular">
                 <button pButton type="button" label="Anular" icon="{{globalConstants.icoCancelar}}" (click)="getAnular()" class="btn btn-block"></button>
@@ -17,10 +17,13 @@
             <div class="ui-g-12 ui-md-2">
                 <button pButton type="button" label="PDF Electrónico" icon="{{globalConstants.icoPDF}}" class="btn btn-block"></button>
             </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="{{globalConstants.cCerrar}}" icon="{{globalConstants.icoSalir}}" class="ui-button-danger btn btn-block" (click)="goCerrar()"></button>
+            </div>
         </div>
 
         <div class="ui-g ui-fluid">
-            <div class="ui-g-12 ui-md-2">
+            <div class="ui-g-12 ui-md-1">
                 <label class="label-custom" for="float-input-nro-venta">Nro. Venta: </label>
                 <input id="float-input-nro-venta" type="text" pInputText placeholder="Nro. Venta" formControlName="codventa">
             </div>
@@ -44,6 +47,9 @@
                 <label class="label-custom" for="float-input-fecha">Fecha Venta: </label>
                 <p-calendar id="float-input-fecha" formControlName="fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true" formControlName="fechagenera"></p-calendar>
             </div>
+            <div class="ui-g-12 ui-md-1 sba-checkbox-devolucion">
+                <p-checkbox label="Devolución" formControlName="tienedevolucion" binary="true"></p-checkbox>
+            </div>
         </div>
 
         <div class="ui-g ui-fluid">
@@ -52,7 +58,10 @@
             </div>
 
             <div class="ui-g-12 ui-md-1">
-                Observación :
+                <div class="sba-label-observacion">
+                    <label class="label-custom"><strong>Observación :</strong></label>
+                </div>
+
             </div>
             <div class="ui-g-12 ui-md-11">
                 <input id="float-input-producto" type="text" pInputText placeholder="Observación" formControlName="observacion">
@@ -93,14 +102,15 @@
 
             </div>
             <div class="ui-g-12 ui-md-1">
-                <br>
-                <label class="label-custom">Sub Total: </label>
-                <br>
-                <br>
-                <label class="label-custom">IGV.: </label>
-                <br>
-                <br>
-                <label class="label-custom">Total: </label>
+                <div class="sba-label-total">
+                    <label> <strong>Sub Total:</strong></label>
+                </div>
+                <div class="sba-label-total">
+                    <label class="label-custom"><strong>IGV.:</strong></label>
+                </div>
+                <div class="sba-label-total">
+                    <label class="label-custom"><strong>Total:</strong> </label>
+                </div>
             </div>
             <div class="ui-g-12 ui-md-1">
                 <input type="number" pInputText formControlName="montototal" placeholder="Sub Total">
@@ -109,6 +119,12 @@
             </div>
             <div class="ui-g-12 ui-md-1">
                 <input type="number" pInputText formControlName="montopaciente" placeholder="Monto Paciente">
+                <div class="sba-checkbox-soles">
+                    <p-checkbox label="Soles" formControlName="moneda" binary="true"></p-checkbox>
+                </div>
+                <div class="sba-checkbox-gratuito">
+                    <p-checkbox label="Gratuito" formControlName="flggratuito" binary="true"></p-checkbox>
+                </div>
             </div>
             <div class="ui-g-12 ui-md-1">
                 <input type="number" pInputText formControlName="montoaseguradora" placeholder="Monto Asegurado">
