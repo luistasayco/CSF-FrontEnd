@@ -12,9 +12,12 @@
                     <label class="label-custom" for="float-input-nro-comprobante">Piso: </label>
                     <p-dropdown class="ui dropdown-item-text" [options]="listTablaPiso" formControlName="piso" placeholder="Seleccionar Piso" optionLabel="label" [showClear]="true"></p-dropdown>
                 </div>
-                <div class="ui-g-12 ui-md-5"></div>
+                <div class="ui-g-12 ui-md-3"></div>
                 <div class="ui-g-12 ui-md-2">
                     <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="goListarPacienteClinica()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <app-btn-salir [isMargenTop]="true"></app-btn-salir>
                 </div>
             </div>
         </form>

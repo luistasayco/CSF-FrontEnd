@@ -1,7 +1,5 @@
 <div class="card card-w-title">
     <h1><strong>{{titulo}}</strong></h1>
-
-    <!-- Filtros -->
     <!-- Filtros -->
     <p-panel header="Opción de busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
@@ -10,11 +8,14 @@
                     <label class="label-custom" for="float-input-fecha">Fecha Venta: </label>
                     <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fecha"></p-calendar>
                 </div>
-                <div class="ui-g-12 ui-md-8">
+                <div class="ui-g-12 ui-md-6">
 
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" (click)="goListar()" class="sba-button btn btn-block"></button>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <app-btn-salir [isMargenTop]="true"></app-btn-salir>
                 </div>
             </div>
         </form>

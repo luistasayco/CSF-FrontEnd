@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
-import { ISeriePorMaquina, ISeriePorMaquinaEliminar } from '../../interface/serie-por-maquina.interface';
+import { ISeriePorMaquina, ISeriePorMaquinaEliminar, ISerie } from '../../interface/serie-por-maquina.interface';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
@@ -10,6 +10,7 @@ import { VentasService } from '../../services/ventas.service';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { IMensajeResultadoApi } from '../../../modulo-compartido/Requerimiento/interfaces/mensajeRespuestaApi.interface';
+import { SelectItem } from 'primeng';
 
 @Component({
   selector: 'app-panel-estacion-trabajo',
@@ -54,7 +55,6 @@ export class PanelEstacionTrabajoComponent implements OnInit, OnDestroy {
     this.buildForm();    
 
     this.onHeaderGrilla();
-    
     this.goListar();
   }
 
@@ -66,17 +66,14 @@ export class PanelEstacionTrabajoComponent implements OnInit, OnDestroy {
 
   private onHeaderGrilla() {
     this.columnas = [
-      { field: 'codigo', header: 'Id' },
       { field: 'nombremaquina', header: 'Nombre Equipo' },
       { field: 'seriefactura', header: 'Serie Factura' },
       { field: 'serieboleta', header: 'Serie Boleta' },
       { field: 'serienotacredito', header: 'Serie Nota Crédito' },
       { field: 'serienotadebito', header: 'Serie Nota Débito' },
       { field: 'serieguia', header: 'Serie Guía' },
-      { field: 'codcentro', header: 'Centro Costo' },
-      { field: 'codalmacen', header: 'Almacén' },
-      { field: 'serienotacreditofactura', header: 'Serie Nota Crédito Factura' },
-      { field: 'serienotadebitofactura', header: 'Serie Nota Débito Factura' }
+      { field: 'descentro', header: 'Centro Costo' },
+      { field: 'desalmacen', header: 'Almacén' }
     ];
   }
 
@@ -93,25 +90,8 @@ export class PanelEstacionTrabajoComponent implements OnInit, OnDestroy {
     .subscribe();
   }
 
-  onRowEditInit(value: ISeriePorMaquina) {
-    this.modelocloned[value.id] = {...value};
-  }
-
-  onRowEditSave(value: ISeriePorMaquina) {
-    this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.setSeriePorMaquinaModificar(value)
-    .subscribe((resp: IMensajeResultadoApi) => {
-      delete this.modelocloned[value.id];
-      this.mensajePrimeNgService.onToExitoMsg(null, resp);
-    },
-      (error) => {
-        this.mensajePrimeNgService.onToErrorMsg(null, error);
-      });
-  }
-
-  onRowEditCancel(value: ISeriePorMaquina, index: number) {
-    this.listModelo[index] = this.modelocloned[value.id];
-    delete this.modelocloned[value.id];
+  goToEditar(id: number) {
+    this.router.navigate(['/main/modulo-ve/estacion-trabajo-update', id]);
   }
 
   goToRowSelectDelete(value: ISeriePorMaquina) {

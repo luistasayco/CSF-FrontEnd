@@ -8,7 +8,7 @@
                 <div class="ui-g-12 ui-md-2">
                     <input type="text" formControlName="nombre" pInputText placeholder="Ingresar descripcion" />
                 </div>
-                <div class="ui-g-12 ui-md-6">
+                <div class="ui-g-12 ui-md-4">
 
                 </div>
                 <div class="ui-g-12 ui-md-2">
@@ -16,6 +16,9 @@
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" (click)="onToCreate()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <app-btn-salir [isMargenTop]="false"></app-btn-salir>
                 </div>
             </div>
         </form>

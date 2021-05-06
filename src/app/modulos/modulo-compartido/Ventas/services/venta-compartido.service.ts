@@ -9,14 +9,19 @@ import { IMedico } from '../interfaces/medico.interface';
 import { IAtencion } from '../interfaces/atencion.interface';
 import { IProducto } from '../interfaces/producto.interface';
 import { ISeriePorMaquina } from '../interfaces/serie-por-maquina.interface';
-import { IPedidoPorAtencion, IDetallePedidoPorPedido } from '../interfaces/pedido-por-atencion.interface';
+import { IPedidoPorAtencion, IDetallePedidoPorPedido, IListarPedido } from '../interfaces/pedido-por-atencion.interface';
+import { UtilService } from '../../../../services/util.service';
+import { IReceta } from '../interfaces/receta.interface';
+import { ICentroCosto } from '../../../modulo-administracion/models/aprobadorCentroCosto.interface';
+import { ICentro } from '../interfaces/centro.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VentaCompartidoService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private utils: UtilService) { }
 
 
   getListWarehousesContains(warehouseName: string) {
@@ -108,4 +113,39 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Pedido/GetListPedidoDetallePorPedido/`, { params: parametros });
   }
 
+  getListPedidosPorFiltro(codtipopedido: string, fechainicio: Date, fechafin: Date, codpedido: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechafin', this.utils.fecha_AAAAMMDD(fechafin));
+    parametros = parametros.append('codtipopedido', codtipopedido);
+    parametros = parametros.append('codpedido', codpedido);
+    return this.http.get<IListarPedido[]>
+    (`${environment.url_api_venta}Pedido/GetListPedidosPorFiltro/`, { params: parametros });
+  }
+
+  getListRecetasPorFiltro(fechainicio: Date, fechafin: Date, codtipoconsultamedica: string, ide_receta: number, nombrespaciente: string, sbaestadoreceta: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechafin', this.utils.fecha_AAAAMMDD(fechafin));
+    parametros = parametros.append('codtipoconsultamedica', codtipoconsultamedica);
+    parametros = parametros.append('ide_receta', ide_receta.toString());
+    parametros = parametros.append('nombrespaciente', nombrespaciente);
+    parametros = parametros.append('sbaestadoreceta', sbaestadoreceta);
+    return this.http.get<IReceta[]>
+    (`${environment.url_api_venta}Receta/GetListRecetasPorFiltro/`, { params: parametros });
+  }
+
+  getListCentroContains(nombre: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('nombre', nombre);
+    return this.http.get<ICentro[]>
+    (`${environment.url_api_venta}Centro/GetListCentroContains/`, { params: parametros });
+  }
+
+  getCentroPorCodigo(codcentro: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codcentro', codcentro);
+    return this.http.get<ICentro>
+    (`${environment.url_api_venta}Centro/GetCentroPorCodigo/`, { params: parametros });
+  }
 }

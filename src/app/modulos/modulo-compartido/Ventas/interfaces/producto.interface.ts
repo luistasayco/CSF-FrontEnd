@@ -5,4 +5,5 @@ export interface IProducto {
     avgStdPrice: number;
     u_SYP_CS_LABORATORIO: string;
     u_SYP_CS_FAMILIA: string;
+    codproducto: string;
 }

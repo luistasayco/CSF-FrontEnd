@@ -1,8 +1,8 @@
 <p-card>
     <div class="ui-g ui-fluid">
         <form [formGroup]="formularioCabecera">
-            <div class="ui-g-12  ui-md-6">
-                <h1><strong>Nro. Venta - XXXXXXXX</strong></h1>
+            <div class="ui-g-12 ui-md-4">
+                <h2><strong>Nro. Venta - XXXXXXXX</strong></h2>
             </div>
             <div class="ui-g-12 ui-md-1">
                 {{isMensajePolizaBCR}}
@@ -10,7 +10,7 @@
             <div class="ui-g-12 ui-md-1">
                 {{isMensajeAviso}}
             </div>
-            <div class="ui-g-12 ui-md-1">
+            <div class="ui-g-12 ui-md-1 sba-checkbox-gratuita">
                 <p-checkbox styleClass="sba-checked" formControlName="flggratuito" label="VTA Gratuita ?" binary="true"></p-checkbox>
             </div>
             <div class="ui-g-12 ui-md-1">
@@ -18,6 +18,9 @@
             </div>
             <div class="ui-g-12  ui-md-2">
                 <p-toggleButton formControlName="sinStock" onLabel="'Vale de Venta - SIN STOCK'" offLabel="'Vale de Venta - NORMAL'" onIcon="{{globalConstants.icoCancelar}}" offIcon="{{globalConstants.icoAceptar}}" class="btn btn-block"></p-toggleButton>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <app-btn-salir [isMargenTop]="false"></app-btn-salir>
             </div>
             <div class="ui-g-12 ui-md-3">
                 <label class="label-custom">Almacen: </label>
@@ -32,7 +35,7 @@
                 <input id="float-input-tc" type="number" formControlName="tipoCambio" pInputText placeholder="TC">
             </div>
             <div class="ui-g-12 ui-md-1">
-                <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" (click)="goNuevaVenta()" class="sba-button btn btn-block"></button>
+                <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" (click)="goNuevaVenta('01')" class="sba-button btn btn-block"></button>
             </div>
             <div class="ui-g-12 ui-md-1">
                 <button pButton type="button" label="{{globalConstants.cReceta}}" icon="{{globalConstants.icoPedido}}" (click)="goReceta()" class="sba-button btn btn-block"></button>
@@ -43,12 +46,10 @@
             <div class="ui-g-12 ui-md-1">
                 <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" (click)="onConfirmGrabar()" class="sba-button btn btn-block"></button>
             </div>
-            <div class="ui-g-12 ui-md-1">
+            <div class="ui-g-12 ui-md-2">
                 <p-splitButton label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" [model]="items" styleClass="sba-button"></p-splitButton>
             </div>
-            <div class="ui-g-12 ui-md-1">
-                <app-btn-salir [isMargenTop]="true"></app-btn-salir>
-            </div>
+
             <div class="ui-g-12">
                 <p-tabView activeIndex="isTabObservacion">
                     <p-tabPanel header="Datos" leftIcon="pi pi-calendar">
@@ -76,6 +77,9 @@
                                     <label for="float-input">Atención</label>
                                     <app-modal-busqueda-atencion-paciente [isHabilitaControl]="isTipoCliente !== '01'" (eventoResgistroSeleccionado)="goAtencionSeleccionado($event)"></app-modal-busqueda-atencion-paciente>
                                 </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <button pButton type="button" label="Check 1 Mes" icon="{{globalConstants.icoGenerico}}" class="sba-button btn btn-block"></button>
+                                </div>
                                 <div class="ui-g-12 ui-md-3">
                                     <label for="float-input-paciente-cliente">Paciente/Cliente</label>
                                     <input id="float-input-paciente-cliente" type="text" formControlName="nombreClientePaciente" pInputText>
@@ -88,7 +92,7 @@
                                     <label for="float-input-cod-aseguradora">Cod.Aseguradora</label>
                                     <input id="float-input-cod-aseguradora" type="text" formControlName="codAseguradora" pInputText>
                                 </div>
-                                <div class="ui-g-12 ui-md-3">
+                                <div class="ui-g-12 ui-md-2">
                                     <label for="float-input-aseguradora">Aseguradora</label>
                                     <input id="float-input-aseguradora" type="text" formControlName="aseguradora" pInputText>
                                 </div>
@@ -98,15 +102,15 @@
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '02'">
                                     <label for="float-input-externo">Externo</label>
-                                    <app-modal-busqueda-cliente-externo (eventoResgistroSeleccionado)="goClienteExternoSeleccionado($event)"></app-modal-busqueda-cliente-externo>
+                                    <app-modal-busqueda-cliente-externo (eventoAceptar)="goClienteExternoSeleccionado($event)"></app-modal-busqueda-cliente-externo>
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '03'">
                                     <label for="float-input-personal">Personal</label>
-                                    <app-modal-busqueda-personal-clinica (eventoResgistroSeleccionado)="goPersonalClinicaSeleccionado($event)"></app-modal-busqueda-personal-clinica>
+                                    <app-modal-busqueda-personal-clinica (eventoAceptar)="goPersonalClinicaSeleccionado($event)"></app-modal-busqueda-personal-clinica>
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '04'">
                                     <label for="float-input-medico">Médico</label>
-                                    <app-modal-busqueda-medico (eventoResgistroSeleccionado)="goMedicoSeleccionado($event)"></app-modal-busqueda-medico>
+                                    <app-modal-busqueda-medico (eventoAceptar)="goMedicoSeleccionado($event)"></app-modal-busqueda-medico>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
                                     <label for="float-input-list-medico-por-atencion">Médico por Atención</label>
@@ -114,7 +118,7 @@
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
                                     <label for="float-input-plan">Plan</label>
-                                    <input id="float-input-plan" type="text" formControlName="plan" pInputText>
+                                    <app-modal-busqueda-planes (eventoAceptar)="goPlanSeleccionado($event)" [isHabilitaControl]="isHabilitaControlPlan" [isCodPlan]="isCodPlan"></app-modal-busqueda-planes>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
                                     <label for="float-input-dscto-plan">Dscto Plan</label>
@@ -123,6 +127,18 @@
                                 <div class="ui-g-12 ui-md-1">
                                     <label for="float-input-coaseguro">Coaseguro</label>
                                     <input id="float-input-coaseguro" type="text" formControlName="coaseguro" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label for="float-input-especialidad">Especialidad</label>
+                                    <input id="float-input-especialidad" type="text" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label for="float-input-tipo-consulta">Tipo Consulta</label>
+                                    <input id="float-input-tipo-consulta" type="text" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label for="float-input-cobertura">Cobertura</label>
+                                    <input id="float-input-cobertura" type="text" pInputText>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +218,7 @@
             </div>
 
             <div class="ui-g-12 ui-md-2">
-                <app-modal-busqueda-producto></app-modal-busqueda-producto>
+                <app-modal-busqueda-producto [isCodAlmacen]="isCodAlmacen" (eventoAceptar)="goProductoSeleccionado($event)"></app-modal-busqueda-producto>
             </div>
 
             <div class="ui-g-12 ui-md-10">
@@ -294,23 +310,24 @@
         </div>
     </div>
 </p-card>
-<p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
+
+<p-toast class="ui-toast-bottom-right" position="bottom-right"></p-toast>
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [style]="{width: '50vw'}">
-    <app-panel-autenticacion [isAnular]="false"></app-panel-autenticacion>
+<p-dialog header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false">
+    <!-- <app-panel-autenticacion [isAnular]="false"></app-panel-autenticacion> -->
 </p-dialog>
 
-<p-dialog #appendReceta header="Lista de Recetas" [(visible)]="isVisibleReceta" [modal]="true">
-    <app-modal-busqueda-receta [append]="appendReceta"></app-modal-busqueda-receta>
+<p-dialog #appendReceta header="Lista de Recetas" *ngIf="isVisibleReceta" [(visible)]="isVisibleReceta" [modal]="true" [closable]="false">
+    <app-modal-busqueda-receta [append]="appendReceta" (eventoAceptar)="goRecetaSeleccionado($event)" (eventoCancelar)="goRecetaCancelado()"></app-modal-busqueda-receta>
 </p-dialog>
 
-<p-dialog #appendPedido header="Lista de Pedido" [(visible)]="isVisiblePedido" [modal]="true">
-    <app-modal-busqueda-pedido [append]="appendPedido"></app-modal-busqueda-pedido>
+<p-dialog #appendPedido header="Lista de Pedido" *ngIf="isVisiblePedido" [(visible)]="isVisiblePedido" [modal]="true" [closable]="false">
+    <app-modal-busqueda-pedido [append]="appendPedido" (eventoAceptar)="goPedidoSeleccionado($event)" (eventoCancelar)="goPedidoCancelado()"></app-modal-busqueda-pedido>
 </p-dialog>
 
-<p-dialog header="Lista de Genérico por Producto" [(visible)]="isVisibleGenerico" [modal]="true">
+<p-dialog header="Lista de Genérico por Producto" [(visible)]="isVisibleGenerico" [modal]="true" [closable]="false">
     <app-modal-busqueda-generico></app-modal-busqueda-generico>
 </p-dialog>
 

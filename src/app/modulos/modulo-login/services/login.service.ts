@@ -35,4 +35,13 @@ export class LoginService {
         param
     );
   }
+
+  autenticaUsuario(login: LoginModel) {
+    const url = environment.url_api_seguridad + 'Autenticar/AutenticarCredenciales';
+    const param: string = JSON.stringify(login);
+    return this.http.post(
+        url,
+        param
+    );
+  }
 }

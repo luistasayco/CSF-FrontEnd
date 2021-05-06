@@ -24,6 +24,9 @@ import { LabelEstadoComponent } from './components/label-estado/label-estado.com
 import { ModalRecetaObservacionComponent } from './components/modal-receta-observacion/modal-receta-observacion.component';
 import { BtnSalirComponent } from './components/btn-salir/btn-salir.component';
 import { ModalBusquedaHospitalExclusionesComponent } from './components/modal-busqueda-hospital-exclusiones/modal-busqueda-hospital-exclusiones.component';
+import { ModalBusquedaPlanesComponent } from './components/modal-busqueda-planes/modal-busqueda-planes.component';
+import { ModalAutenticacionComponent } from './components/modal-autenticacion/modal-autenticacion.component';
+import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-centro-costo/modal-busqueda-centro-costo.component';
 
 @NgModule({
     declarations: [
@@ -48,7 +51,10 @@ import { ModalBusquedaHospitalExclusionesComponent } from './components/modal-bu
         LabelEstadoComponent,
         ModalRecetaObservacionComponent,
         BtnSalirComponent,
-        ModalBusquedaHospitalExclusionesComponent
+        ModalBusquedaHospitalExclusionesComponent,
+        ModalBusquedaPlanesComponent,
+        ModalAutenticacionComponent,
+        ModalBusquedaCentroCostoComponent
     ],
     imports: [ 
         CommonModule,
@@ -77,7 +83,10 @@ import { ModalBusquedaHospitalExclusionesComponent } from './components/modal-bu
         LabelEstadoComponent,
         ModalRecetaObservacionComponent,
         BtnSalirComponent,
-        ModalBusquedaHospitalExclusionesComponent
+        ModalBusquedaHospitalExclusionesComponent,
+        ModalBusquedaPlanesComponent,
+        ModalAutenticacionComponent,
+        ModalBusquedaCentroCostoComponent
     ],
     providers: [],
 })

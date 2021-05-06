@@ -22,6 +22,10 @@ import { PanelConfigTrxVentaComponent } from './components/panel-config-trx-vent
 import { PanelEstacionTrabajoComponent } from './components/panel-estacion-trabajo/panel-estacion-trabajo.component';
 import { ConfigTrxVentaCreateComponent } from './components/panel-config-trx-venta/config-trx-venta-create/config-trx-venta-create.component';
 import { EstacionTrabajoCreateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-create/estacion-trabajo-create.component';
+import { PanelSeriePorComprobanteComponent } from './components/panel-serie-por-comprobante/panel-serie-por-comprobante.component';
+import { SeriePorComprobanteCreateComponent } from './components/panel-serie-por-comprobante/serie-por-comprobante-create/serie-por-comprobante-create.component';
+import { EstacionTrabajoUpdateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-update/estacion-trabajo-update.component';
+import { PanelSeparacionCuentasComponent } from './components/panel-separacion-cuentas/panel-separacion-cuentas.component';
 
 const routes: Routes = [
     {path: 'panel-venta', component: PanelVentaComponent},
@@ -43,6 +47,10 @@ const routes: Routes = [
     {path: 'trx-venta-create', component: ConfigTrxVentaCreateComponent},
     {path: 'panel-estacion-trabajo', component: PanelEstacionTrabajoComponent},
     {path: 'estacion-trabajo-create', component: EstacionTrabajoCreateComponent},
+    {path: 'estacion-trabajo-update/:id', component: EstacionTrabajoUpdateComponent},
+    {path: 'panel-serie-comprobante', component: PanelSeriePorComprobanteComponent},
+    {path: 'serie-comprobante-create', component: SeriePorComprobanteCreateComponent},
+    {path: 'panel-separacion-cuenta', component: PanelSeparacionCuentasComponent},
     
     // Sala de Operación
     {path: 'panel-sala-operacion', component: PanelSalaOperacionComponent},

@@ -49,7 +49,6 @@ export class LoginComponent implements OnInit {
     this.iniciarObservableEstadoInternet();
     this.instanciarFormulario();
     this.onSeriePorEstacion();
-    
   }
 
   iniciarObservableEstadoInternet() {
@@ -85,7 +84,6 @@ export class LoginComponent implements OnInit {
         this.onObtieneEstacionLocal();
       },
       (err) => {
-        this.displayAutenticacion = false;
         this.mensajePrimeNgService.onToErrorMsg(null, err.error);
       }
     );

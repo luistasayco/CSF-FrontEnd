@@ -1,7 +1,9 @@
-<div class="ui-inputgroup">
-    <input type="text" pInputText placeholder="Ingresar Código Producto" style="background-color: rgb(203, 243, 198);">
-    <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="isVisualizar = true" class="btn btn-block"></button>
-</div>
+<form [formGroup]="formularioVisor">
+    <div class="ui-inputgroup">
+        <input type="text" pInputText placeholder="Ingresar Código Producto" style="background-color: rgb(203, 243, 198);" formControlName="nombreVisor" (keyup.enter)="getProductoPorCodigo()">
+        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="isVisualizar = true" class="btn btn-block"></button>
+    </div>
+</form>
 
 <p-dialog header="Buscar Producto" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '60vw'}">
 
@@ -9,24 +11,21 @@
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-4">
-                    <label class="label-custom" for="float-input-nombre">Por Nombre: </label>
-                    <input id="float-input-nombre" type="text" pInputText placeholder="Ingresar Nombre" style="text-transform:uppercase;" formControlName="nombre" autocomplete="off" (keyup.enter)="getListProductoPorFiltro()">
+                    <label class="label-custom">Por Nombre: </label>
+                    <input type="text" pInputText placeholder="Ingresar Nombre" formControlName="nombre" autocomplete="off" (keyup.enter)="getListProductoPorFiltro()">
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-codigo">Por Código: </label>
-                    <input id="float-input-codigo" type="text" pInputText placeholder="Ingresar Código" style="text-transform:uppercase;" formControlName="codigo" autocomplete="off" (keyup.enter)="getListProductoPorFiltro()">
+                    <label class="label-custom">Por Código: </label>
+                    <input type="text" pInputText placeholder="Ingresar Código" formControlName="codigo" autocomplete="off" (keyup.enter)="getListProductoPorFiltro()">
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-nro">. </label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="getListProductoPorFiltro()"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="getListProductoPorFiltro()"></button>
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-nro">. </label>
-                    <button pButton type="button" label="{{globalConstants.cGenerico}}" icon="{{globalConstants.icoGenerico}}" class="btn btn-block" (click)="getListProductoGenericoPorCodigo()"></button>
+                    <button pButton type="button" label="{{globalConstants.cGenerico}}" icon="{{globalConstants.icoGenerico}}" class="sba-button btn btn-block" (click)="getListProductoGenericoPorCodigo()"></button>
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-nro">. </label>
-                    <button pButton type="button" label="{{globalConstants.cAlternatico}}" icon="{{globalConstants.icoGenerico}}" class="btn btn-block" (click)="getListProductoGenericoPorCodigo()"></button>
+                    <button pButton type="button" label="{{globalConstants.cAlternatico}}" icon="{{globalConstants.icoGenerico}}" class="sba-button btn btn-block" (click)="getListProductoGenericoPorCodigo()"></button>
                 </div>
             </div>
         </form>
@@ -38,18 +37,17 @@
                 <th *ngFor="let col of columns">
                     {{col.header}}
                 </th>
-
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr [pSelectableRow]="rowData">
-                <td *ngFor="let col of columns" [ngClass]="col.field === 'itemCode' 
+                <td *ngFor="let col of columns" [ngClass]="col.field === 'codproducto' 
                                                         ? 'custom-td-producto': col.field === 'lote' 
-                                                        ? 'custom-td-lote':col.field !== 'itemName' 
-                                                        ? 'custom-td-number-1':null" [ngSwitch]="col.field">
+                                                        ? 'custom-td-lote':col.field === 'itemName' || col.field === 'u_SYP_CS_LABORATORIO' 
+                                                        ? null: 'custom-td-number-1'" [ngSwitch]="col.field">
                     <span class="p-column-title">{{col.header}}</span>
 
-                    <span *ngSwitchCase="'itemCode'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                    <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
                     <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codproducto']"></app-modal-consulta-lote></span>
                     <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                 </td>
@@ -58,7 +56,7 @@
     </p-table>
     <br>
     <p-panel header="Generico/Alternativo" [style]="{'margin-bottom':'20px'}">
-        <p-table [value]="listModeloLote" [loading]="loadingGenerico" [columns]="columnasLote" [paginator]="true" [rows]="globalConstants.sizePageModal" [(selection)]="seleccionItem" dataKey="itemCode" selectionMode="single" autoLayout="true" [responsive]="true">
+        <p-table [value]="listModeloGenerico" [loading]="loadingGenerico" [columns]="columnasGenerico" [paginator]="true" [rows]="globalConstants.sizePageModal" [(selection)]="seleccionItem" dataKey="itemCode" selectionMode="single" autoLayout="true" [responsive]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns">
@@ -69,13 +67,13 @@
             </ng-template>
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr [pSelectableRow]="rowData">
-                    <td *ngFor="let col of columns" [ngClass]="col.field === 'itemCode' 
-                                                        ? 'custom-td-producto': col.field === 'lote' 
-                                                        ? 'custom-td-lote':col.field !== 'itemName' 
-                                                        ? 'custom-td-number-1':null" [ngSwitch]="col.field">
+                    <td *ngFor="let col of columns" [ngClass]="col.field === 'codproducto' 
+                                                            ? 'custom-td-producto': col.field === 'lote' 
+                                                            ? 'custom-td-lote':col.field === 'itemName' || col.field === 'u_SYP_CS_LABORATORIO' 
+                                                            ? null: 'custom-td-number-1'" [ngSwitch]="col.field">
                         <span class="p-column-title">{{col.header}}</span>
 
-                        <span *ngSwitchCase="'itemCode'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                        <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
                         <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codproducto']"></app-modal-consulta-lote></span>
                         <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                     </td>
@@ -93,3 +91,5 @@
         </div>
     </footer>
 </p-dialog>
+
+<p-toast class="ui-toast-bottom-right" position="{{globalConstants.cToastPosition}}"></p-toast>

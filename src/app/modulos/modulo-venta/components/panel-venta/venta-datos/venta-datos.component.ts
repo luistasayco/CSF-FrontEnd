@@ -81,5 +81,6 @@ export class VentaDatosComponent implements OnInit {
     this.formularioCabecera.controls.nombretipdocidentidad.setValue(this.modeloItem.nombretipdocidentidad);
     this.formularioCabecera.controls.docidentidad.setValue(this.modeloItem.docidentidad);
     this.formularioCabecera.controls.numeroplanilla.setValue(this.modeloItem.numeroplanilla);
+    // this.formularioCabecera.controls.codpedido.setValue(this.modeloItem.codpedido);
   }
 }

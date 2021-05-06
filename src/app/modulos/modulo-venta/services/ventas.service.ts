@@ -10,7 +10,7 @@ import { UtilService } from '../../../services/util.service';
 import { IResultBusquedaComprobante } from '../interface/comprobante.interface';
 import { IResultBusquedaPedido } from '../interface/pedido.interface';
 import { IVentaConfiguracion, IVentaConfiguracionRegistrar, IVentaConfiguracionModificar, IVentaConfiguracionEliminar } from '../interface/venta-configuracion.interface';
-import { ISeriePorMaquina, ISeriePorMaquinaEliminar } from '../interface/serie-por-maquina.interface';
+import { ISeriePorMaquina, ISeriePorMaquinaEliminar, ISerie, ISerieRegistrar, ISeriePorMaquinaRegistrar, ISeriePorMaquinaModificar } from '../interface/serie-por-maquina.interface';
 import { ITabla } from '../interface/tabla.interface';
 
 @Injectable({
@@ -175,8 +175,15 @@ export class VentasService {
     (`${environment.url_api_venta}SeriePorMaquina/GetListSeriePorMaquina/`, { params: parametros });
   }
 
-  setSeriePorMaquinaRegistrar(value: ISeriePorMaquina) {
-    value = this.setAsignaValoresAuditabilidad<ISeriePorMaquina>(value);
+  getSeriePorMaquinaPorId(id: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('id', id.toString());
+    return this.http.get<ISeriePorMaquina>
+    (`${environment.url_api_venta}SeriePorMaquina/GetSeriePorMaquinaPorId/`, { params: parametros });
+  }
+
+  setSeriePorMaquinaRegistrar(value: ISeriePorMaquinaRegistrar) {
+    value = this.setAsignaValoresAuditabilidad<ISeriePorMaquinaRegistrar>(value);
     console.log(value);
     const url = environment.url_api_venta + 'SeriePorMaquina/Registrar';
     const param: string = JSON.stringify(value);
@@ -186,7 +193,7 @@ export class VentasService {
     );
   }
 
-  setSeriePorMaquinaModificar(value: ISeriePorMaquina) {
+  setSeriePorMaquinaModificar(value: ISeriePorMaquinaModificar) {
     value = this.setAsignaValoresAuditabilidad<ISeriePorMaquina>(value);
     const url = environment.url_api_venta + 'SeriePorMaquina/Modificar';
     const param: string = JSON.stringify(value);
@@ -201,6 +208,24 @@ export class VentasService {
     const url = environment.url_api_venta + 'SeriePorMaquina/Eliminar';
     const param: string = JSON.stringify(value);
     return this.http.patch(
+        url,
+        param
+    );
+  }
+
+  getListSeriePorTipoSerie(tiposerie: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('tiposerie', tiposerie);
+    return this.http.get<ISerie[]>
+    (`${environment.url_api_venta}Serie/GetListSeriePorTipoSerie/`, { params: parametros });
+  }
+
+  setSerieRegistrar(value: ISerieRegistrar) {
+    value = this.setAsignaValoresAuditabilidad<ISerieRegistrar>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Serie/Registrar';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
         url,
         param
     );
@@ -228,6 +253,18 @@ export class VentasService {
     parametros = parametros.append('orden', orden.toString());
     return this.http.get<ITabla[]>
     (`${environment.url_api_venta}Tabla/GetListTablaClinicaPorFiltros/`, { params: parametros });
+  }
+
+  // Lista Tablas Logistica
+  getListTablaLogisticaPorFiltros(codtabla: string, buscar: string, key: number, numerolineas: number, orden: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codtabla', codtabla);
+    parametros = parametros.append('buscar', buscar);
+    parametros = parametros.append('key', key.toString());
+    parametros = parametros.append('numerolineas', numerolineas.toString());
+    parametros = parametros.append('orden', orden.toString());
+    return this.http.get<ITabla[]>
+    (`${environment.url_api_venta}Tabla/GetListTablaLogisticaPorFiltros/`, { params: parametros });
   }
 
   // Hospital Datos

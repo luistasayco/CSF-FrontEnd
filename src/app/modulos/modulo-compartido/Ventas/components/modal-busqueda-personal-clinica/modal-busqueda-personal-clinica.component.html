@@ -5,24 +5,23 @@
     </div>
 </form>
 
-<p-dialog header="Personal Clinica" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '60vw'}">
+<p-dialog header="Personal Clínica" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '60vw'}">
 
-    <p-panel header="Opción de busqueda de Personal Clinica" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <p-panel header="Opción de busqueda del Personal Clínica" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-10">
                     <label class="label-custom" for="float-input-por-nombre">Por Nombre:</label>
-                    <input id="float-input-por-nombre" type="text" formControlName="nombre" pInputText placeholder="Ingresar Nombre">
+                    <input id="float-input-por-nombre" type="text" formControlName="nombre" pInputText placeholder="Ingresar Nombre" autocomplete="off">
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-punto">. </label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="getListWarehousesContains()"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="getListPersonalClinicaContains()"></button>
                 </div>
             </div>
         </form>
     </p-panel>
 
-    <p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePage" [(selection)]="seleccionItem" dataKey="codpersonal" selectionMode="single" autoLayout="true" [responsive]="true">
+    <p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePageModal" [(selection)]="seleccionItem" dataKey="codpersonal" selectionMode="single" autoLayout="true" [responsive]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns">

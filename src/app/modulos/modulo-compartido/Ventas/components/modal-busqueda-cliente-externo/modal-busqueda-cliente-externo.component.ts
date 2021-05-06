@@ -24,7 +24,7 @@ export class ModalBusquedaClienteExternoComponent implements OnInit {
   loading: boolean;
 
   @Input() isHabilitaControl: boolean;
-  @Output() eventoResgistroSeleccionado = new EventEmitter<ICliente>();
+  @Output() eventoAceptar = new EventEmitter<ICliente>();
   @Output() eventoCancelar = new EventEmitter<ICliente>();
   constructor(private ventaCompartidoService: VentaCompartidoService,
               private readonly fb: FormBuilder) { }
@@ -54,12 +54,16 @@ ngOnInit(): void {
       { field: 'cardCode', header: 'Código' },
       { field: 'cardName', header: 'Nombre' },
       { field: 'federalTaxID', header: 'RUC/DNI' },
-      { field: 'phone1', header: 'Telefono' }
+      { field: 'phone1', header: 'Telefono' },
+      { field: 'mailAddress', header: 'Dirección' }
     ];
   }
 
-  getListWarehousesContains() {
+  goListClientePorFiltro() {
     const formBody = this.formularioBusqueda.value;
+
+    console.log('formBody',formBody);
+
     this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListClientePorFiltro(formBody.opcion, formBody.codigo, formBody.nombre)
@@ -80,7 +84,7 @@ ngOnInit(): void {
       nombreVisor: this.seleccionItem.cardCode
     });
     this.isVisualizar = false;
-    this.eventoResgistroSeleccionado.emit(this.seleccionItem);
+    this.eventoAceptar.emit(this.seleccionItem);
   }
 
   clickCancelar() {

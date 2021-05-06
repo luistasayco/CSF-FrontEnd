@@ -2,14 +2,18 @@
     <p-tabView>
         <p-tabPanel header="Datos" leftIcon="pi pi-calendar">
             <div class="ui-g ui-fluid">
-                <div class="ui-g-12 ui-md-1">
-                    <label for="float-input-codTipoCliente">Tipo Cliente</label>
+                <div class="ui-g-12 ui-md-1 sba-label-tipo-cliente">
+                    <span for="float-input-codTipoCliente"><strong>Tipo Cliente: </strong> </span>
                 </div>
                 <div class="ui-g-12 ui-md-1">
                     <input id="float-input-codTipoCliente" type="text" formControlName="codTipoCliente" pInputText>
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <input id="float-input-nombreTipoCliente" type="text" formControlName="nombreTipoCliente" pInputText>
+                </div>
+                <div class="ui-g-12 ui-md-6"></div>
+                <div class="ui-g-12 ui-md-1 sba-label-pedido">
+                    <span><strong>{{modeloItem.codpedido}}</strong> </span>
                 </div>
             </div>
             <hr>

@@ -6,18 +6,12 @@
 </form>
 
 <p-dialog header="Lista de Almacenes" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}" [closable]="false">
-
     <p-panel header="Opción de busqueda de Almacén" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
-            <div class="ui-g ui-fluid">
-                <div class="ui-g-12 ui-md-12">
-                    <label class="label-custom" for="float-input-nombre">Por Nombre: </label>
-                    <input id="float-input-nombre" type="text" pInputText placeholder="Ingresar Nombre" formControlName="nombre" style="text-transform:uppercase;" autocomplete="off" (keyup.enter)="getListWarehousesContains()">
-                </div>
-            </div>
+            <label class="label-custom" for="float-input-nombre">Por Nombre: </label>
+            <input id="float-input-nombre" type="text" pInputText placeholder="Ingresar Nombre" autocomplete="off" formControlName="nombre" (keyup.enter)="getListWarehousesContains()">
         </form>
     </p-panel>
-
     <p-table [value]="listModelo" [loading]="loading" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" [(selection)]="seleccionItem" dataKey="warehouseCode" selectionMode="single" autoLayout="true" [responsive]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -35,14 +29,15 @@
             </tr>
         </ng-template>
     </p-table>
-
     <footer>
-        <div class="ui-g-12 ui-md-6">
-            <button pButton type="button" label="{{globalConstants.cAceptar}}" icon="{{globalConstants.icoAceptar}}" [disabled]="!seleccionItem" (click)="clickAceptar()"></button>
-        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-6">
+                <button pButton type="button" label="{{globalConstants.cAceptar}}" icon="{{globalConstants.icoAceptar}}" [disabled]="!seleccionItem" (click)="clickAceptar()"></button>
+            </div>
 
-        <div class="ui-g-12 ui-md-6">
-            <button pButton type="button" label="{{globalConstants.cCancelar}}" icon="{{globalConstants.icoCancelar}}" (click)="clickCancelar()"></button>
+            <div class="ui-g-12 ui-md-6">
+                <button pButton type="button" label="{{globalConstants.cCancelar}}" icon="{{globalConstants.icoCancelar}}" (click)="clickCancelar()"></button>
+            </div>
         </div>
     </footer>
 </p-dialog>

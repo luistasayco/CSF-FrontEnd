@@ -21,7 +21,6 @@ import { PanelSalaOperacionComponent } from './components/panel-sala-operacion/p
 import { SalaOperacionCreateComponent } from './components/panel-sala-operacion/sala-operacion-create/sala-operacion-create.component';
 import { SalaOperacionLecturaComponent } from './components/panel-sala-operacion/sala-operacion-lectura/sala-operacion-lectura.component';
 import { VentaVerComponent } from './components/panel-venta/venta-ver/venta-ver.component';
-import { PanelAutenticacionComponent } from './components/panel-autenticacion/panel-autenticacion.component';
 import { VentaDatosComponent } from './components/panel-venta/venta-datos/venta-datos.component';
 import { VentaSinStockComponent } from './components/panel-venta/venta-sin-stock/venta-sin-stock.component';
 import { PanelConsolidadoPedidoComponent } from './components/panel-consolidado-pedido/panel-consolidado-pedido.component';
@@ -30,6 +29,10 @@ import { PanelConfigTrxVentaComponent } from './components/panel-config-trx-vent
 import { PanelEstacionTrabajoComponent } from './components/panel-estacion-trabajo/panel-estacion-trabajo.component';
 import { ConfigTrxVentaCreateComponent } from './components/panel-config-trx-venta/config-trx-venta-create/config-trx-venta-create.component';
 import { EstacionTrabajoCreateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-create/estacion-trabajo-create.component';
+import { PanelSeriePorComprobanteComponent } from './components/panel-serie-por-comprobante/panel-serie-por-comprobante.component';
+import { SeriePorComprobanteCreateComponent } from './components/panel-serie-por-comprobante/serie-por-comprobante-create/serie-por-comprobante-create.component';
+import { EstacionTrabajoUpdateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-update/estacion-trabajo-update.component';
+import { PanelSeparacionCuentasComponent } from './components/panel-separacion-cuentas/panel-separacion-cuentas.component';
 @NgModule({
     declarations: [PanelVentaComponent,
         VentaCreateComponent,
@@ -47,7 +50,6 @@ import { EstacionTrabajoCreateComponent } from './components/panel-estacion-trab
         SalaOperacionCreateComponent,
         SalaOperacionLecturaComponent,
         VentaVerComponent,
-        PanelAutenticacionComponent,
         VentaDatosComponent,
         VentaSinStockComponent,
         PanelConsolidadoPedidoComponent,
@@ -55,7 +57,11 @@ import { EstacionTrabajoCreateComponent } from './components/panel-estacion-trab
         PanelConfigTrxVentaComponent,
         ConfigTrxVentaCreateComponent,
         PanelEstacionTrabajoComponent,
-        EstacionTrabajoCreateComponent
+        EstacionTrabajoCreateComponent,
+        PanelSeriePorComprobanteComponent,
+        SeriePorComprobanteCreateComponent,
+        EstacionTrabajoUpdateComponent,
+        PanelSeparacionCuentasComponent
         ],
     imports: [ CommonModule,
         VentaPrimeNgModule,
@@ -63,7 +69,7 @@ import { EstacionTrabajoCreateComponent } from './components/panel-estacion-trab
         ControlsModule,
         FormsModule,
         ReactiveFormsModule,
-        VentasCompartidoModule    
+        VentasCompartidoModule
     ],
     exports: [],
     providers: [],

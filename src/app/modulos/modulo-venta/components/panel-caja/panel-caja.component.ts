@@ -73,18 +73,32 @@ export class PanelCajaComponent implements OnInit {
         command: () => {
         this.update();
       }},
-      // {label: "Generar Pago Bot", icon: this.globalConstants.icoSimulacion,
-      //   command: () => {
-      //   this.update();
-      // }},
-      // {label: "Obtener Pago Bot", icon: this.globalConstants.icoSimulacion,
-      //   command: () => {
-      //   this.update();
-      // }},
-      // {label: "Link Bot", icon: this.globalConstants.icoSimulacion,
-      //   command: () => {
-      //   this.update();
-      // }}
+      {separator: true},
+      {label: "Generar Pago Bot", icon: this.globalConstants.icoCaja,
+        command: () => {
+        this.update();
+      }},
+      {label: "Obtener Pago Bot", icon: this.globalConstants.icoCaja,
+        command: () => {
+        this.update();
+      }},
+      {label: "Link Bot", icon: this.globalConstants.icoCaja,
+        command: () => {
+        this.update();
+      }},
+      {separator: true},
+      {label: "Pago con Visa", icon: this.globalConstants.icoCaja,
+        command: () => {
+        this.update();
+      }},
+      {label: "Anular Pago Visa", icon: this.globalConstants.icoCaja,
+        command: () => {
+        this.update();
+      }},
+      {label: "Operación No financiera Visa", icon: this.globalConstants.icoCaja,
+        command: () => {
+        this.update();
+      }}
     ];
   }
 
@@ -122,19 +136,19 @@ export class PanelCajaComponent implements OnInit {
   }
 
   onConfirmGrabar() {
-    this.confirmationService.confirm({
-        message: "¿Seguro de generar documento electrónico?",
-        header: "Grabar Documento",
-        icon: 'pi pi-info-circle',
-        acceptLabel: 'Si',
-        rejectLabel: 'No',
-        accept: () => {
-          // this.isAutenticar = true;
-        },
-        reject: () => {
-          // this.mensajePrimeNgService.onToCancelMsg(this.globalConstants.msgCancelSummary, this.globalConstants.msgCancelDetail);
-        }
-    });
+    // this.confirmationService.confirm({
+    //     message: "¿Seguro de generar documento electrónico?",
+    //     header: "Grabar Documento",
+    //     icon: 'pi pi-info-circle',
+    //     acceptLabel: 'Si',
+    //     rejectLabel: 'No',
+    //     accept: () => {
+    //       this.isAutenticar = true;
+    //     },
+    //     reject: () => {
+    //       this.mensajePrimeNgService.onToCancelMsg(this.globalConstants.msgCancelSummary, this.globalConstants.msgCancelDetail);
+    //     }
+    // });
   }
 
 }

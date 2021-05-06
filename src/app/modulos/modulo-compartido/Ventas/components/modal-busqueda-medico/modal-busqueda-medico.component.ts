@@ -24,7 +24,7 @@ export class ModalBusquedaMedicoComponent implements OnInit {
   loading: boolean;
 
   @Input() isHabilitaControl: boolean;
-  @Output() eventoResgistroSeleccionado = new EventEmitter<IMedico>();
+  @Output() eventoAceptar = new EventEmitter<IMedico>();
   @Output() eventoCancelar = new EventEmitter<IMedico>();
   constructor(private ventaCompartidoService: VentaCompartidoService,
               private readonly fb: FormBuilder) { }
@@ -57,7 +57,7 @@ ngOnInit(): void {
     ];
   }
 
-  getListWarehousesContains() {
+  getListMedicosContains() {
     const formBody = this.formularioBusqueda.value;
     this.loading = true;
     this.subscription$ = new Subscription();
@@ -79,7 +79,7 @@ ngOnInit(): void {
       nombreVisor: this.seleccionItem.codmedico
     });
     this.isVisualizar = false;
-    this.eventoResgistroSeleccionado.emit(this.seleccionItem);
+    this.eventoAceptar.emit(this.seleccionItem);
   }
 
   clickCancelar() {

@@ -7,7 +7,7 @@
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-nombre">Estación Trabajo: </label>
-                    <input id="float-input-nombre" type="text" pInputText placeholder="Estación Trabajo" formControlName="nombre">
+                    <input id="float-input-nombre" type="text" pInputText placeholder="Estación Trabajo" formControlName="nombre" autocomplete="off">
                 </div>
                 <div class="ui-g-12 ui-md-6"></div>
                 <div class="ui-g-12 ui-md-2">
@@ -22,9 +22,9 @@
     </p-panel>
 
     <!-- Grilla de Datos     -->
-    <p-panel header="Lista de {{titulo}}">
+    <p-panel #panel header="Lista de {{titulo}}">
 
-        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="id" editMode="row" autoLayout="true" [responsive]="true">
+        <p-table #table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="id" editMode="row" autoLayout="true" [responsive]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns">
@@ -33,158 +33,18 @@
                     <th colspan="2">Acciones</th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
-                <tr [pEditableRow]="rowData">
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Codigo</span> {{rowData.id}}
-                    </td>
-                    <td class="ui-fluid">
-                        <span class="ui-column-title">Estación Trabajo</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.nombremaquina" pInputTextsize="50"> 
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.nombremaquina}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Factura</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.seriefactura">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.seriefactura}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Boleta</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.serieboleta">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.serieboleta}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Nota Crédito</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.serienotacredito">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.serienotacredito}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Nota Débito</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.serienotadebito">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.serienotadebito}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Guía</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.serieguia">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.serieguia}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="ui-fluid">
-                        <span class="ui-column-title">Centro Costo</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.codcentro">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.codcentro}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="ui-fluid">
-                        <span class="ui-column-title">Almacén</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.codalmacen">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.codalmacen}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Nota Crédito Factura</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.serienotacreditofactura">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.serienotacreditofactura}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-1">
-                        <span class="ui-column-title">Serie Nota Débito Factura</span>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <span class="p-float-label">
-                                    <input type="text" pInputText [(ngModel)]="rowData.serienotadebitofactura">
-                                </span>
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{rowData.serienotadebitofactura}}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-
-                    <td class="custom-td-2">
-                        <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="{{globalConstants.icoEditar}}" (click)="onRowEditInit(rowData)"></button>
-                        <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="{{globalConstants.icoGrabar}}" class="ui-button-success" (click)="onRowEditSave(rowData)"></button>
-                        <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="{{globalConstants.icoCancelar}}" class="ui-button-danger" style="margin-left: .5em" (click)="onRowEditCancel(rowData, ri)"></button>
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns" [ngSwitch]="col.field" [ngClass]="col.field === 'seriefactura' || col.field === 'serieboleta'  || col.field === 'serienotacredito'  || col.field === 'serienotadebito'  || col.field === 'serieguia' 
+                                                                                    ? 'custom-td-1':null">
+                        <span class="p-column-title">{{col.header}}</span>
+                        <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                     </td>
                     <td class="custom-td-1">
-                        <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger" (click)="goToRowSelectDelete(rowData)"></button>
+                        <button pButton type="button" icon="{{globalConstants.icoEditar}}" (click)="goToEditar(rowData.id)"></button>
+                    </td>
+                    <td class="custom-td-1">
+                        <button pButton type="button" icon="{{globalConstants.icoEliminar}}" class="ui-button-danger" (click)="goToRowSelectDelete(rowData)"></button>
                     </td>
                 </tr>
             </ng-template>

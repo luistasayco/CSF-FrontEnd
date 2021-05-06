@@ -28,6 +28,8 @@ export class GlobalsConstantsForm {
     cCerrar: string;
     cAnular: string;
 
+    cToastPosition: string;
+
     // Modulos
     cModuloRequerimiento: string;
 
@@ -126,6 +128,9 @@ export class GlobalsConstantsForm {
         this.cReceta = 'Receta';
         this.cCerrar = 'Cerrar';
         this.cAnular = 'Anular';
+
+        this.cToastPosition = 'bottom-right';
+
         // Módulos
         this.cModuloRequerimiento = 'Gestión Requerimiento';
 

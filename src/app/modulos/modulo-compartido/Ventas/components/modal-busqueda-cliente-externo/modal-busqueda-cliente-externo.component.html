@@ -5,28 +5,27 @@
     </div>
 </form>
 
-<p-dialog header="Paciente" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}">
+<p-dialog header="Externo" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}">
 
-    <p-panel header="Opción de busqueda de Paciente" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <p-panel header="Opción de busqueda de Externo" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-3">
                     <p-radioButton name="opcion" value="RUC" label="Por RUC" inputId="optRUC" formControlName="opcion"></p-radioButton>
-                    <input id="float-input-por-codigo" type="number" formControlName="codigo" pInputText placeholder="Ingresar RUC">
+                    <input type="number" formControlName="codigo" pInputText placeholder="Ingresar RUC">
                 </div>
                 <div class="ui-g-12 ui-md-7">
                     <p-radioButton name="opcion" value="NOMBRE" label="Por Nombre" inputId="optNOMBRE" formControlName="opcion"></p-radioButton>
-                    <input id="float-input-por-nombre" type="text" formControlName="nombre" pInputText placeholder="Ingresar Nombre">
+                    <input type="text" formControlName="nombre" pInputText placeholder="Ingresar Nombre" autocomplete="off">
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-punto">. </label>
-                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="getListWarehousesContains()"></button>
+                    <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="goListClientePorFiltro()"></button>
                 </div>
             </div>
         </form>
     </p-panel>
 
-    <p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePage" [(selection)]="seleccionItem" dataKey="cardCode" selectionMode="single" autoLayout="true" [responsive]="true">
+    <p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePageModal" [(selection)]="seleccionItem" dataKey="cardCode" selectionMode="single" autoLayout="true" [responsive]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th *ngFor="let col of columns">

@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SelectItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
-import { DemoService } from '../../../../services/demo.service';
 import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ITabla } from '../../interface/tabla.interface';
@@ -39,7 +38,6 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
 
   constructor(private breadcrumbService: BreadcrumbService,
               public mensajePrimeNgService: MensajePrimeNgService,
-              private demoService: DemoService,
               private readonly formBuilder: FormBuilder,
               private readonly ventasService: VentasService) {
     this.breadcrumbService.setItems([

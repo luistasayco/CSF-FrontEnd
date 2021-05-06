@@ -1,45 +1,150 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { DemoService } from '../../../../../services/demo.service';
 import { LanguageService } from '../../../../../services/language.service';
+import { Subscription } from 'rxjs';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { IReceta } from '../../interfaces/receta.interface';
+import { VentasService } from '../../../../modulo-venta/services/ventas.service';
+import { map } from 'rxjs/operators';
+import { ITabla } from '../../../../modulo-venta/interface/tabla.interface';
+import { SelectItem } from 'primeng';
+import { VentaCompartidoService } from '../../services/venta-compartido.service';
 
 @Component({
   selector: 'app-modal-busqueda-receta',
   templateUrl: './modal-busqueda-receta.component.html',
   styleUrls: ['./modal-busqueda-receta.component.css']
 })
-export class ModalBusquedaRecetaComponent implements OnInit {
-  
+export class ModalBusquedaRecetaComponent implements OnInit, OnDestroy {
   @Input() append: any;
-
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
-  isVisualizar: boolean = false;
+
+  subscription$: Subscription;
+  // Formulario
+  formularioBusqueda: FormGroup;
+  listTablaEstadoConsultaMedica: SelectItem[];
+  listTablaEstadoReceta: SelectItem[];
+
   columnas: any;
-  listModelo: any[];
+  listModelo: IReceta[];
+  seleccionItem: IReceta;
 
   isVisualizarObservacion: boolean;
   isAtencionObservacion: string;
 
-  constructor(private demoService: DemoService,
-              public lenguageService: LanguageService) { }
+  @Output() eventoAceptar = new EventEmitter<IReceta>();
+  @Output() eventoCancelar = new EventEmitter<IReceta>();
+
+  constructor(public lenguageService: LanguageService,
+              private readonly ventasService: VentasService,
+              private readonly formBuilder: FormBuilder,
+              private readonly ventaCompartidoService: VentaCompartidoService) { }
 
   ngOnInit(): void {
-    this.demoService.getReceta().then(alm => this.listModelo = alm);
+    this.onHeaderGrilla();
+    this.onListarEstadoConsultaMedica();
+    this.onListarEstadoReceta();
+    this.buildForm();
+  }
 
+  private onHeaderGrilla() {
     this.columnas = [
-      { field: 'receta', header: 'Receta' },
-      { field: 'atencion', header: 'Atención' },
-      { field: 'fecha', header: 'Fecha' },
+      { field: 'ide_receta', header: 'Receta' },
+      { field: 'cod_atencion', header: 'Atención' },
+      { field: 'fec_registra', header: 'Fecha' },
       { field: 'paciente', header: 'Paciente' },
       { field: 'telefono', header: 'Telefono' },
-      { field: 'telefono', header: 'Telefono2' },
-      { field: 'nombreMedico', header: 'Medido' },
-      { field: 'tipoConsumo', header: 'Tip. Cons. Med.' }
+      { field: 'telefono2', header: 'Telefono2' },
+      { field: 'medico', header: 'Medido' },
+      { field: 'est_consulta_medica', header: 'Tip. Cons. Med.' },
+      { field: 'flg_atendido_online', header: 'Ate.' }
     ];
+  }
+
+  private onListarEstadoConsultaMedica(){
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getListTablaClinicaPorFiltros('MEDISYN_ESTADO_CONSULTA_MEDICA', '', 34, 0, -1)
+    .pipe(
+      map((resp: ITabla[]) => {
+        this.listTablaEstadoConsultaMedica = [];
+        for (let item of resp) {
+          this.listTablaEstadoConsultaMedica.push({ value: item.codigo.trim(), label: item.nombre.trim() })
+        }
+      })
+    )
+    .subscribe();
+  }
+
+  private buildForm() {
+    this.formularioBusqueda = this.formBuilder.group({
+      tipoconsultamedica: [null],
+      fechainicio: [new Date()],
+      fechafin: [new Date()],
+      codreceta: [0],
+      nombre: [''],
+      estado: [null]
+    });
+  }
+
+  private onListarEstadoReceta(){
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getListTablaLogisticaPorFiltros('SBA_ESTADORECETA', '', 34, 0, -1)
+    .pipe(
+      map((resp: ITabla[]) => {
+        this.listTablaEstadoReceta = [];
+        for (let item of resp) {
+          this.listTablaEstadoReceta.push({ value: item.codigo.trim(), label: item.nombre.trim() })
+        }
+      })
+    )
+    .subscribe();
+  }
+
+  goListarPedido(){
+    const body = this.formularioBusqueda.value;
+
+    let tipoconsultamedica = body.tipoconsultamedica === null ? '' : body.tipoconsultamedica.value
+    let estado = body.estado === null ? '' : body.estado.value
+
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getListRecetasPorFiltro(body.fechainicio, body.fechafin, tipoconsultamedica, body.codreceta, body.nombre, estado)
+    .pipe(
+      map((resp: IReceta[]) => {
+        this.listModelo = resp;
+      })
+    )
+    .subscribe();
   }
 
   goVisualizarObservacion(atencion: string) {
     this.isVisualizarObservacion = !this.isVisualizarObservacion;
     this.isAtencionObservacion = atencion;
+  }
+
+  clickAceptar() {
+    this.LimpiarFiltroBusqueda();
+    this.eventoAceptar.emit(this.seleccionItem);
+  }
+
+  clickCancelar() {
+    this.LimpiarFiltroBusqueda();
+    this.eventoCancelar.emit();
+  }
+
+  private LimpiarFiltroBusqueda() {
+    this.formularioBusqueda.patchValue({
+      tipoconsultamedica: null,
+      fechainicio: new Date(),
+      fechafin: new Date(),
+      codreceta: 0,
+      nombre: '',
+      estado: null
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
   }
 }

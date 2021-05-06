@@ -55,7 +55,7 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
   }
 
   private goObtieneAlmacen() {
-    if (this.isWarehouseCode !== null || this.isWarehouseCode.trim() !== '') {
+    if (this.isWarehouseCode !== null || this.isWarehouseCode.trim() !== '' || this.isWarehouseCode !== undefined) {
       this.getWarehousesPorCodigo();
     }
   }

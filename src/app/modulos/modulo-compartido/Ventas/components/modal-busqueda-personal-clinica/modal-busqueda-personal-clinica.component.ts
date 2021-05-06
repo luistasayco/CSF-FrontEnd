@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { DemoService } from '../../../../../services/demo.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IPersonalClinica } from '../../interfaces/personal-clinica.interface';
 import { Subscription } from 'rxjs';
@@ -25,7 +24,7 @@ export class ModalBusquedaPersonalClinicaComponent implements OnInit {
   loading: boolean;
 
   @Input() isHabilitaControl: boolean;
-  @Output() eventoResgistroSeleccionado = new EventEmitter<IPersonalClinica>();
+  @Output() eventoAceptar = new EventEmitter<IPersonalClinica>();
   @Output() eventoCancelar = new EventEmitter<IPersonalClinica>();
   constructor(private ventaCompartidoService: VentaCompartidoService,
               private readonly fb: FormBuilder) { }
@@ -60,14 +59,13 @@ ngOnInit(): void {
     ];
   }
 
-  getListWarehousesContains() {
+  getListPersonalClinicaContains() {
     const formBody = this.formularioBusqueda.value;
     this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListPersonalClinicaPorNombre(formBody.nombre)
     .subscribe((data: IPersonalClinica[]) => {
       this.listModelo = [];
-      console.log('data', data);
       this.listModelo = data;
       this.loading = false;
     },
@@ -82,7 +80,7 @@ ngOnInit(): void {
       nombreVisor: this.seleccionItem.codpersonal
     });
     this.isVisualizar = false;
-    this.eventoResgistroSeleccionado.emit(this.seleccionItem);
+    this.eventoAceptar.emit(this.seleccionItem);
   }
 
   clickCancelar() {

@@ -17,10 +17,13 @@
                     <label class="label-custom" for="float-input-nro-comprobante">Comprobante: </label>
                     <input id="float-input-nro-comprobante" type="text" pInputText placeholder="Nro Comprobante" formControlName="codcomprobante">
                 </div>
-                <div class="ui-g-12 ui-md-4">
+                <div class="ui-g-12 ui-md-2">
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="goListar()"></button>
+                </div>
+                <div class="ui-g-12 ui-md-2">
+                    <app-btn-salir [isMargenTop]="true"></app-btn-salir>
                 </div>
             </div>
         </form>

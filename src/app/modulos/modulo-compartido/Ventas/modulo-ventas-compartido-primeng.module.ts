@@ -10,6 +10,9 @@ import { TreeModule } from 'primeng/tree';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { ToastModule } from 'primeng/toast';
+import { CheckboxModule } from 'primeng/checkbox';
+
 @NgModule({
   exports: [
     TableModule,
@@ -22,7 +25,9 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     TreeModule,
     RadioButtonModule,
     DropdownModule,
-    InputTextareaModule
+    InputTextareaModule,
+    ToastModule,
+    CheckboxModule
   ],
 })
 export class VentasCompartidoPrimeNgModule {}
