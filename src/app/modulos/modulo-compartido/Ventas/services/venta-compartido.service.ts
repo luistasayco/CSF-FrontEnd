@@ -78,12 +78,22 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Medico/GetListMedicoPorNombre/`, { params: parametros });
   }
 
-  getListProductoPorFiltro(codigo: string, nombre: string) {
+  getListProductoPorFiltro(codalmacem: string, codigo: string, nombre: string, codaseguradora: string, codcia: string) {
     let parametros = new HttpParams();
+    parametros = parametros.append('codalmacem', codalmacem);
     parametros = parametros.append('codigo', codigo);
     parametros = parametros.append('nombre', nombre);
+    parametros = parametros.append('codaseguradora', codaseguradora);
+    parametros = parametros.append('codcia', codcia);
     return this.http.get<IProducto[]>
     (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
+  }
+
+  getProductoPorCodigo(codproducto: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codproducto', codproducto);
+    return this.http.get<IProducto>
+    (`${environment.url_api_venta}Producto/GetProductoPorCodigo/`, { params: parametros });
   }
 
   getListProductoGenericoPorCodigo(codigo: string) {

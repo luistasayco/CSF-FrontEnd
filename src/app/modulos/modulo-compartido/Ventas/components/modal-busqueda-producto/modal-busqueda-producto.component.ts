@@ -5,6 +5,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { IProducto } from '../../interfaces/producto.interface';
 import { MessageService } from 'primeng/api';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-modal-busqueda-producto',
@@ -110,7 +111,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     // isCodAlmacen
 
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListProductoPorFiltro(formBody.nombreVisor, '')
+    this.subscription$ = this.ventaCompartidoService.getListProductoPorFiltro(this.isCodAlmacen, formBody.nombreVisor, '', this.isCodAseguradora, this.isCodContratante)
     .subscribe((data: IProducto[]) => {
       this.eventoAceptar.emit(data[0]);
       this.LimpiarFiltroBusqueda();
@@ -122,6 +123,12 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
   getListProductoPorFiltro() {
     const formBody = this.formularioBusqueda.value;
+
+    if (this.isCodAlmacen === null) {
+      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
+      return;
+    }
+
     if (formBody.codigo.length === 0 && formBody.nombre.length === 0) {
       this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Nombre o Código a consultar`});
       return;
@@ -142,13 +149,19 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListProductoPorFiltro(formBody.codigo, formBody.nombre)
-    .subscribe((data: IProducto[]) => {
-      this.listModelo = [];
-      this.listModelo = data;
-      this.listModeloGenerico = [];
+    this.subscription$ = this.ventaCompartidoService.getListProductoPorFiltro(this.isCodAlmacen, formBody.codigo, formBody.nombre, this.isCodAseguradora, this.isCodContratante)
+    .pipe(
+      map((data: IProducto[])=> {
+        this.listModelo = [];
+        this.listModelo = data;
+
+        console.log('this.listModelo', this.listModelo);
+
+        this.listModeloGenerico = [];
       this.loading = false;
-    },
+      }
+    ))
+    .subscribe(()=> {},
     (error) => {
       this.loading = false;
     });

@@ -218,7 +218,7 @@
             </div>
 
             <div class="ui-g-12 ui-md-2">
-                <app-modal-busqueda-producto [isCodAlmacen]="isCodAlmacen" (eventoAceptar)="goProductoSeleccionado($event)"></app-modal-busqueda-producto>
+                <app-modal-busqueda-producto [isCodAlmacen]="isCodAlmacen" (eventoAceptar)="goProductoSeleccionado($event)" [isCodAseguradora]="isCodAseguradora" [isCodContratante]="isCodContratante"></app-modal-busqueda-producto>
             </div>
 
             <div class="ui-g-12 ui-md-10">
@@ -241,7 +241,7 @@
                         <td class="custom-td-ico">
                             <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger"></button>
                         </td>
-                        <td *ngFor="let col of columns" [ngClass]="col.field === 'codProd' 
+                        <td *ngFor="let col of columns" [ngClass]="col.field === 'codproducto' 
                                                                     ? 'custom-td-producto': col.field === 'lote' 
                                                                     ? 'custom-td-lote':col.field === 'descripcion' 
                                                                     ? 'custom-td-descripcion':col.field === 'noCubierto' 
@@ -249,7 +249,7 @@
                                                                     ? 'custom-td-number-1':null" [ngSwitch]="col.field">
                             <span class="ui-column-title">{{col.header}}</span>
 
-                            <span *ngSwitchCase="'codProd'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                            <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
                             <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="rowData.codventa" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codproducto']"></app-modal-consulta-lote></span>
                             <span *ngSwitchCase="'tipoAutorizacion'"><p-dropdown id="dropdown-tipoAutorizacion" class="ui dropdown-item-text" [options]="listTipoAutorizacion"  optionLabel="label" appendTo="body" (onChange) ="goChangeTipoAutorizacion($event, index)"></p-dropdown></span>
                             <span *ngSwitchDefault>{{ rowData[col.field] }}</span>

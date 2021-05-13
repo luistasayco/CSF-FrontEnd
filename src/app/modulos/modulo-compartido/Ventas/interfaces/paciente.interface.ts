@@ -42,4 +42,5 @@ export interface IPaciente {
     traslado: string;
     exclusiones: string;
     codatenciondestino: string;
+    idegctipoatencionmae: number;
 }

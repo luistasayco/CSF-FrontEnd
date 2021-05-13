@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 export interface IResultBusquedaVenta {
     codventa: string;
     codalmacen: string;
@@ -131,6 +132,30 @@ export interface IVentaDetalle {
     valor_dscto: number;
 }
 
+export interface INewVentaDetalle {
+    codalmacen: string;
+    tipomovimiento: string;
+    codproducto: string;
+    cantidad: number;
+    preciounidadcondcto: number;
+    precioventaPVP: number;
+    valorVVF: number;
+    valorVVP: number;
+    stockalmacen: number;
+    porcentajedctoproducto: number;
+    montototal: number;
+    montopaciente: number;
+    montoaseguradora: number;
+    promedio: number;
+    gnc: string;
+    codpedido: string;
+    nombreproducto: string;
+    porcentajedctoplan: number;
+    porcentajecoaseguro: number;
+    valor_dscto: number;
+    moneda: string;
+}
+
 export interface IVentaCabeceraDatos {
     codventa: string;
     codalmacen: string;
@@ -229,4 +254,36 @@ export interface IHospital {
     codaseguradora: string;
     planpoliza: string;
     polizaplan: string;
+}
+
+export interface IObservableLocal {
+    observable: Observable<any>;
+    nombreTabla: string;
+}
+
+export interface IAseguradoraxProducto {
+    codaseguradora: string;
+    codproducto: string;
+    fec_registro: Date;
+    cod_tipoatencion_mae: number;
+}
+
+export interface IConvenios {
+    idconvenio: number;
+    fechadocumento: Date;
+    codalmacen: string;
+    tipomovimiento: string;
+    codtipocliente: string;
+    codcliente: string;
+    codpaciente: string;
+    codaseguradora: string;
+    codcia: string;
+    codproducto: string;
+    fechainicio: Date;
+    fechafin: Date;
+    excepto: boolean;
+    tipomonto: string;
+    monto: number;
+    moneda: string;
+    estado: boolean;
 }

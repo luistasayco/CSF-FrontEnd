@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -12,6 +12,7 @@ import { IResultBusquedaPedido } from '../interface/pedido.interface';
 import { IVentaConfiguracion, IVentaConfiguracionRegistrar, IVentaConfiguracionModificar, IVentaConfiguracionEliminar } from '../interface/venta-configuracion.interface';
 import { ISeriePorMaquina, ISeriePorMaquinaEliminar, ISerie, ISerieRegistrar, ISeriePorMaquinaRegistrar, ISeriePorMaquinaModificar } from '../interface/serie-por-maquina.interface';
 import { ITabla } from '../interface/tabla.interface';
+import { IProducto } from '../../modulo-compartido/Ventas/interfaces/producto.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -267,6 +268,17 @@ export class VentasService {
     (`${environment.url_api_venta}Tabla/GetListTablaLogisticaPorFiltros/`, { params: parametros });
   }
 
+  getTablaLogisticaPorFiltros(codtabla: string, buscar: string, key: number, numerolineas: number, orden: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codtabla', codtabla);
+    parametros = parametros.append('buscar', buscar);
+    parametros = parametros.append('key', key.toString());
+    parametros = parametros.append('numerolineas', numerolineas.toString());
+    parametros = parametros.append('orden', orden.toString());
+    return this.http.get<ITabla>
+    (`${environment.url_api_venta}Tabla/GetTablaLogisticaPorFiltros/`, { params: parametros });
+  }
+
   // Hospital Datos
   getHospitalDatosPorAtencion(codatencion: string) {
     let parametros = new HttpParams();
@@ -290,6 +302,39 @@ export class VentasService {
     return this.http.get<IHospital[]>
     (`${environment.url_api_venta}Hospital/GetListHospitalPacienteClinicaPorFiltros/`, { params: parametros });
   }
+
+  getGastoCubiertoPorFiltro(codaseguradora: string, codproducto: string, tipoatencion: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codaseguradora', codaseguradora);
+    parametros = parametros.append('codproducto', codproducto);
+    parametros = parametros.append('tipoatencion', tipoatencion.toString());
+    return this.http.get<boolean>
+    (`${environment.url_api_venta}Venta/GetGastoCubiertoPorFiltro/`, { params: parametros });
+  }
+
+  getConveniosPorFiltros(codalmacen: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string, codaseguradora: string, codcia: string, codproducto: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('tipomovimiento', tipomovimiento);
+    parametros = parametros.append('codtipocliente', codtipocliente);
+    parametros = parametros.append('codcliente', codcliente);
+    parametros = parametros.append('codpaciente', codpaciente);
+    parametros = parametros.append('codaseguradora', codaseguradora);
+    parametros = parametros.append('codcia', codcia);
+    parametros = parametros.append('codproducto', codproducto);
+    return this.http.get<IConvenios[]>
+    (`${environment.url_api_venta}Convenios/GetConveniosPorFiltros/`, { params: parametros });
+  }
+
+  getListProductoAlternativoPorCodigo(codproducto: string, codaseguradora: string, codcia: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codaseguradora', codaseguradora);
+    parametros = parametros.append('codcia', codcia);
+    parametros = parametros.append('codproducto', codproducto);
+    return this.http.get<IProducto[]>
+    (`${environment.url_api_venta}Producto/GetListProductoAlternativoPorCodigo/`, { params: parametros });
+  }
+
 
   private setAsignaValoresAuditabilidad<T>(data: any): T{
     data.regIdUsuario = this.userContextService.getIdUsuario();

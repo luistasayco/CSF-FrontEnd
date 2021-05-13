@@ -1,3 +1,21 @@
  .ui-inputtext {
      text-transform: uppercase !important;
  }
+ 
+ .producto-agotado-background {
+     color: #ffffff !important;
+     background-color: #880382 !important;
+     text-align: center;
+ }
+ 
+ .producto-restringido-background {
+     color: #ffffff !important;
+     background-color: #a50606 !important;
+     text-align: center;
+ }
+ 
+ .producto-alta-riesgo-background {
+     color: #ffffff !important;
+     background-color: #0d148f !important;
+     text-align: center;
+ }
