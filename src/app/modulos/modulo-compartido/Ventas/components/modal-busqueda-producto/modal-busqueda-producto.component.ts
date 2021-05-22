@@ -3,9 +3,10 @@ import { GlobalsConstantsForm } from '../../../../../constants/globals-constants
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { IProducto } from '../../interfaces/producto.interface';
-import { MessageService } from 'primeng/api';
+import swal from'sweetalert2';
 import { map } from 'rxjs/operators';
+import { IStock } from '../../interfaces/stock.interface';
+import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
 
 @Component({
   selector: 'app-modal-busqueda-producto',
@@ -14,10 +15,11 @@ import { map } from 'rxjs/operators';
 })
 export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
-  listModelo: IProducto[];
-  listModeloGenerico: IProducto[];
+  listModelo: IStock[];
+  listModeloGenerico: IStock[];
 
-  seleccionItem: IProducto;
+  seleccionItem: IStock;
+  seleccionModeloItem: IStock;
 
   isVisualizar: boolean = false;
 
@@ -36,12 +38,15 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   @Input() isCodAseguradora: string;
   @Input() isCodContratante: string;
 
-  @Output() eventoAceptar = new EventEmitter<IProducto>();
-  @Output() eventoCancelar = new EventEmitter<IProducto>();
+  @Output() eventoAceptar = new EventEmitter<IStock>();
+  @Output() eventoCancelar = new EventEmitter<IStock>();
+
+  timeAnimationModal = ConstantesGenerales.DURACION_ANIMACION_MODAL;
+
+  isVisualizarProducto: boolean = false;
 
   constructor(private ventaCompartidoService: VentaCompartidoService,
-              private readonly fb: FormBuilder,
-              public readonly messageService: MessageService) { }
+              private readonly fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.seleccionItem = null;
@@ -66,21 +71,21 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
   private buildColumnas() {
     this.columnas = [
-      { field: 'codproducto', header: 'Código' },
+      { field: 'itemCode', header: 'Código' },
       { field: 'lote', header: 'Lote' },
       { field: 'itemName', header: 'Nombre' },
       { field: 'u_SYP_CS_LABORATORIO', header: 'Laboratorio' },
-      { field: 'avgStdPrice', header: 'Precio' },
-      { field: 'quantityOnStock', header: 'Stock' }
+      { field: 'price', header: 'Precio' },
+      { field: 'onHand_1', header: 'Stock' }
     ];
 
     this.columnasGenerico = [
-      { field: 'codproducto', header: 'Código' },
+      { field: 'itemCode', header: 'Código' },
       { field: 'lote', header: 'Lote' },
       { field: 'itemName', header: 'Nombre' },
       { field: 'u_SYP_CS_LABORATORIO', header: 'Laboratorio' },
-      { field: 'avgStdPrice', header: 'Precio' },
-      { field: 'quantityOnStock', header: 'Stock' }
+      { field: 'price', header: 'Precio' },
+      { field: 'onHand_1', header: 'Stock' }
     ];
   }
 
@@ -88,36 +93,38 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     const formBody = this.formularioVisor.value;
 
     if (this.isCodAlmacen === null) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
       return;
     }
 
     if (formBody.nombreVisor === null) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Código a consultar`});
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Código a consultar`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Código a consultar`,'info')
       return;
     }
 
     if (formBody.nombreVisor.length === 0) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Código a consultar`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Código a consultar`,'info')
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Código a consultar`});
       return;
     }
 
     if (formBody.nombreVisor.length !== 8) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Código a consultar Incorrecto`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Código a consultar Incorrecto`,'info')
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Código a consultar Incorrecto`});
       return;
     }
 
-    // Enviar Almacen
-    // isCodAlmacen
-
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListProductoPorFiltro(this.isCodAlmacen, formBody.nombreVisor, '', this.isCodAseguradora, this.isCodContratante)
-    .subscribe((data: IProducto[]) => {
-      this.eventoAceptar.emit(data[0]);
+    this.subscription$ = this.ventaCompartidoService.getListStockPorProductoAlmacen(this.isCodAlmacen, formBody.nombreVisor)
+    .subscribe((data: IStock) => {
+      this.eventoAceptar.emit(data);
       this.LimpiarFiltroBusqueda();
     },
     (error) => {
-      this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail:error.error.resultadoDescripcion});
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
+      // this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail:error.error.resultadoDescripcion});
     });
   }
 
@@ -125,22 +132,26 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     const formBody = this.formularioBusqueda.value;
 
     if (this.isCodAlmacen === null) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
       return;
     }
 
     if (formBody.codigo.length === 0 && formBody.nombre.length === 0) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Nombre o Código a consultar`});
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Nombre o Código a consultar`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Código a consultar`,'info')
       return;
     }
 
     if (formBody.codigo.length === 0 && formBody.nombre.length < 3) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Nombre debe de tener 3 caracteres como minímo`});
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Nombre debe de tener 3 caracteres como minímo`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Nombre debe de tener 3 caracteres como minímo`,'info')
       return;
     }
 
     if (formBody.codigo.length > 0 && formBody.codigo.length < 8) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Código tiene 8 caracteres`});
+      swal.fire(this.globalConstants.msgInfoSummary,`Código tiene 8 caracteres`,'info')
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Código tiene 8 caracteres`});
       return;
     }
 
@@ -149,21 +160,20 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListProductoPorFiltro(this.isCodAlmacen, formBody.codigo, formBody.nombre, this.isCodAseguradora, this.isCodContratante)
+    this.subscription$ = this.ventaCompartidoService.getListStockPorFiltro(this.isCodAlmacen, formBody.nombre, formBody.codigo, true)
     .pipe(
-      map((data: IProducto[])=> {
+      map((data: IStock[])=> {
         this.listModelo = [];
         this.listModelo = data;
 
-        console.log('this.listModelo', this.listModelo);
-
         this.listModeloGenerico = [];
-      this.loading = false;
+        this.loading = false;
       }
     ))
     .subscribe(()=> {},
     (error) => {
       this.loading = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
     });
   }
 
@@ -176,17 +186,17 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.loadingGenerico = true;
-    this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListProductoGenericoPorCodigo(this.seleccionItem.u_SYP_CS_FAMILIA)
-    .subscribe((data: IProducto[]) => {
-      this.listModeloGenerico = [];
-      this.listModeloGenerico = data;
-      this.loadingGenerico = false;
-    },
-    (error) => {
-      this.loadingGenerico = false;
-    });
+    // this.loadingGenerico = true;
+    // this.subscription$ = new Subscription();
+    // this.subscription$ = this.ventaCompartidoService.getListProductoGenericoPorCodigo(this.seleccionItem.u_SYP_CS_FAMILIA)
+    // .subscribe((data: IProducto[]) => {
+    //   this.listModeloGenerico = [];
+    //   this.listModeloGenerico = data;
+    //   this.loadingGenerico = false;
+    // },
+    // (error) => {
+    //   this.loadingGenerico = false;
+    // });
   }
 
   goClearGenerico() {
@@ -194,9 +204,9 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   }
 
   clickAceptar() {
-    this.formularioVisor.patchValue({
-      nombreVisor: this.seleccionItem.codproducto
-    });
+    // this.formularioVisor.patchValue({
+    //   nombreVisor: this.seleccionItem.itemCode
+    // });
     this.isVisualizar = false;
     this.eventoAceptar.emit(this.seleccionItem);
     this.LimpiarFiltroBusqueda();
@@ -218,10 +228,17 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     this.goClearGenerico();
   }
 
+  goChangeVisibleRegistro(event: IStock) {
+    // console.log('this.seleccionItem ', this.seleccionItem );
+    // console.log('event ', event );
+    this.seleccionModeloItem = event;
+    this.isVisualizarProducto =!this.isVisualizarProducto; 
+ 
+  }
+
   ngOnDestroy() {
     if (this.subscription$) {
       this.subscription$.unsubscribe();
     }
   }
-
 }

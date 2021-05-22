@@ -23,7 +23,7 @@
                                                                                     ? 'custom-td-number-1':null">
                         <span class="p-column-title">{{col.header}}</span>
 
-                        <span *ngSwitchCase="'codpro'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                        <!-- <span *ngSwitchCase="'codpro'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span> -->
                         <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                     </td>
                 </tr>

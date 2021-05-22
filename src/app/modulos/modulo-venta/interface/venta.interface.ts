@@ -132,28 +132,66 @@ export interface IVentaDetalle {
     valor_dscto: number;
 }
 
+export interface INewVentaCabecera {
+    // codventa: string;
+    codalmacen: string;
+    tipomovimiento: string;
+    codempresa: string;
+    codtipocliente: string;
+    codcliente: string;
+    codpaciente: string;
+    nombre: string;
+    cama: string;
+    codmedico: string;
+    codatencion: string;
+    // codpresotor: string;
+    codpoliza: string;
+    planpoliza: string;
+    deducible: number;
+    codaseguradora: string;
+    codcia: string;
+    porcentajecoaseguro: number;
+    porcentajeimpuesto: number;
+    // montodctoplan: number;
+    porcentajedctoplan: number;
+    moneda: string;
+    codplan: string;
+    observacion: string;
+    codcentro: string;
+    nombremedico: string;
+    nombreaseguradora: string;
+    nombrecia: string;
+    tipocambio: number;
+    codpedido: string;
+    nombrediagnostico: string;
+    flagpaquete: string;
+    flg_gratuito: boolean;
+    nombreestacion: string;
+    listaVentaDetalle: INewVentaDetalle[];
+}
+
 export interface INewVentaDetalle {
     codalmacen: string;
     tipomovimiento: string;
     codproducto: string;
+    nombreproducto: string;
     cantidad: number;
-    preciounidadcondcto: number;
     precioventaPVP: number;
-    valorVVF: number;
     valorVVP: number;
     stockalmacen: number;
+    stockalm_fraccion: number;
     porcentajedctoproducto: number;
+    porcentajedctoplan: number;
     montototal: number;
     montopaciente: number;
     montoaseguradora: number;
-    promedio: number;
-    gnc: string;
     codpedido: string;
-    nombreproducto: string;
-    porcentajedctoplan: number;
-    porcentajecoaseguro: number;
-    valor_dscto: number;
-    moneda: string;
+    totalconigv: number;
+    totalsinigv: number;
+    isGNC: string;
+    codtipoproducto: string;
+    preciounidadcondscto: number;
+    igvproducto: number;
 }
 
 export interface IVentaCabeceraDatos {

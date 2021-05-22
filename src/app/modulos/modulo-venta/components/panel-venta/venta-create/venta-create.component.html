@@ -2,7 +2,7 @@
     <div class="ui-g ui-fluid">
         <form [formGroup]="formularioCabecera">
             <div class="ui-g-12 ui-md-4">
-                <h2><strong>Nro. Venta - XXXXXXXX</strong></h2>
+                <h2><strong>Nro. Venta - {{isCodVenta}}</strong></h2>
             </div>
             <div class="ui-g-12 ui-md-1">
                 {{isMensajePolizaBCR}}
@@ -68,6 +68,12 @@
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <p-radioButton name="tipoCliente" value="04" label="Medíco" inputId="opt04" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
+                            </div>
+                            <div class="ui-g-12 ui-md-6">
+
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <input type="text" formControlName="codpedido" pInputText>
                             </div>
                         </div>
                         <hr>
@@ -248,8 +254,8 @@
                                                                     ? 'custom-td-checkbox':col.field !== 'tipoAutorizacion' 
                                                                     ? 'custom-td-number-1':null" [ngSwitch]="col.field">
                             <span class="ui-column-title">{{col.header}}</span>
-
-                            <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                            <span *ngSwitchCase="'cantidad'"><input type="number" [(ngModel)]="rowData[col.field]" min="0" pInputText (keyup.enter)="goChangeCantidad(rowData, index)"></span>
+                            <!-- <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span> -->
                             <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="rowData.codventa" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codproducto']"></app-modal-consulta-lote></span>
                             <span *ngSwitchCase="'tipoAutorizacion'"><p-dropdown id="dropdown-tipoAutorizacion" class="ui dropdown-item-text" [options]="listTipoAutorizacion"  optionLabel="label" appendTo="body" (onChange) ="goChangeTipoAutorizacion($event, index)"></p-dropdown></span>
                             <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
@@ -333,4 +339,15 @@
 
 <p-dialog header="Lista de Diagnóstico" *ngIf="isVisibleHospitalExcusiones" [(visible)]="isVisibleHospitalExcusiones" [modal]="true" [closable]="false">
     <app-modal-busqueda-hospital-exclusiones [isListModelo]="listHospitalExclusiones" (eventoCerrar)="goCerrarHospitalExclusiones()"></app-modal-busqueda-hospital-exclusiones>
+</p-dialog>
+
+<p-dialog header="Grabar" [(visible)]="isDisplaySave" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+    Guardando Informacion...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
 </p-dialog>

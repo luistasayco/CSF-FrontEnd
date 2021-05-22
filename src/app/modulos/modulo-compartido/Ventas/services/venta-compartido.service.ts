@@ -14,6 +14,7 @@ import { UtilService } from '../../../../services/util.service';
 import { IReceta } from '../interfaces/receta.interface';
 import { ICentroCosto } from '../../../modulo-administracion/models/aprobadorCentroCosto.interface';
 import { ICentro } from '../interfaces/centro.interface';
+import { IStock } from '../interfaces/stock.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -78,30 +79,38 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Medico/GetListMedicoPorNombre/`, { params: parametros });
   }
 
-  getListProductoPorFiltro(codalmacem: string, codigo: string, nombre: string, codaseguradora: string, codcia: string) {
+  // getListProductoPorFiltro(codalmacem: string, codigo: string, nombre: string, codaseguradora: string, codcia: string) {
+  //   let parametros = new HttpParams();
+  //   parametros = parametros.append('codalmacem', codalmacem);
+  //   parametros = parametros.append('codigo', codigo);
+  //   parametros = parametros.append('nombre', nombre);
+  //   parametros = parametros.append('codaseguradora', codaseguradora);
+  //   parametros = parametros.append('codcia', codcia);
+  //   return this.http.get<IProducto[]>
+  //   (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
+  // }
+
+  getProductoPorCodigo(codalmacem: string, codproducto: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string) {
     let parametros = new HttpParams();
     parametros = parametros.append('codalmacem', codalmacem);
-    parametros = parametros.append('codigo', codigo);
-    parametros = parametros.append('nombre', nombre);
+    parametros = parametros.append('codproducto', codproducto);
     parametros = parametros.append('codaseguradora', codaseguradora);
     parametros = parametros.append('codcia', codcia);
-    return this.http.get<IProducto[]>
-    (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
-  }
 
-  getProductoPorCodigo(codproducto: string) {
-    let parametros = new HttpParams();
-    parametros = parametros.append('codproducto', codproducto);
+    parametros = parametros.append('tipomovimiento', tipomovimiento);
+    parametros = parametros.append('codtipocliente', codtipocliente);
+    parametros = parametros.append('codcliente', codcliente);
+    parametros = parametros.append('codpaciente', codpaciente);
     return this.http.get<IProducto>
     (`${environment.url_api_venta}Producto/GetProductoPorCodigo/`, { params: parametros });
   }
 
-  getListProductoGenericoPorCodigo(codigo: string) {
-    let parametros = new HttpParams();
-    parametros = parametros.append('codigo', codigo);
-    return this.http.get<IProducto[]>
-    (`${environment.url_api_venta}Producto/GetListProductoGenericoPorCodigo/`, { params: parametros });
-  }
+  // getListProductoGenericoPorCodigo(codigo: string) {
+  //   let parametros = new HttpParams();
+  //   parametros = parametros.append('codigo', codigo);
+  //   return this.http.get<IProducto[]>
+  //   (`${environment.url_api_venta}Producto/GetListProductoGenericoPorCodigo/`, { params: parametros });
+  // }
 
   getListSeriePorMaquina() {
     return this.http.get<ISeriePorMaquina[]>
@@ -157,5 +166,39 @@ export class VentaCompartidoService {
     parametros = parametros.append('codcentro', codcentro);
     return this.http.get<ICentro>
     (`${environment.url_api_venta}Centro/GetCentroPorCodigo/`, { params: parametros });
+  }
+
+  getListStockPorFiltro(codalmacen: string, nombre: string, codproducto: string, constock: boolean) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('nombre', nombre);
+    parametros = parametros.append('codproducto', codproducto);
+    parametros = parametros.append('constock', constock.toString());
+    return this.http.get<IStock[]>
+    (`${environment.url_api_venta}Stock/GetListStockPorFiltro/`, { params: parametros });
+  }
+
+  getListStockPorProductoAlmacen(codalmacen: string, codproducto: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('codproducto', codproducto);
+    return this.http.get<IStock>
+    (`${environment.url_api_venta}Stock/GetListStockPorProductoAlmacen/`, { params: parametros });
+  }
+
+  getListStockLotePorFiltro(codalmacen: string, codproducto: string, constock: boolean) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('codproducto', codproducto);
+    parametros = parametros.append('constock', constock.toString());
+    return this.http.get<IStock>
+    (`${environment.url_api_venta}Stock/GetListStockLotePorFiltro/`, { params: parametros });
+  }
+
+  getProductoyStockAlmacenesPorCodigo(codproducto: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codproducto', codproducto);
+    return this.http.get<IProducto>
+    (`${environment.url_api_venta}Producto/GetProductoyStockAlmacenesPorCodigo/`, { params: parametros });
   }
 }

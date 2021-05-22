@@ -3,7 +3,6 @@ import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { MenuItem, SelectItem } from 'primeng';
 import { LanguageService } from '../../../../../services/language.service';
-import { DemoService } from '../../../../../services/demo.service';
 import { Router } from '@angular/router';
 import { VentasService } from '../../../services/ventas.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -13,19 +12,20 @@ import { IPaciente } from '../../../../modulo-compartido/Ventas/interfaces/pacie
 import { ICliente } from '../../../../modulo-compartido/Ventas/interfaces/cliente.interface';
 import { IPersonalClinica } from '../../../../modulo-compartido/Ventas/interfaces/personal-clinica.interface';
 import { IMedico } from '../../../../modulo-compartido/Ventas/interfaces/medico.interface';
-import { forkJoin, from, Subscription } from 'rxjs';
+import { from, Subscription } from 'rxjs';
 import { SessionService } from '../../../../../services/session.service';
 import { VentaDataService } from '../../../services/venta-data.service';
-import { ITipoAutorizacion, IHospitalExclusiones, IVentaDetalle, IObservableLocal, IConvenios, INewVentaDetalle } from '../../../interface/venta.interface';
-import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
+import { ITipoAutorizacion, IHospitalExclusiones, IObservableLocal, IConvenios, INewVentaDetalle, INewVentaCabecera } from '../../../interface/venta.interface';
 import { PlanesModel } from '../../../models/planes.model';
 import { IListarPedido } from '../../../../modulo-compartido/Ventas/interfaces/pedido-por-atencion.interface';
 import { IReceta } from '../../../../modulo-compartido/Ventas/interfaces/receta.interface';
 import { IProducto } from '../../../../modulo-compartido/Ventas/interfaces/producto.interface';
-import { concatMap, finalize, map, mergeMap } from 'rxjs/operators';
+import { concatMap, finalize } from 'rxjs/operators';
 import { VentaCompartidoService } from '../../../../modulo-compartido/Ventas/services/venta-compartido.service';
-import { select } from '@ngrx/store';
 import { ITabla } from '../../../interface/tabla.interface';
+import { UtilService } from '../../../../../services/util.service';
+import { IStock } from '../../../../modulo-compartido/Ventas/interfaces/stock.interface';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-venta-create',
@@ -74,24 +74,28 @@ export class VentaCreateComponent implements OnInit {
   isTabObservacion: string;
   isGastosCubierto: boolean;
   isItem: IProducto;
-  isTablaValidaVentaTransferencia: ITabla;
+  isModeloTablaValidaVentaTransferencia: ITabla;
   isListProductoRestringido: IProducto[];
-  isConvenios: IConvenios;
+  // isConvenios: IConvenios;
+  isTipoCambio: number = 0;
+  isTrabajaVariosIGV: boolean = false;
+  isCodVenta: string;
+  isFlgGeneroVenta: boolean;
+  isDisplaySave: boolean;
 
   subscription$: Subscription;
 
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
               public router: Router,
-              private demoService: DemoService,
               private readonly ventasService: VentasService,
               private readonly ventaDataService: VentaDataService,
               private readonly ventaCompartidoService: VentaCompartidoService,
               private confirmationService: ConfirmationService,
               private sessionService: SessionService,
               private readonly fb: FormBuilder,
-              // public readonly mensajePrimeNgService: MensajePrimeNgService,
-              public readonly messageService: MessageService) {     
+              public readonly messageService: MessageService,
+              private readonly utilService: UtilService) {     
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Venta', routerLink: ['module-ve/venta-create'] }
@@ -102,6 +106,11 @@ export class VentaCreateComponent implements OnInit {
     // Contruye Formulario
     this.listModelo = [];
     this.isListProductoRestringido = [];
+    // Inicializamos el valor
+    this.isTrabajaVariosIGV = true;
+    this.isCodVenta = 'XXXXXXXX';
+    this.isFlgGeneroVenta = false;
+
     this.buildForm();
     this.buildFormTotales();
 
@@ -112,7 +121,6 @@ export class VentaCreateComponent implements OnInit {
     this.onColumnasGrilla();
     this.goGetTipoAutorizacion();
 
-    // this.demoService.getCarsLarge().then(cars => this.listModelo = cars);
   }
 
   private buildForm() {
@@ -136,8 +144,8 @@ export class VentaCreateComponent implements OnInit {
       codAseguradora: [{value: null, disabled: false}],
       aseguradora: [{value: null, disabled: true}],
       plan: [{value: null, disabled: true}],
-      descuentoPlan: [{value: 0, disabled: true}],
-      coaseguro: [{value: 0, disabled: true}],
+      descuentoPlan: [{value: 0, disabled: false}],
+      coaseguro: [{value: 0, disabled: false}],
       titular: [{value: null, disabled: true}],
       poliza: [{value: null, disabled: true}],
       planPoliza: [{value: null, disabled: true}],
@@ -153,7 +161,9 @@ export class VentaCreateComponent implements OnInit {
       diagnostico: [null],
       medicoOtros: [null],
       observacionGeneral: [null],
-      idegctipoatencionmae: [null]
+      idegctipoatencionmae: [null],
+      codpedido:[{value: null, disabled: true}],
+      fecgenerapedido:[{value: null, disabled: true}]
     });
   }
 
@@ -478,65 +488,70 @@ export class VentaCreateComponent implements OnInit {
     });
   }
 
-  goProductoSeleccionado(item: IProducto) {
-
-    // Obtenermos los datos de la cabecera
+  goProductoSeleccionado(item: IStock) {
     const bodyCabecera = this.formularioCabecera.value;
 
-    if (item.flgrestringido) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Producto Restringido. Ver alternativo'});
-      return;
-    }
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getProductoPorCodigo(this.isCodAlmacen ,item.itemCode, bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente)
+    .subscribe((data: IProducto) => {
+      this.isItem = data;
 
-    if (item.quantityOnStock === 0) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Stock Negativo. Favor de revisar Producto'});
-      return;
-    }
+      if (this.isItem.flgrestringido) {
+        swal.fire(this.globalConstants.msgInfoSummary,'Producto Restringido. Ver alternativo','error')
+        return;
+      }
 
-    if (item.u_SYP_CS_CLASIF = 'Alto riesgo' ) {
-      this.confirmationService.confirm({
-        message: '¿Desea seguir con la venta?',
-        header: 'Esta por vender productos de ALTO RIESGO',
-        icon: 'pi pi-info-circle',
-        acceptLabel: 'Si',
-        rejectLabel: 'No',
-        accept: () => {
+      if (item.onHand_1 === 0) {
+        swal.fire(this.globalConstants.msgInfoSummary,'Stock Negativo. Favor de revisar Producto','error')
+        return;
+      }
+
+      if (item.u_SYP_CS_CLASIF !== null ) {
+        if (item.u_SYP_CS_CLASIF === 'Alto riesgo' ) {
+
+          swal.fire({  
+            title: 'Esta por vender productos de ALTO RIESGO',
+            text: '¿Desea seguir con la venta?',
+            icon: 'warning',
+            showCancelButton: true,  
+            confirmButtonText: 'SI',
+            cancelButtonText: 'NO',
+            showConfirmButton: true,
+          }).then((result) => {  
+            /* Read more about isConfirmed, isDenied below */  
+              if (result.isConfirmed) {    
+                this.onObtieneDetalleProducto(item);
+              }
+          });
+        } else {
           this.onObtieneDetalleProducto(item);
-        },
-        reject: () => {
-          return;
         }
-      });
-    } else {
-      this.onObtieneDetalleProducto(item);
-    }
+      } else {
+        this.onObtieneDetalleProducto(item);
+      }
+
+    },
+    (error) => {
+      swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Producto Restringido. Ver alternativo'});
+    });
   }
 
-  private onListObservableProducto(item: IProducto) {
+  private onListObservableProducto(codproducto: string) {
 
     const bodyCabecera = this.formularioCabecera.value;
 
     let itemObservable: IObservableLocal;
     let listObservable: IObservableLocal[] = [];
 
-    itemObservable = { observable: this.ventasService.getGastoCubiertoPorFiltro(bodyCabecera.codAseguradora, item.codproducto, bodyCabecera.idegctipoatencionmae), nombreTabla: 'GastoCubierto' };
+    itemObservable = { observable: this.ventasService.getGastoCubiertoPorFiltro(bodyCabecera.codAseguradora, codproducto, bodyCabecera.idegctipoatencionmae), nombreTabla: 'GastoCubierto' };
     listObservable.push(itemObservable);
 
-    itemObservable = { observable: this.ventaCompartidoService.getProductoPorCodigo(item.codproducto), nombreTabla: 'Producto' };
-    listObservable.push(itemObservable);
-
-    itemObservable = { observable: this.ventasService.getTablaLogisticaPorFiltros('VALIDARVENTATRANSFERENCIA', '02', 50, 1, -1), nombreTabla: 'Tabla' };
-    listObservable.push(itemObservable);
-
-    if (this.isTipoCliente === '01') {
-      itemObservable = { observable: this.ventasService.getConveniosPorFiltros('', 'DV', this.isTipoCliente, '', bodyCabecera.paciente , bodyCabecera.codAseguradora ,bodyCabecera.codContratante, item.codproducto ), nombreTabla: 'Convenios' };
-    } else {
-      itemObservable = { observable: this.ventasService.getConveniosPorFiltros('', 'DV', this.isTipoCliente, '', '' , '' , '', item.codproducto ), nombreTabla: 'Convenios' };
+    if ( bodyCabecera.codAseguradora === '0207' && bodyCabecera.codContratante === '0000382')
+    {
+      itemObservable = { observable: this.ventasService.getListProductoAlternativoPorCodigo( codproducto, bodyCabecera.codAseguradora, bodyCabecera.codContratante), nombreTabla: 'Producto Restringido' };
+      listObservable.push(itemObservable);
     }
-    listObservable.push(itemObservable);
-
-    itemObservable = { observable: this.ventasService.getListProductoAlternativoPorCodigo( item.codproducto, bodyCabecera.codAseguradora, bodyCabecera.codContratante), nombreTabla: 'Producto Restringido' };
-    listObservable.push(itemObservable);
 
     return from(listObservable)
     .pipe(
@@ -544,122 +559,45 @@ export class VentaCreateComponent implements OnInit {
     );
   }
 
-  private onObtieneDetalleProducto(item: IProducto) {
+  private onObtieneDetalleProducto(item: IStock) {
     let i: number = 0;
 
-    this.onListObservableProducto(item)
+    this.onListObservableProducto(item.itemCode)
     .pipe(
-      finalize( () => { 
-        console.log('Finalizo');    
+      finalize( () => {   
         // Obtenermos los datos de la cabecera
         const bodyCabecera = this.formularioCabecera.value;
 
         // Declaramos variables
         let isProdNCxCia: boolean;
-        // let isProdNC: boolean;
-        let isCadenaVentaTranferencia: string = '';
+
 
         if (this.isTipoCliente === '01') {
           if (bodyCabecera.idegctipoatencionmae !== null) {
 
             if (this.isGastosCubierto === false) {
               isProdNCxCia = true;
-              this.confirmationService.confirm({
-                message: '¿Desea insertar de todas maneras?',
-                header: 'No cubierto por Aseguradora',
-                icon: 'pi pi-info-circle',
-                acceptLabel: 'Si',
-                rejectLabel: 'No',
-                accept: () => {
-                  if (this.isTablaValidaVentaTransferencia !== null) {
-                    if (this.isTablaValidaVentaTransferencia.estado === 'G') {
-              
-                      // Validar que no tenga movimiento de transferencia
-                      if (isCadenaVentaTranferencia !== '') {
-                        this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No puede realizar la venta del producto porque tiene Transferencia pendiente, por favor primero acepte las transferencia pendiente. Favor de revisar'});
-                        return;
-                      } else { 
-                        this.onInsertarProducto(item.codproducto);
-                      }
-                    } else {
-                      this.onInsertarProducto(item.codproducto);
-                    }
-                  } else {
-                    this.onInsertarProducto(item.codproducto);
+
+              swal.fire({  
+                toast: true,
+                title: 'No cubierto por Aseguradora',
+                text: '¿Desea insertar de todas maneras?',
+                icon: 'warning',
+                showCancelButton: true,  
+                confirmButtonText: 'SI',
+                cancelButtonText: 'NO',
+                showConfirmButton: true,
+              }).then((result) => {  
+                /* Read more about isConfirmed, isDenied below */  
+                  if (result.isConfirmed) {    
+                    this.onInsertarProducto(item);
                   }
-                },
-                reject: () => {
-                  return;
-                }
               });
             }
           } else {
-            if (this.isTablaValidaVentaTransferencia !== null) {
-              if (this.isTablaValidaVentaTransferencia.estado === 'G') {
-        
-                // Validar que no tenga movimiento de transferencia
-                if (isCadenaVentaTranferencia !== '') {
-                  this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No puede realizar la venta del producto porque tiene Transferencia pendiente, por favor primero acepte las transferencia pendiente. Favor de revisar'});
-                  return;
-                } else { 
-                  this.onInsertarProducto(item.codproducto);
-                }
-              } else {
-                this.onInsertarProducto(item.codproducto);
-              }
-            } else {
-              this.onInsertarProducto(item.codproducto);
-            }
+            this.onInsertarProducto(item);
           }
-        } else {
-          if (item.nocubierto === 'S') {
-            this.confirmationService.confirm({
-              message: '¿Desea insertar de todas maneras?',
-              header: 'No cubierto por Aseguradora',
-              icon: 'pi pi-info-circle',
-              acceptLabel: 'Si',
-              rejectLabel: 'No',
-              accept: () => {
-                if (this.isTablaValidaVentaTransferencia !== null) {
-                  if (this.isTablaValidaVentaTransferencia.estado === 'G') {
-            
-                    // Validar que no tenga movimiento de transferencia
-                    if (isCadenaVentaTranferencia !== '') {
-                      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No puede realizar la venta del producto porque tiene Transferencia pendiente, por favor primero acepte las transferencia pendiente. Favor de revisar'});
-                      return;
-                    } else { 
-                      this.onInsertarProducto(item.codproducto);
-                    }
-                  } else {
-                    this.onInsertarProducto(item.codproducto);
-                  }
-                } else {
-                  this.onInsertarProducto(item.codproducto);
-                }
-              },
-              reject: () => {
-                return;
-              }
-            });
-          } else {
-
-            if (this.isTablaValidaVentaTransferencia !== null) {
-              if (this.isTablaValidaVentaTransferencia.estado === 'G') {
-        
-                // Validar que no tenga movimiento de transferencia
-                if (isCadenaVentaTranferencia !== '') {
-                  this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No puede realizar la venta del producto porque tiene Transferencia pendiente, por favor primero acepte las transferencia pendiente. Favor de revisar'});
-                  return;
-                } else { 
-                  this.onInsertarProducto(item.codproducto);
-                }
-              } else {
-                this.onInsertarProducto(item.codproducto);
-              }
-            } else {
-              this.onInsertarProducto(item.codproducto);
-            }
-          }
+        } else {this.onInsertarProducto(item);
         }
       }
     ))
@@ -669,28 +607,20 @@ export class VentaCreateComponent implements OnInit {
           this.isGastosCubierto = resp
           break;
         case 1:
-          this.isItem = resp;
-          break;
-        case 2:
-          this.isTablaValidaVentaTransferencia = resp;
-          break;
-        case 3:
-          this.isConvenios = resp;
-          break;
-        case 4:
           this.isListProductoRestringido = resp;
           break;
       }
       i =  i + 1;
     },
     error => {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Error'});
+      swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: error.error.resultadoDescripcion});
       return;
       }
     );    
   }
 
-  private onInsertarProducto(codproducto: string) {
+  private onInsertarProducto(item: IStock) {
     
     // let isProdNCxCia: string = 'N';
     let isProdNC: string = 'N';
@@ -699,20 +629,21 @@ export class VentaCreateComponent implements OnInit {
     // let isInsertando: boolean = true;
     let isGrupoArticulo: string = '';
 
-    let isExisteProducto = this.onValidaExisteProducto(codproducto);
+    // Validamos si existe el producto
+    let isExisteProducto = this.onValidaExisteProducto(item.itemCode);
 
     // Obtenermos los datos de la cabecera
     const bodyCabecera = this.formularioCabecera.value;
 
     if (isExisteProducto) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Producto ya fue ingresado. Favor de revisar Producto'});
+      swal.fire(this.globalConstants.msgInfoSummary,'Producto ya fue ingresado. Favor de revisar Producto','error')
       return;
     }
 
-    let isIgvProducto = this.onValidaIgvProducto(codproducto);
+    let isIgvProducto = this.onValidaIgvProducto(item.itemCode);
 
     if (isIgvProducto) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'El IGV del producti es diferente al ya ingresado. Favor de revisar Producto'});
+      swal.fire(this.globalConstants.msgInfoSummary,'El IGV del producti es diferente al ya ingresado. Favor de revisar Producto','error')
       return;
     }
   
@@ -736,10 +667,6 @@ export class VentaCreateComponent implements OnInit {
         break;
     }
 
-    if (this.isItem.nocubierto === 'S') {
-      isProdNC = 'S';
-    }
-
     if (this.isTipoCliente === '01') {
       if (bodyCabecera.idegctipoatencionmae !== null) {
 
@@ -761,54 +688,72 @@ export class VentaCreateComponent implements OnInit {
 
     if (isIngresar) {
 
+      // Valor de Venta al Publico
       let isValorVVP: number = 0;
-      let isPrecioVentaPVP: number = 0;
-      let isIgv: number = 18;
+      // Valor de Precio Venta al publico
+      let isValorPVP: number = 0;
+      // Descuento del Producto
+      let isValorDescuentoProducto: number = 0;
+      // Descuento del Plan
+      let isValorDescuentoPlan: number = 0;
 
-      if (this.isConvenios !== null && this.isConvenios !== undefined)
+      if (this.isItem.flgConvenio === true)
       {
-        if (this.isConvenios.tipomonto === 'M')
-        {
-          isValorVVP = this.isConvenios.monto;
-          isPrecioVentaPVP = (isValorVVP * (isIgv / 100 + 1));
-        } else {
-          isValorVVP = this.isItem.avgStdPrice;
-          isPrecioVentaPVP = this.isItem.avgStdPrice;
-        }
+        isValorVVP = this.isItem.valorVVP;
+        isValorPVP = this.utilService.onRedondearDecimal((isValorVVP * (this.isItem.valorIGV / 100 + 1)),2);
       } else {
-        isValorVVP = this.isItem.avgStdPrice;
-        isPrecioVentaPVP = this.isItem.avgStdPrice;
+        isValorVVP = this.isItem.valorVVP;
+        isValorPVP = this.isItem.valorPVP;
       }
 
       if (this.isListProductoRestringido.length > 0 ) {
-        this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'El producto se encuentra restringido. Favor de revisar'});
+        swal.fire(this.globalConstants.msgInfoSummary,'El producto se encuentra restringido. Favor de revisar','error')
+      }
+
+      if (this.isItem.u_SYP_MONART !== null ) {
+        if (this.isItem.u_SYP_MONART === 'D' ) {
+          isValorPVP = isValorPVP * this.isTipoCambio;
+          isValorPVP = isValorPVP * this.isTipoCambio;
+        }
+      }
+
+      if (this.isTipoCliente === '01') {
+        isValorDescuentoProducto = 0;
+        isValorDescuentoPlan = bodyCabecera.descuentoPlan;
+      }
+
+      if (this.isTipoCliente === '02' || this.isTipoCliente === '03' || this.isTipoCliente === '04') {
+        isValorDescuentoProducto = this.isItem.valorDescuento;
+        isValorDescuentoPlan = bodyCabecera.descuentoPlan;
       }
 
       const newDetalle: INewVentaDetalle  = {
         codalmacen: bodyCabecera.codalmacen,
         tipomovimiento: 'DV',
-        codproducto: this.isItem.codproducto,
+        codproducto: this.isItem.itemCode,
+        nombreproducto: this.isItem.itemName,
         cantidad: 0,
-        preciounidadcondcto: this.isItem.avgStdPrice,
-        precioventaPVP: this.isItem.avgStdPrice,
-        valorVVF: isValorVVP,
-        valorVVP: this.isItem.avgStdPrice,
+        precioventaPVP: isValorPVP,
+        valorVVP: isValorVVP,
         stockalmacen: 0,
-        porcentajedctoproducto: 0,
+        stockalm_fraccion: 0,
+        porcentajedctoproducto: isValorDescuentoProducto,
+        porcentajedctoplan: isValorDescuentoPlan,
         montototal: 0,
         montopaciente: 0,
         montoaseguradora: 0,
-        promedio: 0,
-        gnc: '',
         codpedido: '',
-        nombreproducto: this.isItem.itemName,
-        porcentajedctoplan: 0,
-        porcentajecoaseguro: 0,
-        valor_dscto: 0,
-        moneda: this.isItem.u_SYP_MONART
+        totalconigv: 0,
+        totalsinigv: 0,
+        isGNC: isGNC,
+        codtipoproducto: isGrupoArticulo,
+        preciounidadcondscto: 0,
+        igvproducto: this.isItem.valorIGV,
       }
 
       this.listModelo.push(newDetalle);
+
+      isIngresar = false;
     }
   }
 
@@ -831,45 +776,200 @@ export class VentaCreateComponent implements OnInit {
     return false;
   }
 
-  // private goGetGastoCubiertoPorFiltro(codaseguradora: string, codproducto: string, tipoatencion: number) {
-  //   this.subscription$ = new Subscription();
-  //   this.subscription$ = this.ventasService.getGastoCubiertoPorFiltro(codaseguradora, codproducto, tipoatencion)
-  //   .subscribe(resp => {
-  //     this.isGastosCubierto = resp;
-  //   });
-  // }
-
-  // private goGetProductoPorCodigo(codproducto: string) {
-  //   this.subscription$ = new Subscription();
-  //   this.subscription$ = this.ventaCompartidoService.getProductoPorCodigo(codproducto)
-  //   .subscribe(resp => {
-  //     this.isItem = resp;
-  //   });
-  // }
-
   private onColumnasGrilla() {
     this.columnas = [
       { field: 'codproducto', header: 'Código' },
       { field: 'lote', header: 'Lote' },
-      { field: 'descripcion', header: 'Descripción' },
+      { field: 'nombreproducto', header: 'Descripción' },
       { field: 'cantidad', header: 'Cantidad' },
-      { field: 'pvp', header: 'PVP' },
-      { field: 'dctoProd', header: 'Dscto. Prd.' },
-      { field: 'dctoPlan', header: 'Dscto. Plan' },
-      { field: 'montoPac', header: 'Monto Pac.' },
-      { field: 'montoAseg', header: 'Monto Aseg.' },
-      { field: 'costoVVF', header: 'Costo VVF' },
-      // { field: 'precioUnid', header: 'Precio Uni.' },
-      { field: 'vvp', header: 'VVP' },
-      { field: 'totalSigv', header: 'Total S/IGV' },
-      { field: 'totalCigv', header: 'Total C/IGV' },
-      // { field: 'igvProd', header: 'IGV Prod' },
-      { field: 'noCubierto', header: 'No Cubierto' },
+      { field: 'precioventaPVP', header: 'PVP' },
+      { field: 'porcentajedctoproducto', header: 'Dscto. Prd.' },
+      { field: 'porcentajedctoplan', header: 'Dscto. Plan' },
+      { field: 'montopaciente', header: 'Monto Pac.' },
+      { field: 'montoaseguradora', header: 'Monto Aseg.' },
+      { field: 'valorVVP', header: 'VVP' },
+      { field: 'totalsinigv', header: 'Total S/IGV' },
+      { field: 'totalconigv', header: 'Total C/IGV' },
+      { field: 'isGNC', header: 'No Cubierto' },
       // { field: 'nroPedido', header: 'NroPedido' },
       { field: 'tipoAutorizacion', header: 'Tipo Autorización' },
       { field: 'nroAutorizacion', header: 'Nro Autorización' },
       // { field: 'tipoProducto', header: 'Tipo Prod.' }
     ];
+  }
+
+  goChangeCantidad(item: INewVentaDetalle, index: number) {
+    console.log('INewVentaDetalle', item);
+    console.log('index', index);
+
+    // Obtenermos los datos de la cabecera
+    const bodyCabecera = this.formularioCabecera.value;
+
+    let isCodPedido = bodyCabecera.codpedido === null || bodyCabecera.codpedido === undefined ? '' : bodyCabecera.codpedido;
+    let isCoaseguro = bodyCabecera.coaseguro === null ? 0 : bodyCabecera.coaseguro;
+
+    // Validamos cuando viene de un pedido
+    if (this.isTipoCliente === '01' && isCodPedido.length === 14) {
+      
+    } else {
+      // Validamos que cantidad de venta no sea mayor a lo que hay en stock
+    }
+
+    let isPrecioUnidadConDscto: number = 0;
+    let isTemp: number = 0;
+    let isMontoTotal: number = 0;
+    let isMontoCoaseguro: number = 0;
+    let isMontoSeguro: number = 0;
+    let isMontoTotalIGV: number = 0;
+
+    isPrecioUnidadConDscto = item.valorVVP - ((item.porcentajedctoproducto/100) * item.valorVVP);
+
+    // Solo para farmacos
+    if (this.isTipoCliente === '01' && item.codtipoproducto === 'A') {
+      isPrecioUnidadConDscto = isPrecioUnidadConDscto - ((item.porcentajedctoplan/100) * isPrecioUnidadConDscto);
+    } else {
+      isPrecioUnidadConDscto = isPrecioUnidadConDscto - ((item.porcentajedctoplan/100) * isPrecioUnidadConDscto);
+    }
+
+    if (item.valorVVP > 0) {
+      if (this.isTipoCliente === '01' && item.codtipoproducto === 'A') {
+        isTemp = item.cantidad * isPrecioUnidadConDscto;
+      } else {
+        isTemp = item.cantidad * isPrecioUnidadConDscto;
+      }
+    }
+
+    isMontoTotal = isTemp;
+
+    switch (this.isTipoCliente) {
+      case '01':
+        isMontoCoaseguro = isMontoTotal * (isCoaseguro/100);
+        isMontoSeguro = isMontoTotal - isMontoCoaseguro;
+        break;
+      case '02':
+        isMontoCoaseguro = 0;
+        isMontoSeguro = isMontoTotal;
+        break;
+      case '03':
+        isMontoCoaseguro = 0;
+        isMontoSeguro = isMontoTotal;
+        break;
+      case '04':
+        isMontoCoaseguro = 0;
+        isMontoSeguro = isMontoTotal;
+        break;
+    }
+
+    isMontoTotalIGV = isMontoTotal * (1 + (this.isItem.valorIGV/100));
+
+    this.listModelo[index].montototal = this.utilService.onRedondearDecimal(isMontoTotal,2);
+    this.listModelo[index].montoaseguradora = this.utilService.onRedondearDecimal(isMontoSeguro,2);
+    this.listModelo[index].montopaciente = this.utilService.onRedondearDecimal(isMontoCoaseguro,2);
+    this.listModelo[index].totalsinigv = this.utilService.onRedondearDecimal(isMontoTotal,2);
+    this.listModelo[index].totalconigv = this.utilService.onRedondearDecimal(isMontoTotalIGV,2);
+
+    this.onCalcularTotales();
+
+  }
+
+  private onCalcularTotales() {
+
+    const bodyCabecera = this.formularioCabecera.value;
+
+    let isIGVTemp: number = 0;
+    let isIGV: number = 0;
+    let isSubTotal: number = 0;
+    let isTotalPaciente: number = 0;
+    let isTotalAseguradora: number = 0;
+
+    let isSubTotal_0: number = 0;
+    let isTotalPaciente_0: number = 0;
+    let isTotalAseguradora_0: number = 0;
+
+    if (this.listModelo.length > 0) {
+      this.listModelo.forEach(xfila => {
+        isIGV = xfila.igvproducto;
+
+        if (isIGV > isIGVTemp) {
+          isIGVTemp = isIGV;
+        }
+
+        if (!this.isTrabajaVariosIGV) {
+          isSubTotal = isSubTotal + xfila.totalsinigv;
+          isTotalPaciente = isTotalPaciente + xfila.montopaciente;
+          isTotalAseguradora = isTotalAseguradora + xfila.montoaseguradora;
+        } else {
+          if (isIGV === 0) {
+            isSubTotal_0 = isSubTotal_0 + xfila.totalsinigv;
+            isTotalPaciente_0 = isTotalPaciente_0 + xfila.montopaciente;
+            isTotalAseguradora_0 = isTotalAseguradora_0 + xfila.montoaseguradora;
+          } else {
+            isSubTotal = isSubTotal + xfila.totalsinigv;
+            isTotalPaciente = isTotalPaciente + xfila.montopaciente;
+            isTotalAseguradora = isTotalAseguradora + xfila.montoaseguradora;
+          }
+        }
+      })
+
+      isIGV = isIGVTemp;
+
+      if (!this.isTrabajaVariosIGV) { 
+        this.formularioTotales.patchValue({
+
+          montoDescuentoPlan: this.utilService.onRedondearDecimal(isSubTotal * (bodyCabecera.descuentoPlan/100),2),
+
+          montoSubTotal: this.utilService.onRedondearDecimal(isSubTotal,2),
+          montoIGV: this.utilService.onRedondearDecimal(isSubTotal * (isIGV/100),2),
+          montoTotal: this.utilService.onRedondearDecimal(isSubTotal + (isSubTotal * (isIGV/100)),2),
+
+          montoSubTotalPaciente: this.utilService.onRedondearDecimal(isTotalPaciente + (isTotalPaciente * (isIGV/100)),2),
+          montoSubTotalAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora * (isTotalAseguradora * (isIGV/100)),2),
+
+          montoIGVPaciente: this.utilService.onRedondearDecimal(isTotalPaciente * (isIGV/100),2),
+          montoIGVAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora * (isIGV/100),2),
+
+          montoTotalPaciente: this.utilService.onRedondearDecimal(isTotalPaciente,2),
+          montoTotalAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora,2)
+        });
+      } else {
+        this.formularioTotales.patchValue({
+
+          montoDescuentoPlan: this.utilService.onRedondearDecimal(((isSubTotal + isSubTotal_0) * (bodyCabecera.descuentoPlan/100)) ,2),
+
+          montoSubTotal: this.utilService.onRedondearDecimal(isSubTotal + isSubTotal_0,2),
+          montoIGV: this.utilService.onRedondearDecimal(isSubTotal * (isIGV/100),2),
+          montoTotal: this.utilService.onRedondearDecimal(isSubTotal + isSubTotal_0 + (isSubTotal * (isIGV/100)),2),
+
+          montoSubTotalPaciente: this.utilService.onRedondearDecimal(isTotalPaciente + isTotalPaciente_0,2),
+          montoSubTotalAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora + isTotalAseguradora_0,2),
+
+          montoIGVPaciente: this.utilService.onRedondearDecimal(isTotalPaciente * (isIGV/100),2),
+          montoIGVAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora * (isIGV/100),2),
+
+          montoTotalPaciente: this.utilService.onRedondearDecimal(isTotalPaciente + isTotalPaciente_0 + (isTotalPaciente * (isIGV/100)),2),
+          montoTotalAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora + isTotalAseguradora_0 + (isTotalAseguradora * (isIGV/100)),2)
+        });
+      }
+
+    } else {
+      this.formularioTotales.patchValue({
+
+        montoDescuentoPlan: this.utilService.onRedondearDecimal((isSubTotal + isSubTotal_0) * (bodyCabecera.descuentoPlan/100),2),
+
+        montoSubTotal: this.utilService.onRedondearDecimal(isSubTotal + isSubTotal_0,2),
+        montoIGV: this.utilService.onRedondearDecimal(isSubTotal * (isIGV/100),2),
+        montoTotal: this.utilService.onRedondearDecimal((isSubTotal + isSubTotal_0) + (isSubTotal * (isIGV/100)),2),
+
+        montoSubTotalPaciente: this.utilService.onRedondearDecimal(isTotalPaciente + isTotalPaciente_0,2),
+        montoSubTotalAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora + isTotalAseguradora_0,2),
+
+        montoIGVPaciente: this.utilService.onRedondearDecimal(isTotalPaciente * (isIGV/100),2),
+        montoIGVAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora * (isIGV/100),2),
+
+        montoTotalPaciente: this.utilService.onRedondearDecimal(isTotalPaciente + isTotalPaciente_0 + (isTotalPaciente * (isIGV/100)),2),
+        montoTotalAseguradora: this.utilService.onRedondearDecimal(isTotalAseguradora + isTotalAseguradora_0 + (isTotalAseguradora * (isIGV/100)),2)
+      });
+    }
   }
 
   private goGetTipoAutorizacion() {
@@ -935,19 +1035,179 @@ export class VentaCreateComponent implements OnInit {
   }
 
   onConfirmGrabar() {
-    this.confirmationService.confirm({
-        message: this.globalConstants.subTitleGrabar,
-        header: this.globalConstants.titleGrabar,
-        icon: 'pi pi-info-circle',
-        acceptLabel: 'Si',
-        rejectLabel: 'No',
-        accept: () => {
-          this.isAutenticar = true;
-        },
-        reject: () => {
-          // this.mensajePrimeNgService.onToCancelMsg(this.globalConstants.msgCancelSummary, this.globalConstants.msgCancelDetail);
-        }
+    debugger;
+    const bodyCabecera = this.formularioCabecera.value;
+
+    if (this.isFlgGeneroVenta) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Venta ya fue generada...Registro de Venta','error')
+      return;
+    }
+
+    if (bodyCabecera.codAlmacen === '') {
+      swal.fire(this.globalConstants.msgInfoSummary,'Seleccionar Almacén...Registro de Venta','error')
+      return;
+    }
+
+    if (this.listModelo.length === 0) {
+      swal.fire(this.globalConstants.msgInfoSummary,'No se encuentra registrado detalle','error')
+      return;
+    }
+
+    if (bodyCabecera.tipoCambio === 0 || bodyCabecera.tipoCambio <= 0) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Ingresar el tipo de cambio: Bancario Venta','error')
+      return;
+    }
+
+    let cadenaProductoCantidadCero: string = '';
+
+    let cadenaProductoMontoCero: string = '';
+
+    // Validamos que la cantidad y el monto del detalle no sean 0
+    this.listModelo.forEach(xFila => {
+      if (xFila.cantidad === 0) {
+        cadenaProductoCantidadCero = `Producto: ${xFila.codproducto} - ${xFila.nombreproducto} con cantidad 0 <br>`;
+      }
+
+      if (xFila.totalconigv === 0) {
+        cadenaProductoMontoCero = `Producto: ${xFila.codproducto} - ${xFila.nombreproducto} con monto 0 <br>`;
+      }
     });
+
+    if (cadenaProductoCantidadCero !== '') {
+      swal.fire(this.globalConstants.msgInfoSummary, cadenaProductoCantidadCero,'error')
+      return;
+    }
+
+    if (cadenaProductoMontoCero !== '') {
+      swal.fire(this.globalConstants.msgInfoSummary, cadenaProductoMontoCero,'error')
+      return;
+    }
+
+    if (bodyCabecera.tipoCliente === '01') {
+
+      if (bodyCabecera.codAtencion.length != 8) {
+        swal.fire(this.globalConstants.msgInfoSummary, 'La atención no existe','error')
+        return;
+      }
+
+      if (bodyCabecera.codAtencion.substring(0,1) === 'E' && bodyCabecera.codAseguradora === '00001') {
+        swal.fire(this.globalConstants.msgInfoSummary, 'No se genera venta a atención particular de EMERGENCIA','error')
+        return;
+      }
+      
+      if (bodyCabecera.codAtencion.substring(0,1) === 'J') {
+        swal.fire(this.globalConstants.msgInfoSummary, 'A Pacientes con tipo de atención J se vende como Tipo de Cliente EXTERNO','error')
+        return;
+      }
+
+    }
+
+    if (bodyCabecera.paciente === "") {
+      swal.fire(this.globalConstants.msgInfoSummary, 'Atención sin Historial Clínica','error')
+      return;
+    }
+
+    if (bodyCabecera.codpedido.length === 14) {
+
+      if (this.utilService.fecha_AAAAMMDD(bodyCabecera.fecgenerapedido) !== this.utilService.fecha_AAAAMMDD(new Date()) )
+
+        swal.fire(this.globalConstants.msgInfoSummary, 'Solo se atienden pedido del dia de hoy','error')
+        return;
+    }
+
+    if (bodyCabecera.tipoCliente === '01') {
+      if (bodyCabecera.listMedico === null) {
+  
+        swal.fire(this.globalConstants.msgInfoSummary, 'Ingrese el nombre del medico. El nombre del medico es un dato requerido','error')
+        return;
+      }
+    }
+
+    let isCodCliente: string = '';
+
+    if (bodyCabecera.tipoCliente === '01' || bodyCabecera.tipoCliente === '02' || bodyCabecera.tipoCliente === '03' || bodyCabecera.tipoCliente === '04') {
+
+      if (bodyCabecera.tipoCliente === '02') {
+        isCodCliente = bodyCabecera.codClienteExterno;
+        if (bodyCabecera.codClienteExterno === '') {
+          swal.fire(this.globalConstants.msgInfoSummary, 'Ingrese el codigo de cliente','error')
+          return;
+        }
+      }
+
+      if (bodyCabecera.tipoCliente === '03') {
+        isCodCliente = bodyCabecera.codClienteExterno;
+        if (bodyCabecera.codClienteExterno === '') {
+          swal.fire(this.globalConstants.msgInfoSummary, 'Ingrese el codigo de pesonal','error')
+          return;
+        }
+      }
+
+      if (bodyCabecera.tipoCliente === '04') {
+        isCodCliente = bodyCabecera.codMedico;
+        if (bodyCabecera.codClienteExterno === '') {
+          swal.fire(this.globalConstants.msgInfoSummary, 'Ingrese el codigo de médico','error')
+          return;
+        }
+      }
+    }
+
+    let isNombreMaquina: string = '';
+
+    if (this.sessionService.getItem('estacion')) {
+      let estacion = this.sessionService.getItem('estacion');
+      isNombreMaquina = estacion.value.nombremaquina;
+    }
+
+    const bodyVenta: INewVentaCabecera = {
+      codalmacen: bodyCabecera.codalmacen,
+      tipomovimiento: 'DV',
+      codempresa: bodyCabecera.codempresa,
+      codtipocliente: bodyCabecera.tipoCliente,
+      codcliente: bodyCabecera.codClienteExterno,
+      codpaciente: bodyCabecera.paciente,
+      nombre: bodyCabecera.nombreClientePaciente,
+      cama: bodyCabecera.cama,
+      codmedico: bodyCabecera.codMedico,
+      codatencion: bodyCabecera.codAtencion,
+      // codpresotor: '',
+      codpoliza: bodyCabecera.poliza,
+      planpoliza: bodyCabecera.planPoliza,
+      deducible: bodyCabecera.deducible,
+      codaseguradora: bodyCabecera.codAseguradora,
+      codcia:  bodyCabecera.codContratante,
+      porcentajecoaseguro: bodyCabecera.coaseguro,
+      porcentajeimpuesto: 18,
+      // montodctoplan: bodyCabecera.descuentoPlan,
+      porcentajedctoplan: bodyCabecera.descuentoPlan,
+      moneda: 'S',
+      codplan:  bodyCabecera.plan,
+      observacion:  bodyCabecera.observacionGeneral,
+      codcentro:  '078',
+      nombremedico:  '',
+      nombreaseguradora:  bodyCabecera.aseguradora,
+      nombrecia: bodyCabecera.contratante,
+      tipocambio: 0.342,
+      codpedido: bodyCabecera.codpedido,
+      nombrediagnostico: '',
+      flagpaquete: '0',
+      flg_gratuito: bodyCabecera.flggratuito,
+      nombreestacion: isNombreMaquina,
+      listaVentaDetalle: this.listModelo
+    }
+
+    this.isDisplaySave = true;
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.setVentaCabeceraRegistrar( bodyVenta )
+    .subscribe(() =>  {
+      this.isDisplaySave = false;
+      swal.fire(this.globalConstants.msgExitoSummary,'No se encuentra registrado detalle', 'success')
+    },
+      (error) => {
+        this.isDisplaySave = false;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'success')
+    });
+
   }
 
   goGetProductosGenericos() {

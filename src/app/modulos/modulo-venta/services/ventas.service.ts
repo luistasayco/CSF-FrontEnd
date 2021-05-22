@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -335,6 +335,16 @@ export class VentasService {
     (`${environment.url_api_venta}Producto/GetListProductoAlternativoPorCodigo/`, { params: parametros });
   }
 
+  setVentaCabeceraRegistrar(value: INewVentaCabecera) {
+    value = this.setAsignaValoresAuditabilidad<INewVentaCabecera>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Venta/RegistrarVentaCabecera';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
 
   private setAsignaValoresAuditabilidad<T>(data: any): T{
     data.regIdUsuario = this.userContextService.getIdUsuario();

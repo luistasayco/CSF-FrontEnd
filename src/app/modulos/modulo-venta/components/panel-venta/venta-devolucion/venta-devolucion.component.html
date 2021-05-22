@@ -303,7 +303,7 @@
                                     <td *ngFor="let col of columns" [ngSwitch]="col.field">
                                         <span class="p-column-title">{{col.header}}</span>
 
-                                        <span *ngSwitchCase="'codProd'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span>
+                                        <!-- <span *ngSwitchCase="'codProd'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span> -->
                                         <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codProd']"></app-modal-consulta-lote></span>
                                         <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                                     </td>

@@ -86,4 +86,9 @@ export class UtilService {
   recortarMensajeApiError(msg: string): string {
     return msg.split(';')[0];
   }
+
+  onRedondearDecimal(numero: number, decimales: number): number {
+    let isNumero = Number(numero.toFixed(decimales));
+    return isNumero;
+  }
 }

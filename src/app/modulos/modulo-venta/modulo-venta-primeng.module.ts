@@ -21,6 +21,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FieldsetModule } from 'primeng/fieldset';
 import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ProgressBarModule } from 'primeng/progressbar';
 
 // Sevices
 import { ConfirmationService } from 'primeng/api';
@@ -47,7 +48,8 @@ import { MessageService } from 'primeng/api';
             TabViewModule,
             RadioButtonModule,
             FieldsetModule,
-            ToggleButtonModule],
+            ToggleButtonModule,
+            ProgressBarModule],
     providers: [MessageService, ConfirmationService],
 })
 export class VentaPrimeNgModule {}
