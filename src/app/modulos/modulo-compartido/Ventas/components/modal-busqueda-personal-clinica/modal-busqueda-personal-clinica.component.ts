@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { IPersonalClinica } from '../../interfaces/personal-clinica.interface';
 import { Subscription } from 'rxjs';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-personal-clinica',
@@ -61,6 +62,17 @@ ngOnInit(): void {
 
   getListPersonalClinicaContains() {
     const formBody = this.formularioBusqueda.value;
+debugger;
+    if (formBody.nombre === null) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Ingresar como mínimo 4 caracteres','error');
+      return;
+    }
+
+    if (formBody.nombre.length < 4) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Ingresar como mínimo 4 caracteres','error');
+      return;
+    }
+
     this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListPersonalClinicaPorNombre(formBody.nombre)
@@ -70,7 +82,7 @@ ngOnInit(): void {
       this.loading = false;
     },
     (error) => {
-      this.loading = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
     });
   }
 

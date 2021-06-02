@@ -28,6 +28,7 @@ import { ModuloEstadoInternetModule } from './modulos/modulo-estado-internet/mod
 import { HeaderInterceptorService } from './interceptor/header-interceptor.service';
 import { DomSeguroImagenBase64Pipe } from './pipes/dom-seguro-imagen-base64.pipe';
 import { SeguridadModule } from './modulos/modulo-seguridad/modulo-seguridad.module';
+import { ModuloBaseDatosLocalModule } from './modulos/modulo-base-datos-local/modulo-base-datos-local.module';
 
 registerLocaleData(localePy, 'es');
 
@@ -58,7 +59,8 @@ registerLocaleData(localePy, 'es');
     LoginModule,
     ModuloEstadoInternetModule,
     SeguridadModule,
-    DialogModule
+    DialogModule,
+    ModuloBaseDatosLocalModule
   ],
   providers: [ DatePipe,
               { provide: LOCALE_ID, useValue: 'es' },

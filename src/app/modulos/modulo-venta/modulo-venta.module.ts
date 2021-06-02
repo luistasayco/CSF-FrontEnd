@@ -33,6 +33,7 @@ import { PanelSeriePorComprobanteComponent } from './components/panel-serie-por-
 import { SeriePorComprobanteCreateComponent } from './components/panel-serie-por-comprobante/serie-por-comprobante-create/serie-por-comprobante-create.component';
 import { EstacionTrabajoUpdateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-update/estacion-trabajo-update.component';
 import { PanelSeparacionCuentasComponent } from './components/panel-separacion-cuentas/panel-separacion-cuentas.component';
+import { PanelAsigEstacionTrabajoComponent } from './components/panel-asig-estacion-trabajo/panel-asig-estacion-trabajo.component';
 @NgModule({
     declarations: [PanelVentaComponent,
         VentaCreateComponent,
@@ -61,7 +62,8 @@ import { PanelSeparacionCuentasComponent } from './components/panel-separacion-c
         PanelSeriePorComprobanteComponent,
         SeriePorComprobanteCreateComponent,
         EstacionTrabajoUpdateComponent,
-        PanelSeparacionCuentasComponent
+        PanelSeparacionCuentasComponent,
+        PanelAsigEstacionTrabajoComponent
         ],
     imports: [ CommonModule,
         VentaPrimeNgModule,

@@ -5,7 +5,7 @@
     </div>
 </form>
 
-<p-dialog header="Lista de Centros" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}" [closable]="false">
+<p-dialog header="Lista de Centros" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}" [closable]="false" [autoZIndex]>
     <p-panel header="Opción de busqueda de Centros" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <label class="label-custom" for="float-input-nombre">Por Nombre: </label>

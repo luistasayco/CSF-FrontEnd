@@ -90,9 +90,9 @@ export class VentaCompartidoService {
   //   (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
   // }
 
-  getProductoPorCodigo(codalmacem: string, codproducto: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string) {
+  getProductoPorCodigo(codalmacen: string, codproducto: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string) {
     let parametros = new HttpParams();
-    parametros = parametros.append('codalmacem', codalmacem);
+    parametros = parametros.append('codalmacen', codalmacen);
     parametros = parametros.append('codproducto', codproducto);
     parametros = parametros.append('codaseguradora', codaseguradora);
     parametros = parametros.append('codcia', codcia);
@@ -115,6 +115,13 @@ export class VentaCompartidoService {
   getListSeriePorMaquina() {
     return this.http.get<ISeriePorMaquina[]>
     (`${environment.url_api_venta}SeriePorMaquina/GetListSeriePorMaquina`);
+  }
+
+  getListSeriePorMaquinaPorNombre(nombremaquina: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('nombremaquina', nombremaquina);
+    return this.http.get<ISeriePorMaquina[]>
+    (`${environment.url_api_venta}SeriePorMaquina/GetListSeriePorMaquina`, { params: parametros });
   }
 
   getListPedidosPorAtencion(codatencion: string) {
@@ -191,7 +198,7 @@ export class VentaCompartidoService {
     parametros = parametros.append('codalmacen', codalmacen);
     parametros = parametros.append('codproducto', codproducto);
     parametros = parametros.append('constock', constock.toString());
-    return this.http.get<IStock>
+    return this.http.get<IStock[]>
     (`${environment.url_api_venta}Stock/GetListStockLotePorFiltro/`, { params: parametros });
   }
 

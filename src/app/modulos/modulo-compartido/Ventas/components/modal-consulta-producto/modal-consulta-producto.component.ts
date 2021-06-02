@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges, Output, EventEmitter } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
@@ -17,8 +17,10 @@ import swal from'sweetalert2';
 export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChanges {
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
-  @Input() isModeloStock: IStock;
+  @Input() isCodigoProducto: string;
   @Input() isVisualizarProducto: boolean = false;
+  @Output() eventoSalir = new EventEmitter<boolean>();
+
   modelo: IProducto;
   listStock: IStock[];
 
@@ -36,8 +38,8 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
 
   ngOnChanges() {
     if (this.isVisualizarProducto) {
-      console.log('Ingreso la cabesita');
-      console.log('isModeloStock', this.isModeloStock);
+      // console.log('Ingreso la cabesita');
+      // console.log('isModeloStock', this.isModeloStock);
       
       this.getListProductoPorFiltro();
     }
@@ -63,10 +65,7 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
 
   private buildColumnas() {
     this.columnas = [
-      { field: 'whsCode', header: 'Almacén' },
-      // { field: 'OnHand', header: 'Stock' },
-      // { field: 'OnOrder', header: 'Stock Solicitado' },
-      // { field: 'IsCommited', header: 'Stock Reservado' },
+      { field: 'whsName', header: 'Almacén' },
       { field: 'onHand_1', header: 'Stock' },
       { field: 'isCommited_1', header: 'Solicitado' },
       { field: 'onOrder_1', header: 'Reservado' }
@@ -76,11 +75,12 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
   getListProductoPorFiltro() {
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getProductoyStockAlmacenesPorCodigo(this.isModeloStock.itemCode)
+    this.subscription$ = this.ventaCompartidoService.getProductoyStockAlmacenesPorCodigo(this.isCodigoProducto)
     .pipe(
       map((data: IProducto)=> {
+        console.log('this.listStock', data);
         this.listStock = data.listStockAlmacen;
-        this.goSetDatosProducto();
+        this.goSetDatosProducto(data.listStockAlmacen[0]);
         this.loading = false;
       }
     ))
@@ -91,16 +91,22 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
     });
   }
 
-  goSetDatosProducto() {
-    // this.formulario.controls.codigo.setValue(this.isModeloStock.itemCode);
-    this.formulario.patchValue({
-      codigo: this.isModeloStock.itemCode,
-      nombre: this.isModeloStock.itemName,
-      precio: this.isModeloStock.price,
-      stock: this.isModeloStock.onHand,
-      solicitado: this.isModeloStock.onOrder,
-      reservado: this.isModeloStock.isCommited
-    });
+  goSetDatosProducto(value: IStock) {
+
+    if (value !== null) {
+      this.formulario.patchValue({
+        // codigo: this.isModeloStock.itemCode,
+        // nombre: this.isModeloStock.itemName,
+        precio: value.price,
+        stock: value.onHand,
+        solicitado: value.onOrder,
+        reservado: value.isCommited
+      });
+    }
+  }
+
+  goSalir() {
+    this.eventoSalir.emit(true);
   }
 
   ngOnDestroy() {

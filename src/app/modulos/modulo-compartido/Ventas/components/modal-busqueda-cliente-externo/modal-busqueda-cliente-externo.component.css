@@ -3,3 +3,7 @@
         width: 75vw !important;
     }
 }
+
+.ui-inputtext {
+    text-transform: uppercase !important;
+}

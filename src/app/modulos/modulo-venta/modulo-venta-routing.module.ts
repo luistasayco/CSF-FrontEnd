@@ -26,6 +26,7 @@ import { PanelSeriePorComprobanteComponent } from './components/panel-serie-por-
 import { SeriePorComprobanteCreateComponent } from './components/panel-serie-por-comprobante/serie-por-comprobante-create/serie-por-comprobante-create.component';
 import { EstacionTrabajoUpdateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-update/estacion-trabajo-update.component';
 import { PanelSeparacionCuentasComponent } from './components/panel-separacion-cuentas/panel-separacion-cuentas.component';
+import { PanelAsigEstacionTrabajoComponent } from './components/panel-asig-estacion-trabajo/panel-asig-estacion-trabajo.component';
 
 const routes: Routes = [
     {path: 'panel-venta', component: PanelVentaComponent},
@@ -51,6 +52,7 @@ const routes: Routes = [
     {path: 'panel-serie-comprobante', component: PanelSeriePorComprobanteComponent},
     {path: 'serie-comprobante-create', component: SeriePorComprobanteCreateComponent},
     {path: 'panel-separacion-cuenta', component: PanelSeparacionCuentasComponent},
+    {path: 'panel-asig-estacion-trabajo', component: PanelAsigEstacionTrabajoComponent},
     
     // Sala de Operación
     {path: 'panel-sala-operacion', component: PanelSalaOperacionComponent},

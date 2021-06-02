@@ -44,7 +44,7 @@
                 <button pButton type="button" label="{{globalConstants.cPedido}}" icon="{{globalConstants.icoPedido}}" (click)="goPedido()" class="sba-button btn btn-block"></button>
             </div>
             <div class="ui-g-12 ui-md-1">
-                <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" (click)="onConfirmGrabar()" class="sba-button btn btn-block"></button>
+                <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" [disabled]="isGrabar" (click)="goConfirmGrabar()" class="sba-button btn btn-block"></button>
             </div>
             <div class="ui-g-12 ui-md-2">
                 <p-splitButton label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" [model]="items" styleClass="sba-button"></p-splitButton>
@@ -224,7 +224,7 @@
             </div>
 
             <div class="ui-g-12 ui-md-2">
-                <app-modal-busqueda-producto [isCodAlmacen]="isCodAlmacen" (eventoAceptar)="goProductoSeleccionado($event)" [isCodAseguradora]="isCodAseguradora" [isCodContratante]="isCodContratante"></app-modal-busqueda-producto>
+                <app-modal-busqueda-producto [isCodAlmacen]="isWarehouseCode" (eventoAceptar)="goProductoSeleccionado($event)" [isCodAseguradora]="isCodAseguradora" [isCodContratante]="isCodContratante"></app-modal-busqueda-producto>
             </div>
 
             <div class="ui-g-12 ui-md-10">
@@ -245,19 +245,20 @@
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                     <tr>
                         <td class="custom-td-ico">
-                            <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger"></button>
+                            <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger" (click)="goEliminarItemDetalleVenta(index)"></button>
                         </td>
                         <td *ngFor="let col of columns" [ngClass]="col.field === 'codproducto' 
                                                                     ? 'custom-td-producto': col.field === 'lote' 
-                                                                    ? 'custom-td-lote':col.field === 'descripcion' 
+                                                                    ? 'custom-td-lote':col.field === 'nombreproducto' 
                                                                     ? 'custom-td-descripcion':col.field === 'noCubierto' 
                                                                     ? 'custom-td-checkbox':col.field !== 'tipoAutorizacion' 
                                                                     ? 'custom-td-number-1':null" [ngSwitch]="col.field">
                             <span class="ui-column-title">{{col.header}}</span>
-                            <span *ngSwitchCase="'cantidad'"><input type="number" [(ngModel)]="rowData[col.field]" min="0" pInputText (keyup.enter)="goChangeCantidad(rowData, index)"></span>
-                            <!-- <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span> -->
-                            <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="rowData.codventa" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codproducto']"></app-modal-consulta-lote></span>
+                            <span *ngSwitchCase="'cantidad'"><input type="number" [(ngModel)]="rowData[col.field]" [disabled]="rowData['habilitaboton']" min="0" pInputText (keyup.enter)="goChangeCantidad(rowData, index)"></span>
+                            <span *ngSwitchCase="'codproducto'"><i class="fa fa-arrow-right" (click)="goChangeVisibleProducto(rowData, index)"></i>{{ rowData[col.field] }}</span>
+                            <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum === 'tYES'" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
                             <span *ngSwitchCase="'tipoAutorizacion'"><p-dropdown id="dropdown-tipoAutorizacion" class="ui dropdown-item-text" [options]="listTipoAutorizacion"  optionLabel="label" appendTo="body" (onChange) ="goChangeTipoAutorizacion($event, index)"></p-dropdown></span>
+                            <span *ngSwitchCase="'numerodocumentoautorizacion'"><input type="text" pInputText [(ngModel)]="rowData[col.field]"/></span>
                             <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                         </td>
                     </tr>
@@ -317,12 +318,12 @@
     </div>
 </p-card>
 
-<p-toast class="ui-toast-bottom-right" position="bottom-right"></p-toast>
+<!-- <p-toast class="ui-toast-bottom-right" position="bottom-right"></p-toast> -->
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
-<p-dialog header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false">
-    <!-- <app-panel-autenticacion [isAnular]="false"></app-panel-autenticacion> -->
+<p-dialog *ngIf="isAutenticar" header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
+    <app-modal-autenticacion [isAnular]="false" (eventoAceptar)="goAceptarGrabar($event)" (eventoCancelar)="goCancelarGrabar()"></app-modal-autenticacion>
 </p-dialog>
 
 <p-dialog #appendReceta header="Lista de Recetas" *ngIf="isVisibleReceta" [(visible)]="isVisibleReceta" [modal]="true" [closable]="false">
@@ -341,6 +342,17 @@
     <app-modal-busqueda-hospital-exclusiones [isListModelo]="listHospitalExclusiones" (eventoCerrar)="goCerrarHospitalExclusiones()"></app-modal-busqueda-hospital-exclusiones>
 </p-dialog>
 
+<p-dialog header="Validaciones" [(visible)]="isDisplayValidacion" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">
+
+    Validando Información...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
+</p-dialog>
+
 <p-dialog header="Grabar" [(visible)]="isDisplaySave" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
 
     Guardando Informacion...!!!
@@ -350,4 +362,12 @@
         </div>
     </div>
 
+</p-dialog>
+
+<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true">
+    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalle.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
+</p-dialog>
+
+<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true">
+    <app-modal-consulta-lote [isActivoVenta]="true" [isCantidadInput]="isSeleccionItemVentaDetalle.cantidad" [isCodProducto]="isSeleccionItemVentaDetalle.codproducto" [isCodAlmacen]="isWarehouseCode" (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
 </p-dialog>

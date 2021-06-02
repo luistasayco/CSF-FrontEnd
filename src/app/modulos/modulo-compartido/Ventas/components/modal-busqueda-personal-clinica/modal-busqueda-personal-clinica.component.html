@@ -5,7 +5,7 @@
     </div>
 </form>
 
-<p-dialog header="Personal Clínica" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '60vw'}">
+<p-dialog header="Personal Clínica" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '60vw'}" [autoZIndex]>
 
     <p-panel header="Opción de busqueda del Personal Clínica" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">

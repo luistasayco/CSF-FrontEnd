@@ -21,5 +21,9 @@ export interface IStock {
     quantity: number;
     isCommited_2: number;
     onOrder_2: number;
+    whsName: string;
+    expDate: Date;
+
+    quantityinput: number;
     // codproducto: string;
 }

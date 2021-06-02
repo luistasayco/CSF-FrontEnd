@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -307,7 +307,7 @@ export class VentasService {
     let parametros = new HttpParams();
     parametros = parametros.append('codaseguradora', codaseguradora);
     parametros = parametros.append('codproducto', codproducto);
-    parametros = parametros.append('tipoatencion', tipoatencion.toString());
+    parametros = parametros.append('tipoatencion', tipoatencion === null ? "0" : tipoatencion.toString());
     return this.http.get<boolean>
     (`${environment.url_api_venta}Venta/GetGastoCubiertoPorFiltro/`, { params: parametros });
   }
@@ -335,7 +335,23 @@ export class VentasService {
     (`${environment.url_api_venta}Producto/GetListProductoAlternativoPorCodigo/`, { params: parametros });
   }
 
-  setVentaCabeceraRegistrar(value: INewVentaCabecera) {
+  getGetObtieneTipoCambio() {
+    return this.http.get<ITipoCambio[]>
+    (`${environment.url_api_venta}TipoCambio/GetObtieneTipoCambio/`);
+  }
+
+  setValidacionRegistraVentaCabecera(value: INewVentaCabecera) {
+    value = this.setAsignaValoresAuditabilidad<INewVentaCabecera>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Venta/ValidacionRegistraVentaCabecera';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  setRegistrarVentaCabecera(value: INewVentaCabecera) {
     value = this.setAsignaValoresAuditabilidad<INewVentaCabecera>(value);
     console.log(value);
     const url = environment.url_api_venta + 'Venta/RegistrarVentaCabecera';

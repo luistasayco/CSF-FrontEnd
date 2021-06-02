@@ -54,7 +54,8 @@ import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-c
         ModalBusquedaHospitalExclusionesComponent,
         ModalBusquedaPlanesComponent,
         ModalAutenticacionComponent,
-        ModalBusquedaCentroCostoComponent
+        ModalBusquedaCentroCostoComponent,
+        ModalAutenticacionComponent
     ],
     imports: [ 
         CommonModule,
@@ -86,7 +87,8 @@ import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-c
         ModalBusquedaHospitalExclusionesComponent,
         ModalBusquedaPlanesComponent,
         ModalAutenticacionComponent,
-        ModalBusquedaCentroCostoComponent
+        ModalBusquedaCentroCostoComponent,
+        ModalAutenticacionComponent
     ],
     providers: [],
 })

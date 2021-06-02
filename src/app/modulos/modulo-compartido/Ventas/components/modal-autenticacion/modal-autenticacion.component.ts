@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angu
 import { FormGroup, FormBuilder, FormControl, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { LoginModel } from '../../../../modulo-login/models/login.model';
 import { LoginService } from '../../../../modulo-login/services/login.service';
 import { CifrarDataService } from '../../../../../services/cifrar-data.service';
 import { MessageService } from 'primeng/api';
+import { IAutenticarRequest, IAutenticarResponse } from '../../interfaces/autenticar.interface';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-autenticacion',
@@ -17,8 +18,8 @@ export class ModalAutenticacionComponent implements OnInit, OnDestroy {
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
   @Input() isAnular: boolean;
-  @Output() eventoAceptar= new EventEmitter<any>();
-  @Output() eventoCancelar = new EventEmitter<any>();
+  @Output() eventoAceptar= new EventEmitter<IAutenticarResponse>();
+  @Output() eventoCancelar = new EventEmitter<boolean>();
 
   formularioAutenticacion: FormGroup;
 
@@ -43,25 +44,25 @@ export class ModalAutenticacionComponent implements OnInit, OnDestroy {
   goAutenticar() {
     const formBody = this.formularioAutenticacion.value;
 
-    let modeloLogin = new LoginModel();
-    modeloLogin.usuario = formBody.usuario;
-    modeloLogin.clave = this.cifrarDataService.encrypt(formBody.contrasena);
+    let body: IAutenticarRequest = {usuario: formBody.usuario, clave: this.cifrarDataService.encrypt(formBody.contrasena)}
 
     this.subscription$ = new Subscription();
-    this.subscription$ = this.loginService.autenticaUsuario(modeloLogin)
+    this.subscription$ = this.loginService.autenticaUsuario(body)
     .subscribe((data: boolean) => {
-      console.log({valid: data, motivo: formBody.motivo});
-      this.eventoAceptar.emit({valid: data, motivo: formBody.motivo});
+      if (data) {
+        let bodyAceptar: IAutenticarResponse = {usuario: formBody.usuario, valido: true, observacion: formBody.motivo}
+        this.eventoAceptar.emit(bodyAceptar);
+      }
     },
     (error) => {
-      this.eventoAceptar.emit({valid: false});
-      this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail: error.error.resultadoDescripcion});
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
+      this.eventoCancelar.emit(false);
     });
   }
 
   goCancelar() {
     this.formularioAutenticacion.reset();
-    this.eventoCancelar.emit({valid: false});
+    this.eventoCancelar.emit(false);
   }
   
   ngOnDestroy() {

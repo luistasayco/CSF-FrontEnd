@@ -1,13 +1,13 @@
 <form [formGroup]="formularioVisor">
     <div class="ui-inputgroup">
-        <input id="float-input" type="text" size="30" pInputText style="background-color: rgb(203, 243, 198);" formControlName="nombreVisor">
+        <input type="text" size="30" pInputText style="background-color: rgb(203, 243, 198);" formControlName="nombreVisor">
         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="isVisualizar = true" class="btn btn-block"></button>
     </div>
 </form>
 
 <p-dialog header="Externo" [(visible)]="isVisualizar" [modal]="true" [style]="{width: '50vw'}">
 
-    <p-panel header="Opción de busqueda de Externo" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <p-panel header="Opción de busqueda Clientes Externos" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-3">

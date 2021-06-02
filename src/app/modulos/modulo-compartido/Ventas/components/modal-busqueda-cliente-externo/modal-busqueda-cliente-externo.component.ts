@@ -1,16 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICliente } from '../../interfaces/cliente.interface';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-cliente-externo',
   templateUrl: './modal-busqueda-cliente-externo.component.html',
   styleUrls: ['./modal-busqueda-cliente-externo.component.css']
 })
-export class ModalBusquedaClienteExternoComponent implements OnInit {
+export class ModalBusquedaClienteExternoComponent implements OnInit, OnDestroy {
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
   isVisualizar: boolean = false;
   //Columnas de la tabla
@@ -62,19 +63,20 @@ ngOnInit(): void {
   goListClientePorFiltro() {
     const formBody = this.formularioBusqueda.value;
 
-    console.log('formBody',formBody);
+    let codigo = formBody.codigo === null ? '': formBody.codigo.toUpperCase();
+    let nombre = formBody.nombre === null ? '': formBody.nombre.toUpperCase();
 
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListClientePorFiltro(formBody.opcion, formBody.codigo, formBody.nombre)
+    this.subscription$ = this.ventaCompartidoService.getListClientePorFiltro(formBody.opcion, codigo, nombre)
     .subscribe((data: ICliente[]) => {
       this.listModelo = [];
-      console.log('data', data);
       this.listModelo = data;
       this.loading = false;
     },
     (error) => {
       this.loading = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
     });
   }
 

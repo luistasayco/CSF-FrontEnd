@@ -44,6 +44,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   timeAnimationModal = ConstantesGenerales.DURACION_ANIMACION_MODAL;
 
   isVisualizarProducto: boolean = false;
+  isVisualizarLote: boolean = false;
 
   constructor(private ventaCompartidoService: VentaCompartidoService,
               private readonly fb: FormBuilder) { }
@@ -131,6 +132,20 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   getListProductoPorFiltro() {
     const formBody = this.formularioBusqueda.value;
 
+    if (this.isCodAlmacen === undefined) {
+      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
+      swal.fire({
+       title: this.globalConstants.msgInfoSummary,
+        text: `Ingresar Almacén a consultar`,
+        icon: 'error'
+      })
+
+      // swal.fire(customClass: {
+      //   container: 'my-swal'
+      // },this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
+      return;
+    }
+
     if (this.isCodAlmacen === null) {
       // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
       swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
@@ -204,9 +219,6 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   }
 
   clickAceptar() {
-    // this.formularioVisor.patchValue({
-    //   nombreVisor: this.seleccionItem.itemCode
-    // });
     this.isVisualizar = false;
     this.eventoAceptar.emit(this.seleccionItem);
     this.LimpiarFiltroBusqueda();
@@ -228,12 +240,22 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     this.goClearGenerico();
   }
 
-  goChangeVisibleRegistro(event: IStock) {
-    // console.log('this.seleccionItem ', this.seleccionItem );
-    // console.log('event ', event );
+  goChangeVisibleProducto(event: IStock) {
     this.seleccionModeloItem = event;
     this.isVisualizarProducto =!this.isVisualizarProducto; 
- 
+  }
+
+  goSalirProducto() {
+    this.isVisualizarProducto =!this.isVisualizarProducto; 
+  }
+
+  goSalirLote() {
+    this.isVisualizarLote =!this.isVisualizarLote; 
+  }
+
+  goChangeVisibleLote(event: IStock) {
+    this.seleccionModeloItem = event;
+    this.isVisualizarLote =!this.isVisualizarLote; 
   }
 
   ngOnDestroy() {

@@ -1,16 +1,17 @@
-import { Component, EventEmitter, OnInit, Output, OnDestroy, Input } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { IWarehouses } from '../../interfaces/warehouses.interface';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { Subscription } from 'rxjs';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-almacen',
   templateUrl: './modal-busqueda-almacen.component.html',
   styleUrls: ['./modal-busqueda-almacen.component.css']
 })
-export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
+export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy, OnChanges {
   // Variables globales
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
   //Lista
@@ -35,6 +36,22 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
   constructor(private readonly fb: FormBuilder,
               private readonly ventaCompartidoService: VentaCompartidoService) { }
 
+  ngOnChanges() {
+    if (this.isWarehouseCode === undefined) {
+      return;
+    }
+
+    if (this.isWarehouseCode === null) {
+      return;
+    }
+
+    if (this.isWarehouseCode.trim() === '') {
+      return;
+    }
+
+    this.getWarehousesPorCodigo();
+  }
+
   ngOnInit(): void {
     this.buildForm();
     this.buildFormVisor();
@@ -55,9 +72,20 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
   }
 
   private goObtieneAlmacen() {
-    if (this.isWarehouseCode !== null || this.isWarehouseCode.trim() !== '' || this.isWarehouseCode !== undefined) {
-      this.getWarehousesPorCodigo();
+
+    if (this.isWarehouseCode === undefined) {
+      return;
     }
+
+    if (this.isWarehouseCode === null) {
+      return;
+    }
+
+    if (this.isWarehouseCode.trim() === '') {
+      return;
+    }
+
+    this.getWarehousesPorCodigo();
   }
 
   private buildColumnas() {
@@ -91,6 +119,7 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy {
     },
     (error) => {
       this.loading = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
     });
   }
 

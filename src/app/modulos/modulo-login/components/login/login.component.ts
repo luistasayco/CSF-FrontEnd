@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     this.modeloLogin = new LoginModel();
     this.iniciarObservableEstadoInternet();
     this.instanciarFormulario();
-    this.onSeriePorEstacion();
+    // this.onSeriePorEstacion();
   }
 
   iniciarObservableEstadoInternet() {
@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
 
   instanciarFormulario() {
     this.formularioLogin = this.fb.group({
-      estacion: [null],
+      // estacion: [null],
       login: new FormControl('', [
         Validators.minLength(4),
         Validators.required
@@ -73,32 +73,32 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  onSeriePorEstacion() {
-    this.subscripcion = new Subscription();
-    this.subscripcion = this.ventaCompartidoService.getListSeriePorMaquina()
-    .subscribe((res: ISeriePorMaquina[]) => {
-        this.listSeriePorMaquina = [];
-        res.forEach(data => {
-          this.listSeriePorMaquina.push({label:data.nombremaquina, value:data});
-        });
-        this.onObtieneEstacionLocal();
-      },
-      (err) => {
-        this.mensajePrimeNgService.onToErrorMsg(null, err.error);
-      }
-    );
-  }
+  // onSeriePorEstacion() {
+  //   this.subscripcion = new Subscription();
+  //   this.subscripcion = this.ventaCompartidoService.getListSeriePorMaquina()
+  //   .subscribe((res: ISeriePorMaquina[]) => {
+  //       this.listSeriePorMaquina = [];
+  //       res.forEach(data => {
+  //         this.listSeriePorMaquina.push({label:data.nombremaquina, value:data});
+  //       });
+  //       this.onObtieneEstacionLocal();
+  //     },
+  //     (err) => {
+  //       this.mensajePrimeNgService.onToErrorMsg(null, err.error);
+  //     }
+  //   );
+  // }
 
-  onObtieneEstacionLocal() {
-    if (this.sessionService.getItem('estacion')) {
-      let estacion = this.sessionService.getItem('estacion');
-      this.formularioLogin.controls.estacion.setValue(estacion);
-    }
-    if (this.sessionService.getItem('usuario')) {
-      let usuarioLocal = this.sessionService.getItemDecrypt('usuario');
-      this.formularioLogin.controls.login.setValue(usuarioLocal);
-    }
-  }
+  // onObtieneEstacionLocal() {
+  //   if (this.sessionService.getItem('estacion')) {
+  //     let estacion = this.sessionService.getItem('estacion');
+  //     this.formularioLogin.controls.estacion.setValue(estacion);
+  //   }
+  //   if (this.sessionService.getItem('usuario')) {
+  //     let usuarioLocal = this.sessionService.getItemDecrypt('usuario');
+  //     this.formularioLogin.controls.login.setValue(usuarioLocal);
+  //   }
+  // }
 
   onClickLogin()
   {
@@ -152,7 +152,7 @@ export class LoginComponent implements OnInit {
     this.userContextService.setUser(res.usuario);
     
     // Guarda la estacion de trabajo
-    this.sessionService.setItem('estacion', this.formularioLogin.value.estacion);
+    // this.sessionService.setItem('estacion', this.formularioLogin.value.estacion);
 
     this.onFinalizaProceso();
   }

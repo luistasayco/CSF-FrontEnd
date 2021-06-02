@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { IStock } from '../../modulo-compartido/Ventas/interfaces/stock.interface';
 export interface IResultBusquedaVenta {
     codventa: string;
     codalmacen: string;
@@ -59,7 +60,7 @@ export interface IVentaCabeceraSingle {
     montoaseguradora: number;
     observacion: string;
     codcentro: string;
-    coduser: string;
+    // coduser: string;
     estado: string;
     nombremedico: string;
     nombreaseguradora: string;
@@ -103,29 +104,29 @@ export interface IVentaDetalle {
     tipomovimiento: string;
     codproducto: string;
     cantidad: number;
-    cantidad_fraccion: number;
+    // cantidad_fraccion: number;
     preciounidadcondcto: number;
     precioventaPVP: number;
     valorVVF: number;
     valorVVP: number;
     stockalmacen: number;
-    stockalm_fraccion: number;
+    // stockalm_fraccion: number;
     porcentajedctoproducto: number;
     montototal: number;
     montopaciente: number;
     montoaseguradora: number;
     fechagenera: Date;
     stockfraccion: number;
-    costocompra: number;
-    promedio: number;
+    // costocompra: number;
+    // promedio: number;
     estado: string;
     gnc: string;
     codpedido: string;
-    cant_traentcon: number;
-    cant_deventcon: number;
-    cant_tramencon: number;
-    cant_devmencon: number;
-    promediomn: number;
+    // cant_traentcon: number;
+    // cant_deventcon: number;
+    // cant_tramencon: number;
+    // cant_devmencon: number;
+    // promediomn: number;
     nombreproducto: string;
     porcentajedctoplan: number;
     porcentajecoaseguro: number;
@@ -166,12 +167,14 @@ export interface INewVentaCabecera {
     nombrediagnostico: string;
     flagpaquete: string;
     flg_gratuito: boolean;
-    nombreestacion: string;
+    nombremaquina: string;
+    usuario?: string;
     listaVentaDetalle: INewVentaDetalle[];
 }
 
 export interface INewVentaDetalle {
     codalmacen: string;
+    manBtchNum: string;
     tipomovimiento: string;
     codproducto: string;
     nombreproducto: string;
@@ -188,10 +191,26 @@ export interface INewVentaDetalle {
     codpedido: string;
     totalconigv: number;
     totalsinigv: number;
-    isGNC: string;
+    gnc: string;
     codtipoproducto: string;
-    preciounidadcondscto: number;
+    preciounidadcondcto: number;
     igvproducto: number;
+    narcotico: boolean;
+    ventasDetalleDatos: INewVentaDetalleDato;
+    numerodocumentoautorizacion: string;
+    flgbtchnum: boolean;
+    listStockLote: IStock[];
+    stockfraccion: number;
+}
+
+export interface INewVentaDetalleDato {
+    tipodocumentoautorizacion: string;
+    numerodocumentoautorizacion: string;
+}
+
+export interface IVentaGenerado {
+    codventa: string;
+    codpresotor: string;
 }
 
 export interface IVentaCabeceraDatos {
@@ -324,4 +343,10 @@ export interface IConvenios {
     monto: number;
     moneda: string;
     estado: boolean;
+}
+
+export interface ITipoCambio {
+    currency: string;
+    rateDate: Date;
+    rate: number;
 }
