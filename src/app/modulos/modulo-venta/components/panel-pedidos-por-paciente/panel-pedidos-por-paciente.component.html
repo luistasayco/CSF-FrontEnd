@@ -23,8 +23,6 @@
         </form>
     </p-panel>
 
-    <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
-
     <!-- Grilla de Datos     -->
     <p-panel header="Lista de {{titulo}}">
 
@@ -54,9 +52,6 @@
     </p-panel>
 </div>
 
-<!-- Para Eliminar -->
-<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
-
-<p-dialog *ngIf="isVisible" header="Pedidos Realizados para el Paciente" [(visible)]="isVisible" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000">
+<p-dialog *ngIf="isVisible" header="Pedidos Realizados para el Paciente" [(visible)]="isVisible" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [closable]="false">
     <app-modal-busqueda-pedidos-por-paciente [isModeloHospital]="isModeloHospital" (eventoCerrar)="goCerrarPedidosFarmaciaPorAtencion()"></app-modal-busqueda-pedidos-por-paciente>
 </p-dialog>

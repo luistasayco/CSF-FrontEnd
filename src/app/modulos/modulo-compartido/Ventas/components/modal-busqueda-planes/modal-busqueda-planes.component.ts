@@ -4,6 +4,7 @@ import { PlanesModel } from '../../../../modulo-venta/models/planes.model';
 import { Subscription } from 'rxjs';
 import { VentasService } from '../../../../modulo-venta/services/ventas.service';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
+import { IAutenticarResponse } from '../../interfaces/autenticar.interface';
 
 @Component({
   selector: 'app-modal-busqueda-planes',
@@ -96,8 +97,8 @@ export class ModalBusquedaPlanesComponent implements OnInit, OnDestroy, OnChange
     this.isAutenticacion = !this.isAutenticacion;
   }
 
-  goAutenticar(event: any) {
-    if (event.valid) {
+  goAutenticar(event: IAutenticarResponse) {
+    if (event.valido) {
       this.isAutenticacion = !this.isAutenticacion;
       this.isVisualizar = !this.isVisualizar;
     }

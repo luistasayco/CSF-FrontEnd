@@ -13,6 +13,11 @@ import { ModalBusquedaGrupoArticuloComponent } from './components/modal-busqueda
 import { ModalBusquedaArticuloPorGrupopComponent } from './components/modal-busqueda-articulo-por-grupop/modal-busqueda-articulo-por-grupop.component';
 import { ModalBusquedaServicioComponent } from './components/modal-busqueda-servicio/modal-busqueda-servicio.component';
 import { ModalBusquedaArticuloPorUsuarioComponent } from './components/modal-busqueda-articulo-por-usuario/modal-busqueda-articulo-por-usuario.component';
+import { ModalBusquedaRequerimientoComponent } from './components/modal-busqueda-requerimiento/modal-busqueda-requerimiento.component';
+import { ModalBusquedaArticuloStockComponent } from './components/modal-busqueda-articulo-stock/modal-busqueda-articulo-stock.component';
+import { ModalBusquedaAlmacenLtComponent } from './components/modal-busqueda-almacenes-lt/modal-busqueda-almacenes-lt.component';
+import { ModalBusquedaSocioNegocioLtComponent } from './components/modal-busqueda-socio-negocio-lt/modal-busqueda-socio-negocio-lt.component';
+
 
 @NgModule({
     declarations: [ModalBusquedaUsuarioComponent,
@@ -24,6 +29,10 @@ import { ModalBusquedaArticuloPorUsuarioComponent } from './components/modal-bus
         ModalBusquedaArticuloPorGrupopComponent,
         ModalBusquedaServicioComponent,
         ModalBusquedaArticuloPorUsuarioComponent,
+        ModalBusquedaRequerimientoComponent,
+        ModalBusquedaArticuloStockComponent,
+        ModalBusquedaAlmacenLtComponent,
+        ModalBusquedaSocioNegocioLtComponent,
         LoadingComponent,
         TableCompartidoComponent],
     imports: [ CommonModule, 
@@ -39,6 +48,10 @@ import { ModalBusquedaArticuloPorUsuarioComponent } from './components/modal-bus
         ModalBusquedaArticuloPorGrupopComponent,
         ModalBusquedaServicioComponent,
         ModalBusquedaArticuloPorUsuarioComponent,
+        ModalBusquedaRequerimientoComponent,
+        ModalBusquedaArticuloStockComponent,
+        ModalBusquedaAlmacenLtComponent,
+        ModalBusquedaSocioNegocioLtComponent,
         LoadingComponent,
         TableCompartidoComponent],
     providers: [ ],

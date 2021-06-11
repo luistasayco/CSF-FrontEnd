@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { IStock } from '../../interfaces/stock.interface';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { map } from 'rxjs/operators';
+import { IVentaDetalleLote } from '../../../../modulo-venta/interface/venta.interface';
 
 @Component({
   selector: 'app-modal-consulta-lote',
@@ -16,14 +17,16 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
 
   @Input() isVisualizar: boolean;
   @Input() isActivoVenta: boolean;
+  @Input() isActivoVentaDetalleLote: boolean;
   @Input() isCodProducto: string;
   @Input() isCodAlmacen: string;
   @Input() isCantidadInput: number;
+  @Input() isListVentaDetalleLote: IVentaDetalleLote[];
 
   @Input() isListLoteVta: IStock[];
 
   // Lista
-  listModelo: IStock[];
+  listModelo: any[];
   columnas: any;
   loading: boolean;
 
@@ -35,23 +38,39 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
   constructor(private ventaCompartidoService: VentaCompartidoService) { }
 
   ngOnInit(): void {
+    debugger;
     this.buildColumnas();
-    this.getListLotePorFiltro();
+    if (!this.isActivoVentaDetalleLote) {
+      this.getListLotePorFiltro();
+    }
+    if (this.isActivoVentaDetalleLote) {
+      this.onListaDetalleLoteVenta();
+    }
   }
 
   private buildColumnas() {
-    if (!this.isActivoVenta) {
+    if (!this.isActivoVenta && !this.isActivoVentaDetalleLote) {
       this.columnas = [
         { field: 'batchNum', header: 'Lote' },
         { field: 'expDate', header: 'Fecha Vencimiento' },
         { field: 'quantity', header: 'Cantidad' }
       ];
-    } else {
+    }
+    
+    if (this.isActivoVenta && !this.isActivoVentaDetalleLote) {
       this.columnas = [
         { field: 'batchNum', header: 'Lote' },
         { field: 'expDate', header: 'Fecha Vencimiento' },
         { field: 'quantity', header: 'Cantidad' },
         { field: 'quantityinput', header: 'Cantidad a vender' }
+      ];
+    }
+
+    if (!this.isActivoVenta && this.isActivoVentaDetalleLote) {
+      this.columnas = [
+        { field: 'lote', header: 'Lote' },
+        { field: 'fechavencimiento', header: 'Fecha Vencimiento' },
+        { field: 'cantidad', header: 'Cantidad' }
       ];
     }
   }
@@ -67,9 +86,14 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
         if (this.isActivoVenta) {
           if (this.isListLoteVta !== null) {
             if (this.isListLoteVta !== undefined) {
-              this.isListLoteVta.forEach( xFila => {
-                this.listModelo.find(xFind => xFind.batchNum = xFila.batchNum).quantityinput = xFila.quantityinput;
-              });
+              if (this.isListLoteVta.length > 0) {
+                this.isListLoteVta.forEach( xFila => {
+                  this.listModelo.find(xFind => xFind.batchNum === xFila.batchNum).quantityinput = xFila.quantityinput;
+                });
+              }
+              else {
+                this.onAsignaCantidadLote();
+              }
             }
             else {
               this.onAsignaCantidadLote();
@@ -107,6 +131,10 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
       }
 
     });
+  }
+
+  onListaDetalleLoteVenta() {
+    this.listModelo = this.isListVentaDetalleLote;
   }
 
   goAceptar() {

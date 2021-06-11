@@ -5,22 +5,21 @@ import { MenuItem, SelectItem } from 'primeng';
 import { LanguageService } from '../../../../../services/language.service';
 import { Router } from '@angular/router';
 import { VentasService } from '../../../services/ventas.service';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { IWarehouses } from '../../../../modulo-compartido/Ventas/interfaces/warehouses.interface';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IPaciente } from '../../../../modulo-compartido/Ventas/interfaces/paciente.interface';
 import { ICliente } from '../../../../modulo-compartido/Ventas/interfaces/cliente.interface';
 import { IPersonalClinica } from '../../../../modulo-compartido/Ventas/interfaces/personal-clinica.interface';
 import { IMedico } from '../../../../modulo-compartido/Ventas/interfaces/medico.interface';
-import { from, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { SessionService } from '../../../../../services/session.service';
 import { VentaDataService } from '../../../services/venta-data.service';
-import { ITipoAutorizacion, IHospitalExclusiones, IObservableLocal, IConvenios, INewVentaDetalle, INewVentaCabecera, ITipoCambio, IVentaGenerado } from '../../../interface/venta.interface';
+import { ITipoAutorizacion, IHospitalExclusiones, INewVentaDetalle, INewVentaCabecera, ITipoCambio, IVentaGenerado } from '../../../interface/venta.interface';
 import { PlanesModel } from '../../../models/planes.model';
 import { IListarPedido } from '../../../../modulo-compartido/Ventas/interfaces/pedido-por-atencion.interface';
 import { IReceta } from '../../../../modulo-compartido/Ventas/interfaces/receta.interface';
 import { IProducto } from '../../../../modulo-compartido/Ventas/interfaces/producto.interface';
-import { concatMap, finalize } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { VentaCompartidoService } from '../../../../modulo-compartido/Ventas/services/venta-compartido.service';
 import { ITabla } from '../../../interface/tabla.interface';
 import { UtilService } from '../../../../../services/util.service';
@@ -76,10 +75,10 @@ export class VentaCreateComponent implements OnInit {
   isMensajePolizaBCR: string;
   isMensajeAviso: string;
   isTabObservacion: string;
-  isGastosCubierto: boolean;
-  isItem: IProducto;
+  isCodAtencion: string;
+  // isItem: IProducto;
   isModeloTablaValidaVentaTransferencia: ITabla;
-  isListProductoRestringido: IProducto[];
+  // isListProductoRestringido: IProducto[];
   // isConvenios: IConvenios;
   isTipoCambio: number = 0;
   isTrabajaVariosIGV: boolean = false;
@@ -87,18 +86,29 @@ export class VentaCreateComponent implements OnInit {
   isFlgGeneroVenta: boolean;
   isDisplaySave: boolean;
   isDisplayValidacion: boolean = false;
+  isDisplayProducto: boolean = false;
   isNombreMaquina: string = '';
-
+  
   subscription$: Subscription;
+  isCodMedicoPedido: string = '';
+  isPedidoORecetaValido: boolean;
+  isCodPaciente: string = "";
+
+  // Habilita Boton
+  isHabilitaBotonPedido: boolean = false;
+  isHabilitaBotonReceta: boolean = false;
 
   // Visualizacion
   isVisualizarProducto: boolean = false;
   isVisualizarLote: boolean = false;
+  isVisibleChequearVentaAnterior: boolean = false;
 
   isSeleccionItemVentaDetalle: INewVentaDetalle;
   isIndexItemVentaDetalle: number;
 
   isGrabar: boolean = false;
+  isFlagPaquete: string;
+
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
               public router: Router,
@@ -106,9 +116,7 @@ export class VentaCreateComponent implements OnInit {
               private readonly ventaDataService: VentaDataService,
               private readonly ventaCompartidoService: VentaCompartidoService,
               private readonly functionDblocalService: FunctionDblocalService,
-              private sessionService: SessionService,
               private readonly fb: FormBuilder,
-              public readonly messageService: MessageService,
               private readonly utilService: UtilService) {     
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
@@ -119,11 +127,13 @@ export class VentaCreateComponent implements OnInit {
   ngOnInit(): void {
     // Contruye Formulario
     this.listModelo = [];
-    this.isListProductoRestringido = [];
+    // this.isListProductoRestringido = [];
     // Inicializamos el valor
     this.isTrabajaVariosIGV = true;
     this.isCodVenta = 'XXXXXXXX';
     this.isFlgGeneroVenta = false;
+    this.isFlagPaquete = 'N';
+    this.isPedidoORecetaValido = true;
 
     this.buildForm();
     this.buildFormTotales();
@@ -142,7 +152,7 @@ export class VentaCreateComponent implements OnInit {
       desAlmacen: [null],
       flggratuito: [false],
       fecha: [{value: new Date(), disabled: true}],
-      tipoCambio: [{value: 0, disabled: false}],
+      tipoCambio: [{value: 0, disabled: true}],
       sinStock:[false],
       estado: ['GENERADO'],
       tipoCliente: ['01'],
@@ -151,32 +161,35 @@ export class VentaCreateComponent implements OnInit {
       codPersonal: [null],
       codMedico: [null],
       listMedico: [null],
-      paciente: [{value: null, disabled: false}],
-      nombreClientePaciente: [{value: null, disabled: false}],
+      paciente: [{value: null, disabled: true}],
+      nombreClientePaciente: [{value: null, disabled: true}],
       direccion: [{value: null, disabled: true}],
-      codAseguradora: [{value: null, disabled: false}],
-      aseguradora: [{value: null, disabled: false}],
-      plan: [{value: null, disabled: false}],
-      descuentoPlan: [{value: 0, disabled: false}],
-      coaseguro: [{value: 0, disabled: false}],
+      codAseguradora: [{value: null, disabled: true}],
+      aseguradora: [{value: null, disabled: true}],
+      plan: [{value: null, disabled: true}],
+      descuentoPlan: [{value: 0, disabled: true}],
+      coaseguro: [{value: 0, disabled: true}],
       titular: [{value: null, disabled: true}],
-      poliza: [{value: null, disabled: false}],
-      planPoliza: [{value: null, disabled: false}],
-      codContratante: [{value: null, disabled: false}],
-      contratante: [{value: null, disabled: false}],
-      cama: [{value: null, disabled: false}],
+      poliza: [{value: null, disabled: true}],
+      planPoliza: [{value: null, disabled: true}],
+      codContratante: [{value: null, disabled: true}],
+      contratante: [{value: null, disabled: true}],
+      cama: [{value: null, disabled: true}],
       telefono: [{value: null, disabled: true}],
-      codEmpresa: [{value: null, disabled: false}],
-      empresa: [{value: null, disabled: false}],
-      deducible: [{value: 0, disabled: false}],
+      codEmpresa: [{value: null, disabled: true}],
+      empresa: [{value: null, disabled: true}],
+      deducible: [{value: 0, disabled: true}],
       observacionPaciente: [null],
       observacionAtencion: [null],
       diagnostico: [null],
       medicoOtros: [null],
       observacionGeneral: [null],
       idegctipoatencionmae: [null],
-      codpedido:[{value: null, disabled: false}],
-      fecgenerapedido:[{value: null, disabled: false}]
+      codpedido:[{value: null, disabled: true}],
+      fecgenerapedido:[{value: null, disabled: true}],
+      especialidad:[{value: null, disabled: true}],
+      tipoconsulta:[{value: null, disabled: true}],
+      cobertura:[{value: null, disabled: true}]
     });
   }
 
@@ -259,7 +272,7 @@ export class VentaCreateComponent implements OnInit {
       });
       },
       (error) => {
-        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion ,'error')
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion ,'error');
       }
     );
   }
@@ -270,7 +283,7 @@ export class VentaCreateComponent implements OnInit {
     .subscribe((res: ITipoCambio[]) => {
       
       if (res.length === 0) {
-        swal.fire(this.globalConstants.msgErrorSummary, 'Ingresar el tipo de cambio: Bancario Venta','error')
+        swal.fire(this.globalConstants.msgErrorSummary, 'Ingresar el tipo de cambio: Bancario Venta','error');
         return;
       }
       
@@ -286,7 +299,7 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goTipoClienteChange() {
-    const {tipoCliente} = this.formularioCabecera.value;
+    const {tipoCliente} = this.formularioCabecera.getRawValue();
     this.isTipoCliente = tipoCliente;
 
     this.goNuevaVenta(this.isTipoCliente);
@@ -309,9 +322,9 @@ export class VentaCreateComponent implements OnInit {
 
     // Tipo Cliente Personal
     if (this.isTipoCliente === '03') {
-      this.onPlanPorCodigo('00000001');
+      this.onPlanPorCodigo('00000004');
       this.isHabilitaControlPlan = true;
-      this.isCodPlan = '00000001';
+      this.isCodPlan = '00000004';
     }
 
     // Tipo Cliente Medíco
@@ -390,12 +403,52 @@ export class VentaCreateComponent implements OnInit {
       montoTotalAseguradora: 0,
     });
 
-    this.listMedicosPorAtencion = [];
+    this.formularioCabecera.controls.listMedico.enable();
+    this.formularioCabecera.controls.observacionGeneral.enable();
+    this.formularioCabecera.controls.tipoCliente.enable();
 
+    this.listMedicosPorAtencion = [];
     this.listModelo = [];
+    
+    this.isHabilitaBotonPedido = false;
+    this.isCodAtencion = '';
   }
 
   goAlmacenSeleccionado(item: IWarehouses) {
+debugger;
+    const body = this.formularioCabecera.getRawValue();
+
+    let codalmacen = body.codAlmacen === undefined ? '' : body.codAlmacen;
+    codalmacen = codalmacen === null ? '' : codalmacen;
+
+    if (codalmacen !== '') {
+      if (codalmacen !== item.warehouseCode) {
+
+        swal.fire({  
+          title: 'Cambio de Almacén',
+          text: 'Ud. ha cambiado de almacén, ¿Desea eliminar los productos ingresados?',
+          icon: 'question',
+          showCancelButton: true,  
+          confirmButtonText: 'SI',
+          cancelButtonText: 'NO',
+          showConfirmButton: true,
+        }).then((result) => {  
+          /* Read more about isConfirmed, isDenied below */  
+            if (result.isConfirmed) {    
+              this.goNuevaVenta('01');
+              return;
+            } else {
+              this.formularioCabecera.patchValue({
+                codAlmacen: item.warehouseCode,
+                desAlmacen: item.warehouseName
+              });
+          
+              this.isWarehouseCode = item.warehouseCode;
+            }
+        });
+      }
+    }
+    
     this.formularioCabecera.patchValue({
       codAlmacen: item.warehouseCode,
       desAlmacen: item.warehouseName
@@ -405,27 +458,33 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goAtencionSeleccionado(item: IPaciente) {
-    
+
+    this.isPedidoORecetaValido = true;
+
     if (item.codatencion.substring(0,1) === 'J') {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'A Pacientes con tipo de atención J, se vende como tipo cliente EXTERNO '});
+      swal.fire(this.globalConstants.msgInfoSummary,'A Pacientes con tipo de atención J, se vende como tipo cliente EXTERNO ','info');
+      this.isPedidoORecetaValido = false;
       this.goNuevaVenta('01');
       return;
     }
 
     if (item.activo !== 1) {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Atención desactivada'});
+      swal.fire(this.globalConstants.msgInfoSummary,'Atención desactivada','info');
+      this.isPedidoORecetaValido = false;
       this.goNuevaVenta('01');
       return;
     }
 
     if (item.familiar === "S") {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No puede generar una venta a una atención familiar'});
+      swal.fire(this.globalConstants.msgInfoSummary,'No puede generar una venta a una atención familiar','info');
+      this.isPedidoORecetaValido = false;
       this.goNuevaVenta('01');
       return;
     }
 
     if (item.traslado === "S") {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No puede generar una venta a una atención que ha sido trasladada a otra. Consultar nueva atención...!!!'});
+      swal.fire(this.globalConstants.msgInfoSummary,'No puede generar una venta a una atención que ha sido trasladada a otra. Consultar nueva atención...!!!','info');
+      this.isPedidoORecetaValido = false;
       this.goNuevaVenta('01');
       return;
     }
@@ -486,13 +545,36 @@ export class VentaCreateComponent implements OnInit {
 
   }
 
+  goChequearVentaAnterior() {
+    
+    // Obtenermos los datos de la cabecera
+    const bodyCabecera = this.formularioCabecera.getRawValue();
+
+    let paciente = bodyCabecera.paciente === undefined ? '' : bodyCabecera.paciente;
+    paciente = paciente === null ? '' : paciente;
+
+    if (paciente.length !== 6) {
+      swal.fire(this.globalConstants.msgInfoSummary, 'No ha buscado la atención todavia','info')
+      return;
+    }
+
+    this.isVisibleChequearVentaAnterior =!this.isVisibleChequearVentaAnterior;
+
+    this.isCodPaciente = paciente;
+  }
+
+  goCerrarChequearVentaAnterior() {
+    this.isVisibleChequearVentaAnterior =!this.isVisibleChequearVentaAnterior;
+  }
+
   private onHospitalExclusionesPorAtencion(codAtencion: string) {
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.getListHospitalExclusionesPorAtencion(codAtencion)
     .subscribe((data: IHospitalExclusiones[]) => {
       this.listHospitalExclusiones = data;
       if (data.length === 0) {
-        this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No cuenta con PRE-EXISTENCIA'});
+        swal.fire(this.globalConstants.msgInfoSummary,'No cuenta con PRE-EXISTENCIA','info')
+        // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No cuenta con PRE-EXISTENCIA'});
       } else {
         this.isVisibleHospitalExcusiones = true;
       }
@@ -511,13 +593,21 @@ export class VentaCreateComponent implements OnInit {
       for (let item of data) {
         this.listMedicosPorAtencion.push({ label: item.nombres, value: item.codmedico });
       }
+
+      if (this.isCodMedicoPedido !== null || this.isCodMedicoPedido !== undefined || this.isCodMedicoPedido !== '') {
+        let isMedicoSeleccionado = this.listMedicosPorAtencion.find(xFila => xFila.value === this.isCodMedicoPedido)
+        this.formularioCabecera.patchValue({
+          listMedico: isMedicoSeleccionado
+        });
+      }
+
     });
   }
 
   goClienteExternoSeleccionado(item: ICliente) {
     this.formularioCabecera.patchValue({
       codClienteExterno: item.cardCode,
-      paciente: item.cardCode,
+      // paciente: item.cardCode,
       nombreClientePaciente: item.cardName,
       telefono: item.phone1,
       direccion: item.mailAddress
@@ -528,7 +618,7 @@ export class VentaCreateComponent implements OnInit {
     this.formularioCabecera.patchValue({
       codClienteExterno: item.codpersonal,
       codPersonal: item.codpersonal,
-      paciente: item.codpersonal,
+      // paciente: item.codpersonal,
       nombreClientePaciente: item.apellido.trim() + ' ' + item.nombre.trim(),
       telefono: item.telefonocasa,
       direccion: item.direccion
@@ -540,7 +630,7 @@ export class VentaCreateComponent implements OnInit {
     this.formularioCabecera.patchValue({
       codClienteExterno: item.codmedico,
       codPersonal: item.codmedico,
-      paciente: item.codmedico,
+      // paciente: item.codmedico,
       nombreClientePaciente: item.nombres,
       telefono: item.telefono,
       direccion: item.direccion
@@ -552,20 +642,22 @@ export class VentaCreateComponent implements OnInit {
       plan: modelo.codPlan,
       descuentoPlan: modelo.porcentajeDescuento
     });
+
   }
 
   goProductoSeleccionado(item: IStock) {
 
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
+    let tipoatencion: number = bodyCabecera.idegctipoatencionmae === null ? 0 : bodyCabecera.idegctipoatencionmae;
+
+    this.isDisplayProducto = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getProductoPorCodigo(item.whsCode ,item.itemCode, bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente)
+    this.subscription$ = this.ventaCompartidoService.getProductoPorCodigo(item.whsCode ,item.itemCode, bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente, tipoatencion)
     .subscribe((data: IProducto) => {
-      this.isItem = data;
-
-      console.log('this.isItem ', this.isItem );
-
-      if (this.isItem.flgrestringido) {
+      // this.isItem = data;
+      this.isDisplayProducto = false;
+      if (data.flgrestringido) {
         swal.fire(this.globalConstants.msgInfoSummary,'Producto Restringido. Ver alternativo','error')
         return;
       }
@@ -589,106 +681,83 @@ export class VentaCreateComponent implements OnInit {
           }).then((result) => {  
             /* Read more about isConfirmed, isDenied below */  
               if (result.isConfirmed) {    
-                this.onObtieneDetalleProducto(item);
+                this.onObtieneDetalleProducto(item, data);
               }
           });
         } else {
-          this.onObtieneDetalleProducto(item);
+          this.onObtieneDetalleProducto(item, data);
         }
       } else {
-        this.onObtieneDetalleProducto(item);
+        this.onObtieneDetalleProducto(item, data);
       }
 
     },
     (error) => {
+      this.isDisplayProducto = false;
       swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Producto Restringido. Ver alternativo'});
     });
   }
 
-  private onListObservableProducto(codproducto: string) {
+  private onObtieneDetalleProducto(item: IStock, producto: IProducto) {
 
-    const bodyCabecera = this.formularioCabecera.value;
+    // Obtenermos los datos de la cabecera
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
-    let itemObservable: IObservableLocal;
-    let listObservable: IObservableLocal[] = [];
 
-    itemObservable = { observable: this.ventasService.getGastoCubiertoPorFiltro(bodyCabecera.codAseguradora, codproducto, bodyCabecera.idegctipoatencionmae), nombreTabla: 'GastoCubierto' };
-    listObservable.push(itemObservable);
+    if (this.isTipoCliente === '01') {
+      if (bodyCabecera.idegctipoatencionmae !== null) {
 
-    if ( bodyCabecera.codAseguradora === '0207' && bodyCabecera.codContratante === '0000382')
+        if (producto.gastoCubierto === false) {
+
+          swal.fire({
+            title: 'No cubierto por Aseguradora',
+            text: '¿Desea insertar de todas maneras?',
+            icon: 'question',
+            showCancelButton: true,  
+            confirmButtonText: 'SI',
+            cancelButtonText: 'NO',
+            showConfirmButton: true,
+          }).then((result) => {  
+            /* Read more about isConfirmed, isDenied below */  
+              if (result.isConfirmed) {    
+                this.onInsertarProducto(producto);
+              }
+          });
+        } 
+      } else {
+        this.onInsertarProducto(producto);
+      }
+    } 
+    else 
     {
-      itemObservable = { observable: this.ventasService.getListProductoAlternativoPorCodigo( codproducto, bodyCabecera.codAseguradora, bodyCabecera.codContratante), nombreTabla: 'Producto Restringido' };
-      listObservable.push(itemObservable);
+      this.onInsertarProducto(producto);
     }
-
-    return from(listObservable)
-    .pipe(
-      concatMap (id => id.observable)
-    );
   }
 
-  private onObtieneDetalleProducto(item: IStock) {
-    let i: number = 0;
+  onObtieneDetallePedido(codpedido: string){
 
-    this.onListObservableProducto(item.itemCode)
-    .pipe(
-      finalize( () => {   
-        // Obtenermos los datos de la cabecera
-        const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
-        // Declaramos variables
-        let isProdNCxCia: boolean;
+    let tipoatencion: number = bodyCabecera.idegctipoatencionmae === null ? 0 : bodyCabecera.idegctipoatencionmae;
 
+    this.isDisplayProducto = true;
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getListDetalleProductoPorPedido(codpedido, bodyCabecera.codAlmacen , bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente, tipoatencion)
+    .subscribe((data: IProducto[]) => {
 
-        if (this.isTipoCliente === '01') {
-          if (bodyCabecera.idegctipoatencionmae !== null) {
+      data.forEach(xFila => {
+        this.onInsertarProducto(xFila);
+      });
 
-            if (this.isGastosCubierto === false) {
-              isProdNCxCia = true;
-
-              swal.fire({
-                title: 'No cubierto por Aseguradora',
-                text: '¿Desea insertar de todas maneras?',
-                icon: 'question',
-                showCancelButton: true,  
-                confirmButtonText: 'SI',
-                cancelButtonText: 'NO',
-                showConfirmButton: true,
-              }).then((result) => {  
-                /* Read more about isConfirmed, isDenied below */  
-                  if (result.isConfirmed) {    
-                    this.onInsertarProducto(item);
-                  }
-              });
-            }
-          } else {
-            this.onInsertarProducto(item);
-          }
-        } else {this.onInsertarProducto(item);
-        }
-      }
-    ))
-    .subscribe( resp => {
-      switch(i) {
-        case 0:
-          this.isGastosCubierto = resp
-          break;
-        case 1:
-          this.isListProductoRestringido = resp;
-          break;
-      }
-      i =  i + 1;
+      this.isDisplayProducto = false;
     },
-    error => {
+    (error) => {
+      this.isDisplayProducto = false;
       swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: error.error.resultadoDescripcion});
-      return;
-      }
-    );    
+    });
   }
 
-  private onInsertarProducto(item: IStock) {
+  private onInsertarProducto(producto: IProducto) {
     
     // let isProdNCxCia: string = 'N';
     let isProdNC: string = 'N';
@@ -698,17 +767,17 @@ export class VentaCreateComponent implements OnInit {
     let isGrupoArticulo: string = '';
 
     // Validamos si existe el producto
-    let isExisteProducto = this.onValidaExisteProducto(item.itemCode);
+    let isExisteProducto = this.onValidaExisteProducto(producto.itemCode);
 
     // Obtenermos los datos de la cabecera
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
     if (isExisteProducto) {
       swal.fire(this.globalConstants.msgInfoSummary,'Producto ya fue ingresado. Favor de revisar Producto','error')
       return;
     }
 
-    let isIgvProducto = this.onValidaIgvProducto(item.itemCode);
+    let isIgvProducto = this.onValidaIgvProducto(producto.itemCode);
 
     if (isIgvProducto) {
       swal.fire(this.globalConstants.msgInfoSummary,'El IGV del producti es diferente al ya ingresado. Favor de revisar Producto','error')
@@ -717,7 +786,7 @@ export class VentaCreateComponent implements OnInit {
   
     isIngresar = true;
 
-    switch (this.isItem.itemsGroupCode) {
+    switch (producto.itemsGroupCode) {
       case 111:
         isGrupoArticulo = 'F';
         break;
@@ -738,7 +807,7 @@ export class VentaCreateComponent implements OnInit {
     if (this.isTipoCliente === '01') {
       if (bodyCabecera.idegctipoatencionmae !== null) {
 
-        if (this.isGastosCubierto === false) {
+        if (producto.gastoCubierto === false) {
           isGNC = 'S';
         } else {
           isGNC = 'N';
@@ -765,21 +834,21 @@ export class VentaCreateComponent implements OnInit {
       // Descuento del Plan
       let isValorDescuentoPlan: number = 0;
 
-      if (this.isItem.flgConvenio === true)
+      if (producto.flgConvenio === true)
       {
-        isValorVVP = this.isItem.valorVVP;
-        isValorPVP = this.utilService.onRedondearDecimal((isValorVVP * (this.isItem.valorIGV / 100 + 1)),2);
+        isValorVVP = producto.valorVVP;
+        isValorPVP = this.utilService.onRedondearDecimal((isValorVVP * (producto.valorIGV / 100 + 1)),2);
       } else {
-        isValorVVP = this.isItem.valorVVP;
-        isValorPVP = this.isItem.valorPVP;
+        isValorVVP = producto.valorVVP;
+        isValorPVP = producto.valorPVP;
       }
 
-      if (this.isListProductoRestringido.length > 0 ) {
-        swal.fire(this.globalConstants.msgInfoSummary,'El producto se encuentra restringido. Favor de revisar','error')
+      if (producto.productoRestringido) {
+        swal.fire(this.globalConstants.msgInfoSummary,'El producto se encuentra restringido. Favor de revisar','error');
       }
 
-      if (this.isItem.u_SYP_MONART !== null ) {
-        if (this.isItem.u_SYP_MONART === 'D' ) {
+      if (producto.u_SYP_MONART !== null ) {
+        if (producto.u_SYP_MONART === 'D' ) {
           isValorPVP = isValorPVP * this.isTipoCambio;
           isValorPVP = isValorPVP * this.isTipoCambio;
         }
@@ -791,34 +860,33 @@ export class VentaCreateComponent implements OnInit {
       }
 
       if (this.isTipoCliente === '02' || this.isTipoCliente === '03' || this.isTipoCliente === '04') {
-        isValorDescuentoProducto = this.isItem.valorDescuento;
+        isValorDescuentoProducto = producto.valorDescuento;
         isValorDescuentoPlan = bodyCabecera.descuentoPlan;
       }
 
       const newDetalle: INewVentaDetalle  = {
-        manBtchNum: this.isItem.manageBatchNumbers,
+        manBtchNum: producto.manbtchnum,
         codalmacen: bodyCabecera.codAlmacen,
         tipomovimiento: 'DV',
-        codproducto: this.isItem.itemCode,
-        nombreproducto: this.isItem.itemName,
+        codproducto: producto.itemCode,
+        nombreproducto: producto.itemName,
         cantidad: 0,
         precioventaPVP: isValorPVP,
         valorVVP: isValorVVP,
-        stockalmacen: 0,
-        stockalm_fraccion: 0,
+        stockalmacen: producto.productoStock,
         porcentajedctoproducto: isValorDescuentoProducto,
         porcentajedctoplan: isValorDescuentoPlan,
         montototal: 0,
         montopaciente: 0,
         montoaseguradora: 0,
-        codpedido: '',
+        codpedido: producto.codPedido,
         totalconigv: 0,
         totalsinigv: 0,
         gnc: isGNC,
         codtipoproducto: isGrupoArticulo,
         preciounidadcondcto: 0,
-        igvproducto: this.isItem.valorIGV,
-        narcotico: this.isItem.narcotico,
+        igvproducto: producto.valorIGV,
+        narcotico: producto.narcotico,
         ventasDetalleDatos: {
           tipodocumentoautorizacion: '00',
           numerodocumentoautorizacion: ''
@@ -826,7 +894,9 @@ export class VentaCreateComponent implements OnInit {
         numerodocumentoautorizacion: '',
         listStockLote: [], 
         flgbtchnum: false,
-        stockfraccion: this.isItem.fraccionVenta
+        stockfraccion: producto.fraccionVenta,
+        cantidadpedido: producto.cantidadPedido,
+        nombretipoautorizacion: 'NO APLICA'
       }
 
       this.listModelo.push(newDetalle);
@@ -868,7 +938,7 @@ export class VentaCreateComponent implements OnInit {
       { field: 'valorVVP', header: 'VVP' },
       { field: 'totalsinigv', header: 'Total S/IGV' },
       { field: 'totalconigv', header: 'Total C/IGV' },
-      { field: 'isGNC', header: 'No Cubierto' },
+      { field: 'gnc', header: 'No Cubierto' },
       { field: 'tipoAutorizacion', header: 'Tipo Autorización' },
       { field: 'numerodocumentoautorizacion', header: 'Nro Autorización' }
     ];
@@ -876,7 +946,7 @@ export class VentaCreateComponent implements OnInit {
 
   goChangeCantidad(item: INewVentaDetalle, index: number) {
     // Obtenermos los datos de la cabecera
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
     let isCodPedido = bodyCabecera.codpedido === null || bodyCabecera.codpedido === undefined ? '' : bodyCabecera.codpedido;
     let isCoaseguro = bodyCabecera.coaseguro === null ? 0 : bodyCabecera.coaseguro;
@@ -884,6 +954,10 @@ export class VentaCreateComponent implements OnInit {
     // Validamos cuando viene de un pedido
     if (this.isTipoCliente === '01' && isCodPedido.length === 14) {
       
+      if (item.cantidad > item.cantidadpedido) {
+        this.listModelo[index].cantidad = item.cantidadpedido;
+        swal.fire( this.globalConstants.msgInfoSummary, `No puede ingresar una cantidad mayor a lo solicitado en el pedido ${item.codpedido}`, 'error')
+      }
     } else {
       // Validamos que cantidad de venta no sea mayor a lo que hay en stock
     }
@@ -933,7 +1007,7 @@ export class VentaCreateComponent implements OnInit {
         break;
     }
 
-    isMontoTotalIGV = isMontoTotal * (1 + (this.isItem.valorIGV/100));
+    isMontoTotalIGV = isMontoTotal * (1 + (item.igvproducto/100));
 
     this.listModelo[index].preciounidadcondcto = this.utilService.onRedondearDecimal(isPrecioUnidadConDscto,2);
     this.listModelo[index].montototal = this.utilService.onRedondearDecimal(isMontoTotal,2);
@@ -948,7 +1022,7 @@ export class VentaCreateComponent implements OnInit {
 
   private onCalcularTotales() {
 
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
     let isIGVTemp: number = 0;
     let isIGV: number = 0;
@@ -1062,6 +1136,7 @@ export class VentaCreateComponent implements OnInit {
 
   goChangeTipoAutorizacion(data: any, index: number ) {
     this.listModelo[index].ventasDetalleDatos.tipodocumentoautorizacion =  data.value.value;
+    this.listModelo[index].nombretipoautorizacion =  data.value.label;
   }
 
   onConsultarVenta() {
@@ -1070,31 +1145,126 @@ export class VentaCreateComponent implements OnInit {
 
   goReceta() {
 
-    // const body = this.formularioCabecera.value;
+    const body = this.formularioCabecera.getRawValue();
 
-    // if (body.codAlmacen === null) {
-    //   this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Seleccione un Almacén'});
-    //   return;
-    // }
+    if (body.codAlmacen === null) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Seleccione un Almacén','info')
+      return;
+    }
 
     this.isVisibleReceta =!this.isVisibleReceta;
   }
 
   goPedido() {
 
-    // const body = this.formularioCabecera.value;
+    const body = this.formularioCabecera.getRawValue();
 
-    // if (body.codAlmacen === null) {
-    //   this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'Seleccione un Almacén'});
-    //   return;
-    // }
+    if (body.codAlmacen === null) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Seleccione un Almacén','info')
+      return;
+    }
 
     this.isVisiblePedido = !this.isVisiblePedido;
+
   }
 
   goPedidoSeleccionado(modelo: IListarPedido) {
-    console.log('IListarPedido', modelo);
+
     this.isVisiblePedido = !this.isVisiblePedido;
+
+    this.formularioCabecera.patchValue({
+      tipoCliente: '01'
+    });
+
+    this.goTipoClienteChange();
+
+    if (this.isTipoCliente === '01') {
+      this.isHabilitaBotonPedido = true;
+      this.listModelo = [];
+
+      this.subscription$ = new Subscription();
+      this.subscription$ = this.ventaCompartidoService.getPacientePorAtencion(modelo.codatencion)
+      .pipe(
+        map(resp => {
+  
+          this.goAtencionSeleccionado(resp);
+
+          if (this.isPedidoORecetaValido) {
+            this.formularioCabecera.patchValue({
+              observacionGeneral: modelo.nomobservacion,
+              codpedido: modelo.codpedido,
+              fecgenerapedido: modelo.fechagenera
+            });
+
+            this.isCodAtencion = modelo.codatencion;
+  
+          const bodyCabecera = this.formularioCabecera.getRawValue();
+  
+          this.subscription$ = new Subscription();
+          this.subscription$ = this.ventaCompartidoService.getDatosPedidoPorPedido(modelo.codpedido)
+          .subscribe((data: IListarPedido[]) => {
+    
+            if (data !== null) {
+              let dataPedido: IListarPedido = data[0];
+    
+              this.isFlagPaquete = dataPedido.flg_paquete;
+              this.isCodMedicoPedido = dataPedido.codmedico;
+      
+              let codalmacenventa = dataPedido.codalmacenventa === null ? '' : dataPedido.codalmacenventa;
+              codalmacenventa = codalmacenventa === undefined ? '' : codalmacenventa;
+    
+              if (codalmacenventa !== '') {
+                this.isGrabar = true;
+                swal.fire( this.globalConstants.msgInfoSummary, `El pedido ${dataPedido.codpedido} ya se atendió en el almcén ${dataPedido.codalmacenventa}`, 'error')
+                this.goNuevaVenta('01');
+                return;
+              } 
+              else 
+              {
+                if (dataPedido.codalmacen !== '') {
+    
+                  if (bodyCabecera.codAlmacen === '' || bodyCabecera.codAlmacen === null) {
+                    this.formularioCabecera.patchValue({
+                      codAlmacen: dataPedido.codalmacen
+                    });
+                  }
+                  
+                  if(bodyCabecera.codAlmacen !== '' && bodyCabecera.codAlmacen !== dataPedido.codalmacen) {
+                    swal.fire( this.globalConstants.msgInfoSummary, `El almacén para atender el pedido debe ser:  ${codalmacenventa}`, 'error');
+                    this.goNuevaVenta('01');
+                    this.formularioCabecera.patchValue({
+                      codAlmacen: dataPedido.codalmacen
+                    });
+                  }
+                }
+                else {
+                  this.isGrabar = true;
+                  swal.fire( this.globalConstants.msgInfoSummary, `El centro de costo del pedido no tiene asignado un almacén`, 'error')
+                  this.goNuevaVenta('01');
+                  return;
+                }
+              }
+    
+              this.onObtieneDetallePedido(modelo.codpedido);
+    
+            }
+          },
+          (error) => {
+            swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
+            this.goNuevaVenta('01');
+            }
+          );
+          }
+        })
+      )
+      .subscribe(
+        (resp) => {},
+        (error) => {
+        swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
+        this.goNuevaVenta('01');
+      });
+
+    }
   }
 
   goPedidoCancelado() {
@@ -1102,8 +1272,89 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goRecetaSeleccionado(modelo: IReceta) {
-    console.log('IReceta', modelo);
+    
     this.isVisibleReceta =!this.isVisibleReceta;
+
+    this.formularioCabecera.patchValue({
+      tipoCliente: '01'
+    });
+
+    if (modelo.cod_atencion.substring(0,1)=== 'J') {
+      this.formularioCabecera.patchValue({
+        tipoCliente: '02'
+      });
+    }
+
+    this.goTipoClienteChange();
+
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getPacientePorAtencion(modelo.cod_atencion)
+      .pipe(
+        map(resp => {
+          debugger;
+          this.goAtencionSeleccionado(resp);
+  
+          if (this.isPedidoORecetaValido) {
+            this.isCodAtencion = modelo.cod_atencion;
+
+            this.onObtieneDetalleReceta(modelo.ide_receta);
+          }
+          
+        })
+      )
+      .subscribe(
+        (resp) => {},
+        (error) => {
+        swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
+        this.goNuevaVenta('01');
+      });
+
+  }
+
+  onObtieneDetalleReceta(ide_receta: number){
+
+    const bodyCabecera = this.formularioCabecera.getRawValue();
+
+    let tipoatencion: number = bodyCabecera.idegctipoatencionmae === null ? 0 : bodyCabecera.idegctipoatencionmae;
+
+    this.isDisplayProducto = true;
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getListDetalleProductoPorReceta(ide_receta, bodyCabecera.codAlmacen , bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente, tipoatencion)
+    .subscribe((data: IProducto[]) => {
+
+      data.forEach(xFila => {
+
+        if (this.isTipoCliente === '01') {
+          if (xFila.gastoCubierto === false) {
+  
+            swal.fire({
+              title: 'No cubierto por Aseguradora',
+              text: '¿Desea insertar de todas maneras?',
+              icon: 'question',
+              showCancelButton: true,  
+              confirmButtonText: 'SI',
+              cancelButtonText: 'NO',
+              showConfirmButton: true,
+            }).then((result) => {  
+              /* Read more about isConfirmed, isDenied below */  
+                if (result.isConfirmed) {    
+                  this.onInsertarProducto(xFila);
+                }
+            });
+          } else {
+            this.onInsertarProducto(xFila);
+          }
+        } else {
+          this.onInsertarProducto(xFila);
+        }
+      });
+
+      this.isDisplayProducto = false;
+    },
+    (error) => {
+      this.isDisplayProducto = false;
+      swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
+    });
   }
 
   goRecetaCancelado() {
@@ -1128,6 +1379,7 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goAceptarLote(value: IStock[]){
+    debugger;
     this.isVisualizarLote =!this.isVisualizarLote; 
 
     this.listModelo[this.isIndexItemVentaDetalle].listStockLote = value;
@@ -1173,7 +1425,7 @@ export class VentaCreateComponent implements OnInit {
 
     this.isDisplayValidacion = true;
 
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
     if (this.isFlgGeneroVenta) {
       this.isDisplayValidacion = false;
@@ -1263,15 +1515,23 @@ export class VentaCreateComponent implements OnInit {
     if (bodyCabecera.codpedido !== null) {
       if (bodyCabecera.codpedido.length === 14) {
 
-        if (this.utilService.fecha_AAAAMMDD(bodyCabecera.fecgenerapedido) !== this.utilService.fecha_AAAAMMDD(new Date()) )
+        let fechaPedido = this.utilService.fecha_AAAAMMDD(bodyCabecera.fecgenerapedido);
+        let fechaActual = this.utilService.fecha_AAAAMMDD(new Date());
+
+        if (fechaPedido !== fechaActual)
+        {
           this.isDisplayValidacion = false;
           swal.fire(this.globalConstants.msgInfoSummary, 'Solo se atienden pedido del dia de hoy','error')
           return;
+        }
       }
     }
-   
+
     if (bodyCabecera.tipoCliente === '01') {
-      if (bodyCabecera.listMedico === null) {
+
+      let listMedico = bodyCabecera.listMedico === undefined ? null :  bodyCabecera.listMedico;
+
+      if (listMedico === null) {
         this.isDisplayValidacion = false;
         swal.fire(this.globalConstants.msgInfoSummary, 'Ingrese el nombre del medico. El nombre del medico es un dato requerido','error')
         return;
@@ -1327,7 +1587,7 @@ export class VentaCreateComponent implements OnInit {
 
   onGeneroBodyVenta(usuario: string): INewVentaCabecera {
 
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
     const bodyVenta: INewVentaCabecera = {
       codalmacen: bodyCabecera.codAlmacen,
@@ -1358,7 +1618,7 @@ export class VentaCreateComponent implements OnInit {
       tipocambio: bodyCabecera.tipoCambio,
       codpedido: bodyCabecera.codpedido,
       nombrediagnostico: bodyCabecera.diagnostico,
-      flagpaquete: 'N',
+      flagpaquete: this.isFlagPaquete,
       flg_gratuito: bodyCabecera.flggratuito,
       nombremaquina: this.isNombreMaquina,
       listaVentaDetalle: this.listModelo,
@@ -1390,7 +1650,7 @@ export class VentaCreateComponent implements OnInit {
 
     this.isAutenticar =!this.isAutenticar;
 
-    const bodyCabecera = this.formularioCabecera.value;
+    const bodyCabecera = this.formularioCabecera.getRawValue();
 
 
     if (!value.valido) {
@@ -1400,11 +1660,16 @@ export class VentaCreateComponent implements OnInit {
 
     if (bodyCabecera.codpedido !== null) {
       if (bodyCabecera.codpedido.length === 14) {
+        
+        let fechaPedido = this.utilService.fecha_AAAAMMDD(bodyCabecera.fecgenerapedido);
+        let fechaActual = this.utilService.fecha_AAAAMMDD(new Date());
 
-        if (this.utilService.fecha_AAAAMMDD(bodyCabecera.fecgenerapedido) !== this.utilService.fecha_AAAAMMDD(new Date()) )
+        if (fechaPedido !== fechaActual)
+        {
           this.isDisplayValidacion = false;
           swal.fire(this.globalConstants.msgInfoSummary, 'Solo se atienden pedido del dia de hoy','error')
           return;
+        }
       }
     }
 
@@ -1430,9 +1695,17 @@ export class VentaCreateComponent implements OnInit {
       this.isDisplaySave = false;
       this.isGrabar = true;
       this.isCodVenta = '';
+
+      this.goDeshabilitarControles();
+
       resp.forEach(xFila => {
         isCadenaVentaGenerado = isCadenaVentaGenerado + `Ud. Genero correctamente la Venta ${xFila.codventa} <br>`;
-        this.isCodVenta = this.isCodVenta +' , ' + xFila.codventa;
+        if (this.isCodVenta === '') {
+          this.isCodVenta = xFila.codventa;
+        } else {
+          this.isCodVenta = this.isCodVenta +' , ' + xFila.codventa;
+        }
+        
       });
 
       swal.fire(this.globalConstants.msgInfoSummary, isCadenaVentaGenerado, 'success');
@@ -1442,6 +1715,12 @@ export class VentaCreateComponent implements OnInit {
         swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
     });
 
+  }
+
+  goDeshabilitarControles(){
+    this.formularioCabecera.controls.listMedico.disable();
+    this.formularioCabecera.controls.observacionGeneral.disable();
+    this.formularioCabecera.controls.tipoCliente.disable();
   }
 
   goCancelarGrabar() {

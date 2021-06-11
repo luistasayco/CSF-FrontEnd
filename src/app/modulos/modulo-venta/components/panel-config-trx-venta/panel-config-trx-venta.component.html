@@ -53,7 +53,7 @@
                     </td>
 
                     <td class="custom-td-checkbox">
-                        <span class="ui-column-title">Automático</span>
+                        <span class="ui-column-title">Venta Automática</span>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <span class="p-float-label">
@@ -67,7 +67,7 @@
                     </td>
 
                     <td class="custom-td-checkbox">
-                        <span class="ui-column-title">Receta</span>
+                        <span class="ui-column-title">Venta Receta</span>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <span class="p-float-label">
@@ -81,7 +81,7 @@
                     </td>
 
                     <td class="custom-td-checkbox">
-                        <span class="ui-column-title">Pedido</span>
+                        <span class="ui-column-title">Venta Pedido</span>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <span class="p-float-label">
@@ -95,7 +95,7 @@
                     </td>
 
                     <td class="custom-td-checkbox">
-                        <span class="ui-column-title">Manual</span>
+                        <span class="ui-column-title">Venta Manual</span>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <span class="p-float-label">
@@ -104,6 +104,19 @@
                             </ng-template>
                             <ng-template pTemplate="output">
                                 <p-checkbox disabled [(ngModel)]="rowData.flgmanual" binary="true"></p-checkbox>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td class="custom-td-checkbox">
+                        <span class="ui-column-title">Impresión Automática</span>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <span class="p-float-label">
+                                    <p-checkbox [(ngModel)]="rowData.flgimpresionautomatico" binary="true"></p-checkbox>
+                                </span>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <p-checkbox disabled [(ngModel)]="rowData.flgimpresionautomatico" binary="true"></p-checkbox>
                             </ng-template>
                         </p-cellEditor>
                     </td>

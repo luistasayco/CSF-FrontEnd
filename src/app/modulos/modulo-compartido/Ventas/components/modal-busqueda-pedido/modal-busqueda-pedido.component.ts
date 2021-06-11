@@ -9,6 +9,7 @@ import { SelectItem } from 'primeng';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { IListarPedido } from '../../interfaces/pedido-por-atencion.interface';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-pedido',
@@ -42,6 +43,7 @@ export class ModalBusquedaPedidoComponent implements OnInit, OnDestroy {
     this.onHeaderGrilla();
     this.onListarTipoPedido();
     this.buildForm();
+    this.goListarPedido();
   }
   
   onListarTipoPedido(){
@@ -97,6 +99,8 @@ export class ModalBusquedaPedidoComponent implements OnInit, OnDestroy {
     this.subscription$ = this.ventaCompartidoService.getListPedidosPorFiltro(tipoPedido, body.fechainicio, body.fechafin, body.codpedido)
     .pipe(
       map((resp: IListarPedido[]) => {
+
+        console.log('resp', resp);
         this.listModelo = resp;
       })
     )
@@ -105,6 +109,22 @@ export class ModalBusquedaPedidoComponent implements OnInit, OnDestroy {
 
   clickAceptar() {
     this.LimpiarFiltroBusqueda();
+
+    if (this.seleccionItem.tipomovimiento === 'CD') {
+      swal.fire(this.globalConstants.msgInfoSummary,'Nro. de pedido es devolución','info')
+      return;
+    }
+
+    if (this.seleccionItem.tipomovimiento !== 'DV') {
+      swal.fire(this.globalConstants.msgInfoSummary,'Nro. de pedido no es de venta','info')
+      return;
+    }
+
+    if (this.seleccionItem.estimpresion !== 'G') {
+      swal.fire(this.globalConstants.msgInfoSummary,'Verifique el estado del Pedido','info')
+      return;
+    }
+
     this.eventoAceptar.emit(this.seleccionItem);
   }
 

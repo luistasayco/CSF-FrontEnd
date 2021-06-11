@@ -116,6 +116,7 @@ export interface IVentaDetalle {
     montopaciente: number;
     montoaseguradora: number;
     fechagenera: Date;
+    fechaemision: Date;
     stockfraccion: number;
     // costocompra: number;
     // promedio: number;
@@ -131,6 +132,13 @@ export interface IVentaDetalle {
     porcentajedctoplan: number;
     porcentajecoaseguro: number;
     valor_dscto: number;
+    manBtchNum: boolean;
+    flgnarcotico: boolean;
+    listVentasDetalleLotes: IVentaDetalleLote[];
+}
+
+export interface IVentaDetalleLote {
+
 }
 
 export interface INewVentaCabecera {
@@ -174,7 +182,7 @@ export interface INewVentaCabecera {
 
 export interface INewVentaDetalle {
     codalmacen: string;
-    manBtchNum: string;
+    manBtchNum: boolean;
     tipomovimiento: string;
     codproducto: string;
     nombreproducto: string;
@@ -182,7 +190,6 @@ export interface INewVentaDetalle {
     precioventaPVP: number;
     valorVVP: number;
     stockalmacen: number;
-    stockalm_fraccion: number;
     porcentajedctoproducto: number;
     porcentajedctoplan: number;
     montototal: number;
@@ -197,10 +204,12 @@ export interface INewVentaDetalle {
     igvproducto: number;
     narcotico: boolean;
     ventasDetalleDatos: INewVentaDetalleDato;
+    nombretipoautorizacion: string;
     numerodocumentoautorizacion: string;
     flgbtchnum: boolean;
     listStockLote: IStock[];
     stockfraccion: number;
+    cantidadpedido: number;
 }
 
 export interface INewVentaDetalleDato {
@@ -349,4 +358,15 @@ export interface ITipoCambio {
     currency: string;
     rateDate: Date;
     rate: number;
+}
+
+export interface IVentaCabeceraAnular {
+    codventa: string;
+    codpresotor: string;
+    codatencion: string;
+    codtipocliente: string;
+    tipomovimiento: string;
+    tienedevolucion: boolean;
+    usuario?: string;
+    motivoanulacion?: string;
 }

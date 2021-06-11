@@ -21,8 +21,6 @@
         </form>
     </p-panel>
 
-    <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
-
     <!-- Grilla de Datos     -->
     <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
         <ng-template pTemplate="header" let-columns>
@@ -52,9 +50,6 @@
         </ng-template>
     </p-table>
 </div>
-
-<!-- Para Eliminar -->
-<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
 <p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true" [modal]="true" [closable]="false">
     <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem" (eventoCerrar)="goCerrarDetalle()">

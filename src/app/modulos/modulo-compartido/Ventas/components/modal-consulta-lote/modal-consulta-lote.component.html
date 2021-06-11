@@ -15,7 +15,8 @@
                     <td *ngFor="let col of columns" [ngSwitch]="col.field">
                         <span class="p-column-title">{{col.header}}</span>
                         <span *ngSwitchCase="'expDate'">{{ rowData[col.field] | date: 'dd/MM/yyyy'}}</span>
-                        <span *ngSwitchCase="'quantityinput'">{{ rowData[col.field] | date: 'dd/MM/yyyy'}}</span>
+                        <span *ngSwitchCase="'fechavencimiento'">{{ rowData[col.field] | date: 'dd/MM/yyyy'}}</span>
+                        <span *ngSwitchCase="'quantityinput'">{{ rowData[col.field] }}</span>
                         <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                     </td>
                 </tr>

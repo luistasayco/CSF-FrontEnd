@@ -3,12 +3,13 @@ import { MenuItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
 import { LanguageService } from '../../../../../services/language.service';
-import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { IResultBusquedaVenta, IVentaCabeceraSingle } from '../../../interface/venta.interface';
 import { VentasService } from '../../../services/ventas.service';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-venta-pendiente',
@@ -36,9 +37,10 @@ export class VentaPendienteComponent implements OnInit {
   subscription$: Subscription;
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
-              public mensajePrimeNgService: MensajePrimeNgService,
+              // public mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
-              private readonly ventasService: VentasService) {
+              private readonly ventasService: VentasService,
+              private readonly router: Router) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Venta Pendiente', routerLink: ['module-ve/panel-venta'] }
@@ -81,7 +83,7 @@ export class VentaPendienteComponent implements OnInit {
   private onOpcionesGrilla() {
     this.items = [
       {label: 'Caja', icon: 'fa fa-credit-card-alt', command: () => {
-          this.goCaja();
+          this.onCaja();
       }}
     ];
   }
@@ -104,7 +106,12 @@ export class VentaPendienteComponent implements OnInit {
         this.listModelo = resp;
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goGetVentaPorCodVenta(codventa: string, opcion: string) {
@@ -120,14 +127,61 @@ export class VentaPendienteComponent implements OnInit {
           }
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goCerrarDetalle() {
     this.isVerModalDetalle = !this.isVerModalDetalle;
   }
   
-  private goCaja() {
+  onCaja() {
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getVentaPorCodVenta(this.itemSeleccionadoGrilla.codventa)
+    .pipe(
+      map((resp: IVentaCabeceraSingle) => {
+        this.modeloItem = resp;
+        
+        if (this.modeloItem.estado === 'C') {
+          swal.fire(this.globalConstants.msgErrorSummary, `NO puede hacer comprobante, Venta tiene Comprobante`,'error');
+          return;
+        }
 
+        if (this.modeloItem.tipomovimiento !== 'DV') {
+          swal.fire(this.globalConstants.msgErrorSummary, `NO puede hacer comprobante, verifique venta`,'error');
+          return;
+        }
+
+        let codatencion = this.modeloItem.codatencion === '' ? null : this.modeloItem.codatencion;
+        codatencion = codatencion === undefined ? null : codatencion;
+
+        if (codatencion !== null) {
+          if (codatencion.substring(0,1) === 'H') {
+            swal.fire(this.globalConstants.msgErrorSummary, `Atenciones de tipo 'H' no se facturan`,'error');
+            return;
+          }
+        }
+
+        let usuarioanulacion = this.modeloItem.usuarioanulacion === '' ? null : this.modeloItem.usuarioanulacion;
+        usuarioanulacion = usuarioanulacion === undefined ? null : usuarioanulacion;
+
+        if (usuarioanulacion !== null) {
+          swal.fire(this.globalConstants.msgErrorSummary, `La venta se encuentra anulada`,'error');
+          return;
+        }
+
+        if (this.modeloItem.estado === 'G' && this.modeloItem.tipomovimiento === 'DV') {
+          this.router.navigate(['/main/modulo-ve/panel-caja'], {queryParams: {codventa: this.modeloItem.codventa}});
+        }
+      })
+    )
+    .subscribe((resp) => {},
+    (error) => {
+      swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+    });
   }
 }

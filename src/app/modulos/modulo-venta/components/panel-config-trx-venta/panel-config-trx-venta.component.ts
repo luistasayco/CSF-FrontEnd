@@ -69,10 +69,11 @@ export class PanelConfigTrxVentaComponent implements OnInit, OnDestroy {
     this.columnas = [
       { field: 'codigo', header: 'Id' },
       { field: 'descripcion', header: 'Descripción' },
-      { field: 'automatico', header: 'Automático' },
-      { field: 'receta', header: 'Receta' },
-      { field: 'pedido', header: 'Pedido' },
-      { field: 'manual', header: 'Manual' },
+      { field: 'automatico', header: 'Venta Automática' },
+      { field: 'receta', header: 'Venta Receta' },
+      { field: 'pedido', header: 'Venta Pedido' },
+      { field: 'manual', header: 'Venta Manual' },
+      { field: 'automatico', header: 'Impresión Automática' },
       { field: 'almacen', header: 'Almacen' }
     ];
   }

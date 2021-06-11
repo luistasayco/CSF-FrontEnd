@@ -37,6 +37,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   @Input() isCodAlmacen: string;
   @Input() isCodAseguradora: string;
   @Input() isCodContratante: string;
+  @Input() isHabilitaBotonPedido: boolean;
 
   @Output() eventoAceptar = new EventEmitter<IStock>();
   @Output() eventoCancelar = new EventEmitter<IStock>();
@@ -119,9 +120,16 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListStockPorProductoAlmacen(this.isCodAlmacen, formBody.nombreVisor)
-    .subscribe((data: IStock) => {
-      this.eventoAceptar.emit(data);
-      this.LimpiarFiltroBusqueda();
+    .subscribe((data: IStock[]) => {
+
+      if (data.length > 0) {
+        this.eventoAceptar.emit(data[0]);
+        this.LimpiarFiltroBusqueda();
+      }
+      else 
+      {
+        swal.fire(this.globalConstants.msgInfoSummary,'No existe producto y/o stock','error')
+      }
     },
     (error) => {
       swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')

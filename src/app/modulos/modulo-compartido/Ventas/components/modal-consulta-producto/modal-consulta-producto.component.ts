@@ -38,9 +38,6 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
 
   ngOnChanges() {
     if (this.isVisualizarProducto) {
-      // console.log('Ingreso la cabesita');
-      // console.log('isModeloStock', this.isModeloStock);
-      
       this.getListProductoPorFiltro();
     }
   }
@@ -78,9 +75,10 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
     this.subscription$ = this.ventaCompartidoService.getProductoyStockAlmacenesPorCodigo(this.isCodigoProducto)
     .pipe(
       map((data: IProducto)=> {
-        console.log('this.listStock', data);
         this.listStock = data.listStockAlmacen;
-        this.goSetDatosProducto(data.listStockAlmacen[0]);
+        if (this.listStock.length > 0) {
+          this.goSetDatosProducto(data.listStockAlmacen[0]);
+        }
         this.loading = false;
       }
     ))
@@ -95,8 +93,6 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
 
     if (value !== null) {
       this.formulario.patchValue({
-        // codigo: this.isModeloStock.itemCode,
-        // nombre: this.isModeloStock.itemName,
         precio: value.price,
         stock: value.onHand,
         solicitado: value.onOrder,

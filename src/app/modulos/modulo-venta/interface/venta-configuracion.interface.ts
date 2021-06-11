@@ -5,6 +5,7 @@ export interface IVentaConfiguracion {
     flgreceta: boolean;
     flgpedido: boolean;
     flgmanual: boolean;
+    flgimpresionautomatico: boolean;
     codalmacen: string;
     desalmacen: string;
 }

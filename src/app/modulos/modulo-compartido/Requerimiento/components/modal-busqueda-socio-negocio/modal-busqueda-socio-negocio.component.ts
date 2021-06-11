@@ -26,11 +26,18 @@ export class ModalBusquedaSocioNegocioComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+    debugger;
+
+
     this.cabeceraTabla();
     this.datosSociosNegocio();
   }
 
   datosSociosNegocio() {
+    
+    debugger;
+
     this.servicioSociosNegocio
       .getSociosNegocio()
       .pipe(

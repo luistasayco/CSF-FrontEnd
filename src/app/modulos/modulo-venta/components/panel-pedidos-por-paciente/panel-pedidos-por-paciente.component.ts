@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SelectItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
-import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
+import swal from'sweetalert2';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ITabla } from '../../interface/tabla.interface';
 import { Subscription } from 'rxjs';
@@ -37,7 +37,6 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
   isModeloHospital: IHospital;
 
   constructor(private breadcrumbService: BreadcrumbService,
-              public mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
               private readonly ventasService: VentasService) {
     this.breadcrumbService.setItems([
@@ -87,7 +86,12 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
         }
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   onListarPisos(){
@@ -101,7 +105,12 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
         }
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goListarPacienteClinica(){
@@ -124,7 +133,12 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
         this.listModelo = resp;
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goPedidosFarmaciaPorAtencion(hospital: IHospital) {
@@ -141,6 +155,4 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
       this.subscription$.unsubscribe();
     }
   }
-
-
 }

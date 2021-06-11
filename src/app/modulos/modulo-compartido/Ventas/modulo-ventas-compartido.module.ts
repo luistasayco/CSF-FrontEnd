@@ -27,6 +27,7 @@ import { ModalBusquedaHospitalExclusionesComponent } from './components/modal-bu
 import { ModalBusquedaPlanesComponent } from './components/modal-busqueda-planes/modal-busqueda-planes.component';
 import { ModalAutenticacionComponent } from './components/modal-autenticacion/modal-autenticacion.component';
 import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-centro-costo/modal-busqueda-centro-costo.component';
+import { ModalBusquedaHistorialVentaComponent } from './components/modal-busqueda-historial-venta/modal-busqueda-historial-venta.component';
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-c
         ModalBusquedaPlanesComponent,
         ModalAutenticacionComponent,
         ModalBusquedaCentroCostoComponent,
-        ModalAutenticacionComponent
+        ModalAutenticacionComponent,
+        ModalBusquedaHistorialVentaComponent
     ],
     imports: [ 
         CommonModule,
@@ -88,7 +90,8 @@ import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-c
         ModalBusquedaPlanesComponent,
         ModalAutenticacionComponent,
         ModalBusquedaCentroCostoComponent,
-        ModalAutenticacionComponent
+        ModalAutenticacionComponent,
+        ModalBusquedaHistorialVentaComponent
     ],
     providers: [],
 })

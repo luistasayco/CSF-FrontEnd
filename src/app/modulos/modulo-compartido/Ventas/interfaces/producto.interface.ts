@@ -3,7 +3,7 @@ export interface IProducto {
     itemCode: string;
     itemName: string;
     quantityOnStock: number;
-    manageBatchNumbers: string;
+    // manageBatchNumbers: string;
     u_SYP_CS_LABORATORIO: string;
     u_SYP_FAMILIA: string;
     // codproducto: string;
@@ -24,4 +24,18 @@ export interface IProducto {
     valorDescuento: number;
     fraccionVenta: number;
     listStockAlmacen: IStock[];
+    productoStock: number;
+    gastoCubierto: boolean;
+    productoRestringido: boolean;
+    codPedido: string;
+    cantidadPedido: number;
+    manbtchnum: boolean;
+}
+
+export interface IProductoHistorial {
+    codproducto: string;
+    nombreproducto: string;
+    cantidad: number;
+    cantidadDevolucion: number;
+    stockfraccion: number;
 }

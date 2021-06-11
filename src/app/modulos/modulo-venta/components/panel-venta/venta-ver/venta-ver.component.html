@@ -77,7 +77,7 @@
 
                         </tr>
                     </ng-template>
-                    <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
                         <tr>
                             <td *ngFor="let col of columns" [ngClass]="col.field === 'codproducto' 
                                                                         ? 'custom-td-producto': col.field === 'lote' 
@@ -85,8 +85,9 @@
                                                                         ? 'custom-td-number-1':null" [ngSwitch]="col.field">
                                 <span class="p-column-title">{{col.header}}</span>
 
-                                <!-- <span *ngSwitchCase="'codproducto'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span> -->
-                                <!-- <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="modeloItem.codventa" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codproducto']"></app-modal-consulta-lote></span> -->
+                                <span *ngSwitchCase="'codproducto'"><i class="fa fa-arrow-right" (click)="goChangeVisibleProducto(rowData, index)"></i>{{ rowData[col.field] }}</span>
+                                <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
+
                                 <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                             </td>
                         </tr>
@@ -132,6 +133,38 @@
         </div>
     </p-card>
 </form>
-<p-dialog header="Anular Vale de Venta" [(visible)]="isVerModalDetalle" [modal]="true" [style]="{width: '50vw'}">
-    <!-- <app-panel-autenticacion></app-panel-autenticacion> -->
+
+<p-dialog *ngIf="isAutenticar" header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
+    <app-modal-autenticacion [isAnular]="true" (eventoAceptar)="goAceptarAnular($event)" (eventoCancelar)="goCancelarAnular()"></app-modal-autenticacion>
+</p-dialog>
+
+<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [closable]="false">
+    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalle.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
+</p-dialog>
+
+<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
+    <app-modal-consulta-lote [isActivoVenta]="false" [isActivoVentaDetalleLote]="true" [isListVentaDetalleLote]="isSeleccionItemVentaDetalle.listVentasDetalleLotes" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
+</p-dialog>
+
+<p-dialog header="Validaciones" [(visible)]="isDisplayValidacion" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">
+
+    Validando Información...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
+</p-dialog>
+
+
+<p-dialog header="Anular Venta" [(visible)]="isDisplayAnularVenta" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+    Anulando Venta...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
 </p-dialog>

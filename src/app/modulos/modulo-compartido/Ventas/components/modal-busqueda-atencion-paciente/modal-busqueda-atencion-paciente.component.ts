@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, OnDestroy, Input, OnChanges } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -7,6 +7,7 @@ import { VentaCompartidoService } from '../../services/venta-compartido.service'
 import { IAtencion } from '../../interfaces/atencion.interface';
 import { map } from 'rxjs/operators';
 import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-atencion-paciente',
@@ -28,12 +29,12 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
   loading: boolean;
 
   @Input() isHabilitaControl: boolean = false;
+  @Input() isCodAtencion: string = '';
   @Output() eventoResgistroSeleccionado = new EventEmitter<IPaciente>();
   @Output() eventoCancelar = new EventEmitter<IPaciente>();
 
   constructor(private ventaCompartidoService: VentaCompartidoService,
-              private readonly fb: FormBuilder,
-              private readonly mensajePrimeNgService: MensajePrimeNgService) { }
+              private readonly fb: FormBuilder) { }
 
   ngOnChanges() {
     if (this.formularioVisor) {
@@ -43,6 +44,14 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
       } else {
         this.formularioVisor.controls.nombreVisor.enable();
       }
+    }
+
+    if (!this.isVisualizar && this.isCodAtencion !== '' && this.isCodAtencion !== undefined) {
+      // console.log('Ingreso Atencion', this.isCodAtencion);
+      // this.getPacientePorAtencion(this.isCodAtencion, false);
+      this.formularioVisor.patchValue({
+        nombreVisor: this.isCodAtencion
+      });
     }
   }
  
@@ -88,6 +97,7 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
     },
     (error) => {
       this.loading = false;
+      swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
     });
   }
 
@@ -112,6 +122,11 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
     this.subscription$ = this.ventaCompartidoService.getPacientePorAtencion(codAtencion)
     .pipe(
       map(resp => {
+
+        this.formularioVisor.patchValue({
+          nombreVisor: resp.codatencion
+        });
+
         this.modeloPaciente = resp;
         this.eventoResgistroSeleccionado.emit(this.modeloPaciente);
       })
@@ -119,10 +134,10 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
     .subscribe(
       (resp) => {},
       (error) => {
-      this.mensajePrimeNgService.onToErrorMsg(null, error.error);
       if (modalVisible) {
         this.clickCancelar();
       }
+      swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
     });
   }
 

@@ -12,3 +12,12 @@ export interface IReceta {
     flg_atendido_online: boolean;
     key: string;
 }
+
+export interface IDetalleReceta {
+    ide_receta: number;
+    codproducto: string;
+    nombreproducto: string;
+    cantidad: number;
+    num_frecuencia: string;
+    num_dosis: string;
+}

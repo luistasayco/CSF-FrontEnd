@@ -33,6 +33,18 @@ const routes: Routes = [
       { path: 'modulo-oc' , loadChildren:
       () => import('./modulos/modulo-orden-compra/modulo-orden-compra.module').then(m => m.OrdenCompraModule),
       canActivate: [AuthGuard]},
+      { path: 'modulo-va' , loadChildren:
+      () => import('./modulos/modulo-vale-salida/modulo-vale-salida.module').then(m => m.ValeSalidaModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-cr' , loadChildren:
+      () => import('./modulos/modulo-consolidado-requerimiento/modulo-consolidado-requerimiento.module').then(m => m.ConsolidadoRequerimientoModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-st' , loadChildren:
+      () => import('./modulos/modulo-solicitud-traslado/modulo-solicitud-traslado.module').then(m => m.SolicitudTrasladoModule),
+      canActivate: [AuthGuard]},
+      { path: 'modulo-as' , loadChildren:
+      () => import('./modulos/modulo-atencion-solicitud-transferencia/modulo-atencion-solicitud-transferencia.module').then(m => m.AtencionSolicitudTransferenciaModule),
+      canActivate: [AuthGuard]},
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full'}

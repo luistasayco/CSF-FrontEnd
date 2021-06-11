@@ -29,8 +29,6 @@
         </form>
     </p-panel>
 
-    <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
-
     <!-- Grilla de Datos     -->
     <p-panel header="Lista de {{titulo}}">
 
@@ -55,7 +53,7 @@
                                                             ? 'custom-td-checkbox':col.field !== 'anombrede' 
                                                             ? 'custom-td-1':null" [ngSwitch]="col.field">
                         <span *ngSwitchCase="'nombreestado'"><app-label-estado [isEstado]="rowData['nombreestado']"></app-label-estado></span>
-                        <span *ngSwitchCase="'flg_gratuito'"><p-checkbox [(ngModel)]="rowData.flg_gratuito" binary="true"></p-checkbox></span>
+                        <span *ngSwitchCase="'flg_gratuito'"><p-checkbox [(ngModel)]="rowData.flg_gratuito" disabled binary="true"></p-checkbox></span>
                         <span *ngSwitchCase="'fechagenera'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
                         <span *ngSwitchCase="'fechacancelacion'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
                         <span *ngSwitchCase="'fechaanulacion'">{{ rowData[col.field]  | date: 'dd/MM/yyyy HH:mm'}}</span>
@@ -66,9 +64,6 @@
         </p-table>
     </p-panel>
 </div>
-
-<!-- Para Eliminar -->
-<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
 
 <p-dialog *ngIf="isVerModalDetalle" header="NRO. VENTA - {{modeloItem.codventa}}" [(visible)]="isVerModalDetalle" [modal]="true" [modal]="true" [closable]="false">
     <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem" (eventoCerrar)="goCerrarDetalle()">

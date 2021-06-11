@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { DemoService } from '../../../../../services/demo.service';
@@ -8,13 +8,14 @@ import { VentaCompartidoService } from '../../services/venta-compartido.service'
 import { IPedidoPorAtencion, IDetallePedidoPorPedido } from '../../interfaces/pedido-por-atencion.interface';
 import { map } from 'rxjs/operators';
 import { IHospital } from '../../../../modulo-venta/interface/venta.interface';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-pedidos-por-paciente',
   templateUrl: './modal-busqueda-pedidos-por-paciente.component.html',
   styleUrls: ['./modal-busqueda-pedidos-por-paciente.component.css']
 })
-export class ModalBusquedaPedidosPorPacienteComponent implements OnInit {
+export class ModalBusquedaPedidosPorPacienteComponent implements OnInit, OnDestroy {
   
   @Input() isModeloHospital: IHospital;
   @Output() eventoCerrar = new EventEmitter();
@@ -28,6 +29,10 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit {
 
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
   columnas: any;
+
+  isVisualizarProducto: boolean = false;
+  isSeleccionItem: IDetallePedidoPorPedido;
+
   constructor(private ventaCompartidoService: VentaCompartidoService) { }
 
   ngOnInit(): void {
@@ -39,10 +44,10 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit {
 
   private onHeaderGrilla() {
     this.columnas = [
-      { field: 'codpro', header: 'Código' },
+      { field: 'codproducto', header: 'Código' },
       { field: 'tipoproducto', header: 'Tipo Producto' },
-      { field: 'despro', header: 'Nombre' },
-      { field: 'cantidadpedida', header: 'Cantidad' },
+      { field: 'nombreproducto', header: 'Nombre' },
+      { field: 'cantidad', header: 'Cantidad' },
       { field: 'codpedido', header: 'Pedido' }
     ];
   }
@@ -58,8 +63,9 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit {
     .subscribe(
       (resp) => {},
       (error) => {
-        // this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail: error.error});
-    });
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   onBuildTreeNode(resp: IPedidoPorAtencion[]) {
@@ -100,11 +106,27 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit {
     .subscribe(
       (resp) => {},
       (error) => {
-        // this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail: error.error});
-    });
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goCerrar() {
     this.eventoCerrar.emit();
+  }
+
+  goChangeVisibleProducto(event: IDetallePedidoPorPedido) {
+    this.isSeleccionItem = event;
+    this.isVisualizarProducto =!this.isVisualizarProducto; 
+  }
+
+  goSalirProducto() {
+    this.isVisualizarProducto =!this.isVisualizarProducto;
+  }
+
+  ngOnDestroy() {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
   }
 }

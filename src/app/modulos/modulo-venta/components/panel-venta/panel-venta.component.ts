@@ -6,9 +6,10 @@ import { VentasService } from '../../services/ventas.service';
 import { IResultBusquedaVenta, IVentaCabeceraSingle } from '../../interface/venta.interface';
 import { map } from 'rxjs/operators';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { LanguageService } from '../../../../services/language.service';
+import { Router } from '@angular/router';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-panel-venta',
@@ -40,15 +41,11 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
 
   subscription$: Subscription;
 
-  // Toast
-  intervaloToast;
-
   constructor(private readonly breadcrumbService: BreadcrumbService,
-              public readonly messageService: MessageService,
               private readonly formBuilder: FormBuilder,
-              private readonly confirmationService: ConfirmationService,
               private readonly ventasService: VentasService,
-              public lenguageService: LanguageService) {
+              public lenguageService: LanguageService,
+              private readonly router: Router) {
     this.breadcrumbService.setItems([
       { label: 'Módulo Venta' },
       { label: 'Consulta', routerLink: ['module-ve/panel-venta'] }
@@ -110,16 +107,16 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
       }},
       {separator: true},
       {label: this.globalConstants.cImprimir, icon: this.globalConstants.icoImprimir, command: () => {
-        this.onImpVenta();
+        this.onImprimirVenta();
       }},
       {label: this.globalConstants.cImprimirComprobante, icon: this.globalConstants.icoImprimir, command: () => {
-        this.onImpComp();
+        this.onImprimirComprobante();
       }},
       {label: this.globalConstants.cImprimirVencimiento, icon: this.globalConstants.icoImprimir, command: () => {
-        this.onImpVenc();
+        this.onImprimirVencimiento();
       }},
       {label: this.globalConstants.cPdfElectronico, icon: this.globalConstants.icoImprimir, command: () => {
-        this.onImpVenc();
+        this.onImprimirPDF();
       }}
     ];
   }
@@ -137,8 +134,9 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
     .subscribe(
       (resp) => {},
       (error) => {
-        this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail: error.error});
-    });
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   onDetalle(data: IResultBusquedaVenta) {
@@ -162,7 +160,10 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
         }
       })
     )
-    .subscribe();
+    .subscribe((resp) => {},
+    (error) => {
+      swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+    });
   }
 
   goCerrarDetalle() {
@@ -172,17 +173,17 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
   private onAnular() {
 
     if (this.itemSeleccionadoGrilla.estado === 'C' && this.itemSeleccionadoGrilla.codcomprobante.trim() !== '') {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`No puede anular la venta ${this.itemSeleccionadoGrilla.codventa}, tiene comprobante`});
+      swal.fire(this.globalConstants.msgErrorSummary, `No puede anular la venta ${this.itemSeleccionadoGrilla.codventa}, tiene comprobante`,'error');
       return;
     }
 
     if (this.itemSeleccionadoGrilla.tipomovimiento !== 'DV') {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`No puede anular la venta  ${this.itemSeleccionadoGrilla.codventa}, no es una venta`});
+      swal.fire(this.globalConstants.msgErrorSummary, `No puede anular la venta  ${this.itemSeleccionadoGrilla.codventa}, no es una venta`,'error');
       return;
     }
 
     if (this.itemSeleccionadoGrilla.usuarioanulacion.trim() !== '') {
-      this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`La venta ${this.itemSeleccionadoGrilla.codventa} se encuentra ANULADA`});
+      swal.fire(this.globalConstants.msgErrorSummary, `La venta ${this.itemSeleccionadoGrilla.codventa} se encuentra ANULADA`,'error');
       return;
     }
 
@@ -190,26 +191,70 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
   }
 
   onCaja() {
-    // this.mensajePrimeNgService.onToExitoMsg(null, 'onCaja');
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventasService.getVentaPorCodVenta(this.itemSeleccionadoGrilla.codventa)
+    .pipe(
+      map((resp: IVentaCabeceraSingle) => {
+        this.modeloItem = resp;
+        
+        if (this.modeloItem.estado === 'C') {
+          swal.fire(this.globalConstants.msgErrorSummary, `NO puede hacer comprobante, Venta tiene Comprobante`,'error');
+          return;
+        }
+
+        if (this.modeloItem.tipomovimiento !== 'DV') {
+          swal.fire(this.globalConstants.msgErrorSummary, `NO puede hacer comprobante, verifique venta`,'error');
+          return;
+        }
+
+        let codatencion = this.modeloItem.codatencion === '' ? null : this.modeloItem.codatencion;
+        codatencion = codatencion === undefined ? null : codatencion;
+
+        if (codatencion !== null) {
+          if (codatencion.substring(0,1) === 'H') {
+            swal.fire(this.globalConstants.msgErrorSummary, `Atenciones de tipo 'H' no se facturan`,'error');
+            return;
+          }
+        }
+
+        let usuarioanulacion = this.modeloItem.usuarioanulacion === '' ? null : this.modeloItem.usuarioanulacion;
+        usuarioanulacion = usuarioanulacion === undefined ? null : usuarioanulacion;
+
+        if (usuarioanulacion !== null) {
+          swal.fire(this.globalConstants.msgErrorSummary, `La venta se encuentra anulada`,'error');
+          return;
+        }
+
+        if (this.modeloItem.estado === 'G' && this.modeloItem.tipomovimiento === 'DV') {
+          this.router.navigate(['/main/modulo-ve/panel-caja'], {queryParams: {codventa: this.modeloItem.codventa}});
+        }
+      })
+    )
+    .subscribe((resp) => {},
+    (error) => {
+      swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+    });
   }
 
-  onImpVenta() {
-    // this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenta');
+  onImprimirVenta() {
+
   }
 
-  onImpComp() {
-    // this.mensajePrimeNgService.onToExitoMsg(null, 'onImpComp');
+  onImprimirComprobante() {
+
   }
 
-  onImpVenc() {
-    // this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenc');
+  onImprimirPDF(){
+
+  }
+
+  onImprimirVencimiento(){
+
   }
 
   ngOnDestroy() {
     if (this.subscription$) {
       this.subscription$.unsubscribe();
     }
-
-    this.messageService.clear();
   }
 }

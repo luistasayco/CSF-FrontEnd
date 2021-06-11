@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
-import { DemoService } from '../../../../services/demo.service';
 import { LanguageService } from '../../../../services/language.service';
 import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
@@ -11,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { VentasService } from '../../services/ventas.service';
 import { map } from 'rxjs/operators';
 import { IVentaCabeceraSingle } from '../../interface/venta.interface';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-panel-seguimiento',
@@ -38,7 +38,6 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
   subscription$: Subscription;
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
-              public mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
               private readonly ventasService: VentasService) {
     this.breadcrumbService.setItems([
@@ -81,17 +80,17 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
     this.items = [
       
       {label: 'Enviar', icon: 'fa fa-list', command: () => {
-          this.update();
+        this.onEnviar();
       }},
       {label: 'Recepción', icon: 'fa fa-list', command: () => {
-        this.update();
+        this.onRecepcion();
       }},
       {separator: true},
       {label: 'Cancelar Envió', icon: 'fa fa-list', command: () => {
-        this.update();
+        this.onCancelarEnvio();
       }},
       {label: 'Cancelar Recepción', icon: 'fa fa-list', command: () => {
-        this.update();
+        this.onCancelarRecepcion();
       }}
     ];
   }
@@ -101,7 +100,16 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
   }
 
   onDetalle(data: IResultBusquedaPedido) {
-    this.goGetVentaPorCodVenta(data.codventa,'DETALLE');
+    debugger
+    let codventa = data.codventa === undefined ? null : data.codventa.trim();
+     codventa = codventa === '' ? null : codventa.trim();
+
+     if (codventa !== null) {
+      this.goGetVentaPorCodVenta(data.codventa,'DETALLE');
+     } else {
+      swal.fire(this.globalConstants.msgErrorSummary, 'Registro no tiene venta realizado','error')
+      return;
+     }
   }
 
   goListar() {
@@ -114,7 +122,12 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
         this.listModelo = resp;
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goGetVentaPorCodVenta(codventa: string, opcion: string) {
@@ -130,7 +143,30 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
           }
       })
     )
-    .subscribe();
+    .subscribe(
+      (resp) => {},
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
+      }
+    );
+  }
+
+  goCerrarDetalle() {
+    this.isVerModalDetalle = !this.isVerModalDetalle;
+  }
+
+  onEnviar() {
+  }
+
+  onRecepcion() {
+  }
+
+  onCancelarEnvio() {
+
+  }
+
+  onCancelarRecepcion() {
+    
   }
 
   ngOnDestroy() {
@@ -139,9 +175,5 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
     }
   }
 
-  update() {
-  }
-
-  save(severity: string) {
-  }
+  
 }

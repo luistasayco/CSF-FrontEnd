@@ -11,7 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { interfaceUsuario } from '../../../modulo-administracion/models/usuario.interface';
-import { IEstadoRequerimiento } from '../../../modulo-requerimiento/models/requerimiento.interface';
+//import { IEstadoRequerimiento } from '../../../modulo-requerimiento/models/requerimiento.interface';
 import { ConstantesGenerales } from '../../../../constants/Constantes-generales';
 import { UtilService } from '../../../../services/util.service';
 import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
@@ -37,7 +37,7 @@ export class PanelSolicitudValeComponent implements OnInit {
   formularioBusqueda: FormGroup;
   estadoSeleccionadoValeSalida: IEstadoValeSalida;
   usuarioSeleccionadoDelModal: interfaceUsuario;
-  comboRequerimientoEstado: IEstadoRequerimiento[] = [];
+  //comboRequerimientoEstado: IEstadoRequerimiento[] = [];
   comboSolicitudValeEstado: IEstadoValeSalida[] = [];
   rowDatadValeSalida: IValeSalida[] = [];
   isVerModalDetalle = false;

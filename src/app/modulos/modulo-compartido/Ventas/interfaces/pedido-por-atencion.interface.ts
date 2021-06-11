@@ -6,8 +6,8 @@ export interface IPedidoPorAtencion {
 }
 
 export interface IDetallePedidoPorPedido {
-    codpro: string;
-    despro: string;
+    codproducto: string;
+    nombreproducto: string;
     cantidadpedida: number;
     tipoproducto: string;
     codpedido: string;
@@ -34,6 +34,12 @@ export interface IListarPedido {
     orden: string;
     codtipopedido: string;
     tipopedido: string;
+    tipomovimiento: string;
+    estado: string;
+    codmedico: string;
+    flg_paquete: string;
+    // codmedido: string;
+    codalmacenventa: string;
     key: string;
 }
 

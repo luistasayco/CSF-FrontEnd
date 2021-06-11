@@ -45,8 +45,8 @@ export class ModalBusquedaArticuloPorUsuarioComponent implements OnInit {
       { field: 'codArticulo', header: 'Codigo' },
       { field: 'desArticulo', header: 'Producto' },
       // { field: 'stockMaximo', header: 'Stock Máximo' },
-      { field: 'defaultWarehouse', header: 'UM' },
-      { field: 'salesUnit', header: 'Almacen' },
+      { field: 'salesUnit', header: 'UM' },
+      { field: 'defaultWarehouse', header: 'Almacen' },
     ];
   }
 

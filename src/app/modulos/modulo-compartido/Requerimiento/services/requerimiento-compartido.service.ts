@@ -4,6 +4,7 @@ import { IGrupoArticulo } from '../interfaces/grupo-articulo.interface';
 import { environment } from 'src/environments/environment';
 import { IServicio } from '../interfaces/servicio.interface';
 import { IDimension } from '../../../modulo-administracion/models/aprobadorCentroCosto.interface';
+import { IRequerimientoItemBus } from '../interfaces/requerimiento-item-bus.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,4 +22,20 @@ export class RequerimientoCompartidoService {
   getServicio() {
     return this.http.get<IServicio[]>(`${environment.url_api_requerimiento}/Servicio/Get`);
   }
+
+  //buscamos todos los requerimientos
+  GetParamBusqueda(
+    fechaIn,
+    fechaFin,
+    idrq=null,
+  ) {
+    
+      return this.http.get<IRequerimientoItemBus[]>(
+        `${environment.url_api_requerimiento}/Requerimiento/GetParamBusqueda/?fechaini=${fechaIn}&fechafin=${fechaFin}&idrq=${idrq}`
+      );
+  }
+
+ 
+  
+
 }

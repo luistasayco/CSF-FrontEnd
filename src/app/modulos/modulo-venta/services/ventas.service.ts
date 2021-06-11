@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -303,14 +303,14 @@ export class VentasService {
     (`${environment.url_api_venta}Hospital/GetListHospitalPacienteClinicaPorFiltros/`, { params: parametros });
   }
 
-  getGastoCubiertoPorFiltro(codaseguradora: string, codproducto: string, tipoatencion: number) {
-    let parametros = new HttpParams();
-    parametros = parametros.append('codaseguradora', codaseguradora);
-    parametros = parametros.append('codproducto', codproducto);
-    parametros = parametros.append('tipoatencion', tipoatencion === null ? "0" : tipoatencion.toString());
-    return this.http.get<boolean>
-    (`${environment.url_api_venta}Venta/GetGastoCubiertoPorFiltro/`, { params: parametros });
-  }
+  // getGastoCubiertoPorFiltro(codaseguradora: string, codproducto: string, tipoatencion: number) {
+  //   let parametros = new HttpParams();
+  //   parametros = parametros.append('codaseguradora', codaseguradora);
+  //   parametros = parametros.append('codproducto', codproducto);
+  //   parametros = parametros.append('tipoatencion', tipoatencion === null ? "0" : tipoatencion.toString());
+  //   return this.http.get<boolean>
+  //   (`${environment.url_api_venta}Venta/GetGastoCubiertoPorFiltro/`, { params: parametros });
+  // }
 
   getConveniosPorFiltros(codalmacen: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string, codaseguradora: string, codcia: string, codproducto: string) {
     let parametros = new HttpParams();
@@ -326,14 +326,14 @@ export class VentasService {
     (`${environment.url_api_venta}Convenios/GetConveniosPorFiltros/`, { params: parametros });
   }
 
-  getListProductoAlternativoPorCodigo(codproducto: string, codaseguradora: string, codcia: string) {
-    let parametros = new HttpParams();
-    parametros = parametros.append('codaseguradora', codaseguradora);
-    parametros = parametros.append('codcia', codcia);
-    parametros = parametros.append('codproducto', codproducto);
-    return this.http.get<IProducto[]>
-    (`${environment.url_api_venta}Producto/GetListProductoAlternativoPorCodigo/`, { params: parametros });
-  }
+  // getListProductoAlternativoPorCodigo(codproducto: string, codaseguradora: string, codcia: string) {
+  //   let parametros = new HttpParams();
+  //   parametros = parametros.append('codaseguradora', codaseguradora);
+  //   parametros = parametros.append('codcia', codcia);
+  //   parametros = parametros.append('codproducto', codproducto);
+  //   return this.http.get<IProducto[]>
+  //   (`${environment.url_api_venta}Producto/GetListProductoAlternativoPorCodigo/`, { params: parametros });
+  // }
 
   getGetObtieneTipoCambio() {
     return this.http.get<ITipoCambio[]>
@@ -355,6 +355,28 @@ export class VentasService {
     value = this.setAsignaValoresAuditabilidad<INewVentaCabecera>(value);
     console.log(value);
     const url = environment.url_api_venta + 'Venta/RegistrarVentaCabecera';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  setValidacionAnularVenta(value: IVentaCabeceraAnular) {
+    value = this.setAsignaValoresAuditabilidad<IVentaCabeceraAnular>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Venta/ValidacionAnularVenta';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  setRegistrarAnularVenta(value: IVentaCabeceraAnular) {
+    value = this.setAsignaValoresAuditabilidad<IVentaCabeceraAnular>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Venta/RegistrarAnularVenta';
     const param: string = JSON.stringify(value);
     return this.http.post(
         url,

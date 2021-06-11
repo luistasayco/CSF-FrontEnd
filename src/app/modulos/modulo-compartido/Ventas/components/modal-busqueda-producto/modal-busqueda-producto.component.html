@@ -1,11 +1,10 @@
 <form [formGroup]="formularioVisor">
     <div class="ui-inputgroup">
         <input type="text" pInputText placeholder="Lector por Código de Barra" style="background-color: rgb(203, 243, 198);" formControlName="nombreVisor" (keyup.enter)="getProductoPorCodigo()">
-        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="isVisualizar = true" class="btn btn-block"></button>
+        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="isVisualizar = true" class="btn btn-block" [disabled]="isHabilitaBotonPedido"></button>
     </div>
 </form>
 
-<!-- <div style="position: absolute; z-index:9999"> -->
 <p-dialog header="Buscar Producto" [(visible)]="isVisualizar" [modal]="true" [transitionOptions]="timeAnimationModal" [style]="{width: '50vw'}" [autoZIndex]>
     <p-panel header="Opción de busqueda de Producto" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">

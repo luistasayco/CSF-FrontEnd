@@ -11,10 +11,11 @@ import { IProducto } from '../interfaces/producto.interface';
 import { ISeriePorMaquina } from '../interfaces/serie-por-maquina.interface';
 import { IPedidoPorAtencion, IDetallePedidoPorPedido, IListarPedido } from '../interfaces/pedido-por-atencion.interface';
 import { UtilService } from '../../../../services/util.service';
-import { IReceta } from '../interfaces/receta.interface';
+import { IReceta, IDetalleReceta } from '../interfaces/receta.interface';
 import { ICentroCosto } from '../../../modulo-administracion/models/aprobadorCentroCosto.interface';
 import { ICentro } from '../interfaces/centro.interface';
 import { IStock } from '../interfaces/stock.interface';
+import { IVentaDetalle } from '../../../modulo-venta/interface/venta.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -90,7 +91,7 @@ export class VentaCompartidoService {
   //   (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
   // }
 
-  getProductoPorCodigo(codalmacen: string, codproducto: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string) {
+  getProductoPorCodigo(codalmacen: string, codproducto: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string, tipoatencion: number) {
     let parametros = new HttpParams();
     parametros = parametros.append('codalmacen', codalmacen);
     parametros = parametros.append('codproducto', codproducto);
@@ -101,16 +102,47 @@ export class VentaCompartidoService {
     parametros = parametros.append('codtipocliente', codtipocliente);
     parametros = parametros.append('codcliente', codcliente);
     parametros = parametros.append('codpaciente', codpaciente);
+    parametros = parametros.append('tipoatencion', tipoatencion.toString());
     return this.http.get<IProducto>
     (`${environment.url_api_venta}Producto/GetProductoPorCodigo/`, { params: parametros });
   }
 
-  // getListProductoGenericoPorCodigo(codigo: string) {
-  //   let parametros = new HttpParams();
-  //   parametros = parametros.append('codigo', codigo);
-  //   return this.http.get<IProducto[]>
-  //   (`${environment.url_api_venta}Producto/GetListProductoGenericoPorCodigo/`, { params: parametros });
-  // }
+  getListDetalleProductoPorPedido(codpedido: string, codalmacen: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string, tipoatencion: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codpedido', codpedido);
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('codaseguradora', codaseguradora);
+    parametros = parametros.append('codcia', codcia);
+    parametros = parametros.append('tipomovimiento', tipomovimiento);
+    parametros = parametros.append('codtipocliente', codtipocliente);
+    parametros = parametros.append('codcliente', codcliente);
+    parametros = parametros.append('codpaciente', codpaciente);
+    parametros = parametros.append('tipoatencion', tipoatencion.toString());
+    return this.http.get<IProducto[]>
+    (`${environment.url_api_venta}Producto/GetListDetalleProductoPorPedido/`, { params: parametros });
+  }
+
+  getListDetalleProductoPorReceta(idereceta: number, codalmacen: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string, tipoatencion: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('idereceta', idereceta.toString());
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('codaseguradora', codaseguradora);
+    parametros = parametros.append('codcia', codcia);
+    parametros = parametros.append('tipomovimiento', tipomovimiento);
+    parametros = parametros.append('codtipocliente', codtipocliente);
+    parametros = parametros.append('codcliente', codcliente);
+    parametros = parametros.append('codpaciente', codpaciente);
+    parametros = parametros.append('tipoatencion', tipoatencion.toString());
+    return this.http.get<IProducto[]>
+    (`${environment.url_api_venta}Producto/GetListDetalleProductoPorReceta/`, { params: parametros });
+  }
+
+  getDatosPedidoPorPedido(codpedido: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codpedido', codpedido);
+    return this.http.get<IListarPedido[]>
+    (`${environment.url_api_venta}Pedido/GetDatosPedidoPorPedido/`, { params: parametros });
+  }
 
   getListSeriePorMaquina() {
     return this.http.get<ISeriePorMaquina[]>
@@ -189,7 +221,7 @@ export class VentaCompartidoService {
     let parametros = new HttpParams();
     parametros = parametros.append('codalmacen', codalmacen);
     parametros = parametros.append('codproducto', codproducto);
-    return this.http.get<IStock>
+    return this.http.get<IStock[]>
     (`${environment.url_api_venta}Stock/GetListStockPorProductoAlmacen/`, { params: parametros });
   }
 
@@ -207,5 +239,13 @@ export class VentaCompartidoService {
     parametros = parametros.append('codproducto', codproducto);
     return this.http.get<IProducto>
     (`${environment.url_api_venta}Producto/GetProductoyStockAlmacenesPorCodigo/`, { params: parametros });
+  }
+
+  getVentasChequea1MesAntes(codpaciente: string, cuantosmesesantes: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codpaciente', codpaciente);
+    parametros = parametros.append('cuantosmesesantes', cuantosmesesantes.toString());
+    return this.http.get<IVentaDetalle[]>
+    (`${environment.url_api_venta}Venta/GetVentasChequea1MesAntes/`, { params: parametros });
   }
 }

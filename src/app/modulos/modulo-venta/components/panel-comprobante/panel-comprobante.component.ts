@@ -11,6 +11,7 @@ import { VentasService } from '../../services/ventas.service';
 import { IVentaCabeceraSingle } from '../../interface/venta.interface';
 import { IResultBusquedaComprobante } from '../../interface/comprobante.interface';
 import { LanguageService } from '../../../../services/language.service';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-panel-comprobante',
@@ -38,7 +39,6 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   itemSeleccionadoGrilla: IResultBusquedaComprobante;
   subscription$: Subscription;
   constructor(private breadcrumbService: BreadcrumbService,
-              public mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
               private readonly ventasService: VentasService,
               public lenguageService: LanguageService) {
@@ -86,18 +86,15 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   private onOpcionesGrilla() {
     this.items = [
       {separator: true},
-      {label: 'Detalle', icon: 'fa fa-list', command: () => {
-          this.update();
-      }},
-      {separator: true},
       {label: 'Imp.Venta', icon: 'fa fa-print ', command: () => {
-        this.update();
+        this.onImprimirVenta();
       }},
       {label: 'Imp.Comp', icon: 'fa fa-print ', command: () => {
-        this.update();
+        this.onImprimirComprobante();
       }},
+      {separator: true},
       {label: 'PDF Electronico', icon: 'fa fa-print ', command: () => {
-        this.update();
+        this.onImprimirPDF();
       }}
     ];
   }
@@ -124,7 +121,7 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
     .subscribe(  
     (resp) => {},
     (error) => {
-      console.log('error', error);
+      swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
     });
   }
 
@@ -143,7 +140,7 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
     )
     .subscribe( (resp) => {},
     (error) => {
-      console.log('error', error);
+      swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
     });
   }
 
@@ -157,9 +154,16 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
     }
   }
 
-  update() {
+  onImprimirVenta() {
+
   }
 
-  save(severity: string) {
+  onImprimirComprobante() {
+
   }
+
+  onImprimirPDF(){
+
+  }
+  
 }
