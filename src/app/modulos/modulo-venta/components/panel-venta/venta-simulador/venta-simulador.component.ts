@@ -1,40 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
+import { Component, EventEmitter, OnInit } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { MenuItem, SelectItem } from 'primeng';
+import { MenuItem } from 'primeng/api';
+import { INewVentaDetalle, IHospitalExclusiones, ITipoCambio, ITipoAutorizacion, INewVentaCabecera } from '../../../interface/venta.interface';
+import { SelectItem } from 'primeng';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { ITabla } from '../../../interface/tabla.interface';
+import { Subscription } from 'rxjs';
+import { BreadcrumbService } from '../../../../../services/breadcrumb.service';
 import { LanguageService } from '../../../../../services/language.service';
 import { Router } from '@angular/router';
 import { VentasService } from '../../../services/ventas.service';
+import { VentaDataService } from '../../../services/venta-data.service';
+import { VentaCompartidoService } from '../../../../modulo-compartido/Ventas/services/venta-compartido.service';
+import { FunctionDblocalService } from '../../../../modulo-base-datos-local/function-dblocal.service';
+import { UtilService } from '../../../../../services/util.service';
+import { ConstantsTablasIDB } from '../../../../modulo-base-datos-local/constants/constants-tablas-indexdb';
+import { ISeriePorMaquina } from '../../../../modulo-compartido/Ventas/interfaces/serie-por-maquina.interface';
+import { PlanesModel } from '../../../models/planes.model';
 import { IWarehouses } from '../../../../modulo-compartido/Ventas/interfaces/warehouses.interface';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { IPaciente } from '../../../../modulo-compartido/Ventas/interfaces/paciente.interface';
+import { IMedico } from '../../../../modulo-compartido/Ventas/interfaces/medico.interface';
 import { ICliente } from '../../../../modulo-compartido/Ventas/interfaces/cliente.interface';
 import { IPersonalClinica } from '../../../../modulo-compartido/Ventas/interfaces/personal-clinica.interface';
-import { IMedico } from '../../../../modulo-compartido/Ventas/interfaces/medico.interface';
-import { Subscription } from 'rxjs';
-import { VentaDataService } from '../../../services/venta-data.service';
-import { ITipoAutorizacion, IHospitalExclusiones, INewVentaDetalle, INewVentaCabecera, ITipoCambio, IVentaGenerado } from '../../../interface/venta.interface';
-import { PlanesModel } from '../../../models/planes.model';
-import { IListarPedido } from '../../../../modulo-compartido/Ventas/interfaces/pedido-por-atencion.interface';
-import { IReceta } from '../../../../modulo-compartido/Ventas/interfaces/receta.interface';
-import { IProducto } from '../../../../modulo-compartido/Ventas/interfaces/producto.interface';
-import { map } from 'rxjs/operators';
-import { VentaCompartidoService } from '../../../../modulo-compartido/Ventas/services/venta-compartido.service';
-import { ITabla } from '../../../interface/tabla.interface';
-import { UtilService } from '../../../../../services/util.service';
 import { IStock } from '../../../../modulo-compartido/Ventas/interfaces/stock.interface';
-import { IAutenticarResponse } from '../../../../modulo-compartido/Ventas/interfaces/autenticar.interface';
-import { ISeriePorMaquina } from '../../../../modulo-compartido/Ventas/interfaces/serie-por-maquina.interface';
-import { FunctionDblocalService } from '../../../../modulo-base-datos-local/function-dblocal.service';
-import { ConstantsTablasIDB } from '../../../../modulo-base-datos-local/constants/constants-tablas-indexdb';
+import { IProducto } from '../../../../modulo-compartido/Ventas/interfaces/producto.interface';
 import swal from'sweetalert2';
+import { Output } from '@angular/core';
 
 @Component({
-  selector: 'app-venta-create',
-  templateUrl: './venta-create.component.html',
-  styleUrls: ['./venta-create.component.css']
+  selector: 'app-venta-simulador',
+  templateUrl: './venta-simulador.component.html',
+  styleUrls: ['./venta-simulador.component.css']
 })
-export class VentaCreateComponent implements OnInit {
+export class VentaSimuladorComponent implements OnInit {
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm;
 
@@ -49,14 +47,10 @@ export class VentaCreateComponent implements OnInit {
   columnas: any;
 
   isWarehouseCode: string;
-  isAutenticar: boolean = false;
-  isVisibleReceta: boolean = false;
-  isVisiblePedido: boolean = false;
   isVisibleGenerico: boolean = false;
   isValidaMedicoEmergencia: number;
   isVisibleHospitalExcusiones: boolean;
   isHabilitaControlPlan: boolean = true;
-  isVisibleSimuladorVentas: boolean = false;
   isCodPlan: string;
   // Formulario
   formularioCabecera: FormGroup;
@@ -76,13 +70,9 @@ export class VentaCreateComponent implements OnInit {
   isMensajeAviso: string;
   isTabObservacion: string;
   isCodAtencion: string;
-  // isItem: IProducto;
   isModeloTablaValidaVentaTransferencia: ITabla;
-  // isListProductoRestringido: IProducto[];
-  // isConvenios: IConvenios;
   isTipoCambio: number = 0;
   isTrabajaVariosIGV: boolean = false;
-  isCodVenta: string;
   isFlgGeneroVenta: boolean;
   isDisplaySave: boolean;
   isDisplayValidacion: boolean = false;
@@ -93,10 +83,6 @@ export class VentaCreateComponent implements OnInit {
   isCodMedicoPedido: string = '';
   isPedidoORecetaValido: boolean;
   isCodPaciente: string = "";
-
-  // Habilita Boton
-  isHabilitaBotonPedido: boolean = false;
-  isHabilitaBotonReceta: boolean = false;
 
   // Visualizacion
   isVisualizarProducto: boolean = false;
@@ -109,6 +95,8 @@ export class VentaCreateComponent implements OnInit {
   isGrabar: boolean = false;
   isFlagPaquete: string;
   isU_SYP_CS_PRODCI: string;
+  @Output() eventoSalir = new EventEmitter<boolean>();
+
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
               public router: Router,
@@ -130,7 +118,6 @@ export class VentaCreateComponent implements OnInit {
     // this.isListProductoRestringido = [];
     // Inicializamos el valor
     this.isTrabajaVariosIGV = true;
-    this.isCodVenta = 'XXXXXXXX';
     this.isFlgGeneroVenta = false;
     this.isFlagPaquete = 'N';
     this.isPedidoORecetaValido = true;
@@ -211,14 +198,6 @@ export class VentaCreateComponent implements OnInit {
 
   private onOpcionesSplitButtonCabecera() {
     this.items = [
-      {label: this.globalConstants.cConsultar, icon: this.globalConstants.icoConsultar,
-        command: () => {
-        this.onConsultarVenta();
-      }},
-      {label: this.globalConstants.cCaja, icon: this.globalConstants.icoCaja,
-        command: () => {
-        // this.update();
-      }},
       {separator: true},
       {label: this.globalConstants.cGanancia, icon: this.globalConstants.icoGanancia,
         command: () => {
@@ -228,15 +207,6 @@ export class VentaCreateComponent implements OnInit {
         command: () => {
         this.goGetProductosGenericos();
       }},
-      {label: this.globalConstants.cSimulacion, icon: this.globalConstants.icoSimulacion,
-        command: () => {
-        this.goSimuladorVenta();
-      }},
-      {label: 'Vale Delivery', icon: this.globalConstants.icoSimulacion,
-        command: () => {
-        // this.update();
-      }},
-      
     ];
   }
 
@@ -410,19 +380,7 @@ export class VentaCreateComponent implements OnInit {
     this.listMedicosPorAtencion = [];
     this.listModelo = [];
     
-    this.isHabilitaBotonPedido = false;
     this.isCodAtencion = '';
-  }
-
-  goChangeSinStock(e) {
-
-    this.formularioCabecera.patchValue({
-      sinStock: e.checked
-    });
-
-    const body = this.formularioCabecera.getRawValue();
-
-    this.goNuevaVenta('01', body.sinStock);
   }
 
   goAlmacenSeleccionado(item: IWarehouses) {
@@ -585,7 +543,6 @@ export class VentaCreateComponent implements OnInit {
       this.listHospitalExclusiones = data;
       if (data.length === 0) {
         swal.fire(this.globalConstants.msgInfoSummary,'No cuenta con PRE-EXISTENCIA','info')
-        // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail: 'No cuenta con PRE-EXISTENCIA'});
       } else {
         this.isVisibleHospitalExcusiones = true;
       }
@@ -745,29 +702,6 @@ export class VentaCreateComponent implements OnInit {
     }
   }
 
-  onObtieneDetallePedido(codpedido: string){
-
-    const bodyCabecera = this.formularioCabecera.getRawValue();
-
-    let tipoatencion: number = bodyCabecera.idegctipoatencionmae === null ? 0 : bodyCabecera.idegctipoatencionmae;
-
-    this.isDisplayProducto = true;
-    this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListDetalleProductoPorPedido(codpedido, bodyCabecera.codAlmacen , bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente, tipoatencion)
-    .subscribe((data: IProducto[]) => {
-
-      data.forEach(xFila => {
-        this.onInsertarProducto(xFila);
-      });
-
-      this.isDisplayProducto = false;
-    },
-    (error) => {
-      this.isDisplayProducto = false;
-      swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
-    });
-  }
-
   private onInsertarProducto(producto: IProducto) {
     
     // let isProdNCxCia: string = 'N';
@@ -908,7 +842,7 @@ export class VentaCreateComponent implements OnInit {
         stockfraccion: producto.fraccionVenta,
         cantidadpedido: producto.cantidadPedido,
         nombretipoautorizacion: 'NO APLICA',
-        u_SYP_CS_PRODCI: producto.u_SYP_CS_PRODCI
+        u_SYP_CS_PRODCI : producto.u_SYP_CS_PRODCI
       }
 
       this.listModelo.push(newDetalle);
@@ -1151,228 +1085,6 @@ export class VentaCreateComponent implements OnInit {
     this.listModelo[index].nombretipoautorizacion =  data.value.label;
   }
 
-  onConsultarVenta() {
-    this.router.navigate(['/main/modulo-ve/panel-venta'])
-  }
-
-  goReceta() {
-
-    const body = this.formularioCabecera.getRawValue();
-
-    if (body.codAlmacen === null) {
-      swal.fire(this.globalConstants.msgInfoSummary,'Seleccione un Almacén','info')
-      return;
-    }
-
-    this.isVisibleReceta =!this.isVisibleReceta;
-  }
-
-  goPedido() {
-
-    const body = this.formularioCabecera.getRawValue();
-
-    if (body.codAlmacen === null) {
-      swal.fire(this.globalConstants.msgInfoSummary,'Seleccione un Almacén','info')
-      return;
-    }
-
-    this.isVisiblePedido = !this.isVisiblePedido;
-
-  }
-
-  goPedidoSeleccionado(modelo: IListarPedido) {
-
-    this.isVisiblePedido = !this.isVisiblePedido;
-
-    this.formularioCabecera.patchValue({
-      tipoCliente: '01'
-    });
-
-    this.goTipoClienteChange();
-
-    if (this.isTipoCliente === '01') {
-      this.isHabilitaBotonPedido = true;
-      this.listModelo = [];
-
-      this.subscription$ = new Subscription();
-      this.subscription$ = this.ventaCompartidoService.getPacientePorAtencion(modelo.codatencion)
-      .pipe(
-        map(resp => {
-  
-          this.goAtencionSeleccionado(resp);
-
-          if (this.isPedidoORecetaValido) {
-            this.formularioCabecera.patchValue({
-              observacionGeneral: modelo.nomobservacion,
-              codpedido: modelo.codpedido,
-              fecgenerapedido: modelo.fechagenera
-            });
-
-            this.isCodAtencion = modelo.codatencion;
-  
-          const bodyCabecera = this.formularioCabecera.getRawValue();
-  
-          this.subscription$ = new Subscription();
-          this.subscription$ = this.ventaCompartidoService.getDatosPedidoPorPedido(modelo.codpedido)
-          .subscribe((data: IListarPedido[]) => {
-    
-            if (data !== null) {
-              let dataPedido: IListarPedido = data[0];
-    
-              this.isFlagPaquete = dataPedido.flg_paquete;
-              this.isCodMedicoPedido = dataPedido.codmedico;
-      
-              let codalmacenventa = dataPedido.codalmacenventa === null ? '' : dataPedido.codalmacenventa;
-              codalmacenventa = codalmacenventa === undefined ? '' : codalmacenventa;
-    
-              if (codalmacenventa !== '') {
-                this.isGrabar = true;
-                swal.fire( this.globalConstants.msgInfoSummary, `El pedido ${dataPedido.codpedido} ya se atendió en el almcén ${dataPedido.codalmacenventa}`, 'error')
-                this.goNuevaVenta('01');
-                return;
-              } 
-              else 
-              {
-                if (dataPedido.codalmacen !== '') {
-    
-                  if (bodyCabecera.codAlmacen === '' || bodyCabecera.codAlmacen === null) {
-                    this.formularioCabecera.patchValue({
-                      codAlmacen: dataPedido.codalmacen
-                    });
-                  }
-                  
-                  if(bodyCabecera.codAlmacen !== '' && bodyCabecera.codAlmacen !== dataPedido.codalmacen) {
-                    swal.fire( this.globalConstants.msgInfoSummary, `El almacén para atender el pedido debe ser:  ${codalmacenventa}`, 'error');
-                    this.goNuevaVenta('01');
-                    this.formularioCabecera.patchValue({
-                      codAlmacen: dataPedido.codalmacen
-                    });
-                  }
-                }
-                else {
-                  this.isGrabar = true;
-                  swal.fire( this.globalConstants.msgInfoSummary, `El centro de costo del pedido no tiene asignado un almacén`, 'error')
-                  this.goNuevaVenta('01');
-                  return;
-                }
-              }
-    
-              this.onObtieneDetallePedido(modelo.codpedido);
-    
-            }
-          },
-          (error) => {
-            swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
-            this.goNuevaVenta('01');
-            }
-          );
-          }
-        })
-      )
-      .subscribe(
-        (resp) => {},
-        (error) => {
-        swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
-        this.goNuevaVenta('01');
-      });
-
-    }
-  }
-
-  goPedidoCancelado() {
-    this.isVisiblePedido = !this.isVisiblePedido;
-  }
-
-  goRecetaSeleccionado(modelo: IReceta) {
-    
-    this.isVisibleReceta =!this.isVisibleReceta;
-
-    this.formularioCabecera.patchValue({
-      tipoCliente: '01'
-    });
-
-    if (modelo.cod_atencion.substring(0,1)=== 'J') {
-      this.formularioCabecera.patchValue({
-        tipoCliente: '02'
-      });
-    }
-
-    this.goTipoClienteChange();
-
-    this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getPacientePorAtencion(modelo.cod_atencion)
-      .pipe(
-        map(resp => {
-          debugger;
-          this.goAtencionSeleccionado(resp);
-  
-          if (this.isPedidoORecetaValido) {
-            this.isCodAtencion = modelo.cod_atencion;
-
-            this.onObtieneDetalleReceta(modelo.ide_receta);
-          }
-          
-        })
-      )
-      .subscribe(
-        (resp) => {},
-        (error) => {
-        swal.fire( this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion, 'error')
-        this.goNuevaVenta('01');
-      });
-
-  }
-
-  onObtieneDetalleReceta(ide_receta: number){
-
-    const bodyCabecera = this.formularioCabecera.getRawValue();
-
-    let tipoatencion: number = bodyCabecera.idegctipoatencionmae === null ? 0 : bodyCabecera.idegctipoatencionmae;
-
-    this.isDisplayProducto = true;
-    this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListDetalleProductoPorReceta(ide_receta, bodyCabecera.codAlmacen , bodyCabecera.codAseguradora ,bodyCabecera.codContratante, 'DV', this.isTipoCliente, '', bodyCabecera.paciente, tipoatencion)
-    .subscribe((data: IProducto[]) => {
-
-      data.forEach(xFila => {
-
-        if (this.isTipoCliente === '01') {
-          if (xFila.gastoCubierto === false) {
-  
-            swal.fire({
-              title: 'No cubierto por Aseguradora',
-              text: '¿Desea insertar de todas maneras?',
-              icon: 'question',
-              showCancelButton: true,  
-              confirmButtonText: 'SI',
-              cancelButtonText: 'NO',
-              showConfirmButton: true,
-            }).then((result) => {  
-              /* Read more about isConfirmed, isDenied below */  
-                if (result.isConfirmed) {    
-                  this.onInsertarProducto(xFila);
-                }
-            });
-          } else {
-            this.onInsertarProducto(xFila);
-          }
-        } else {
-          this.onInsertarProducto(xFila);
-        }
-      });
-
-      this.isDisplayProducto = false;
-    },
-    (error) => {
-      this.isDisplayProducto = false;
-      swal.fire(this.globalConstants.msgInfoSummary, error.error.resultadoDescripcion,'error')
-    });
-  }
-
-  goRecetaCancelado() {
-    this.isVisibleReceta =!this.isVisibleReceta;
-  }
-
   goChangeVisibleProducto(event: INewVentaDetalle, index: number) {
     this.isSeleccionItemVentaDetalle = event;
     this.isIndexItemVentaDetalle = index;
@@ -1589,7 +1301,8 @@ export class VentaCreateComponent implements OnInit {
         return;
       }
 
-      this.isAutenticar =!this.isAutenticar;
+      swal.fire(this.globalConstants.msgExitoSummary, "Simulación Correcta", 'success')
+
     },
       (error) => {
         this.isDisplayValidacion = false;
@@ -1641,106 +1354,8 @@ export class VentaCreateComponent implements OnInit {
     return bodyVenta;
   }
 
-  onGrabar() {
-
-    swal.fire({
-      title: 'Generar Venta',
-      text: "¿Desea Generar la Venta?",
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      cancelButtonText: 'No',
-      confirmButtonText: 'Si'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.isAutenticar =!this.isAutenticar;
-      }
-    })
-  }
-
-  goAceptarGrabar(value: IAutenticarResponse) {
-
-    this.isAutenticar =!this.isAutenticar;
-
-    const bodyCabecera = this.formularioCabecera.getRawValue();
-
-
-    if (!value.valido) {
-      swal.fire(this.globalConstants.msgInfoSummary,value.observacion,'error')
-      return;
-    }
-
-    if (bodyCabecera.codpedido !== null) {
-      if (bodyCabecera.codpedido.length === 14) {
-        
-        let fechaPedido = this.utilService.fecha_AAAAMMDD(bodyCabecera.fecgenerapedido);
-        let fechaActual = this.utilService.fecha_AAAAMMDD(new Date());
-
-        if (fechaPedido !== fechaActual)
-        {
-          this.isDisplayValidacion = false;
-          swal.fire(this.globalConstants.msgInfoSummary, 'Solo se atienden pedido del dia de hoy','error')
-          return;
-        }
-      }
-    }
-
-    const bodyVenta = this.onGeneroBodyVenta(value.usuario);
-
-    bodyVenta.listaVentaDetalle.forEach(xFila => {
-      if (xFila.ventasDetalleDatos !== null) {
-        if (xFila.ventasDetalleDatos !== undefined) {
-          if (xFila.ventasDetalleDatos.tipodocumentoautorizacion !== '00') {
-            xFila.ventasDetalleDatos.numerodocumentoautorizacion = xFila.numerodocumentoautorizacion;
-          }  
-        }
-      }
-    });
-
-    let isCadenaVentaGenerado: string = '';
-
-    this.isDisplaySave = true;
-    this.subscription$ = new Subscription();
-    this.subscription$  = this.ventasService.setRegistrarVentaCabecera( bodyVenta )
-    .subscribe((resp: IVentaGenerado[]) =>  {
-
-      this.isDisplaySave = false;
-      this.isGrabar = true;
-      this.isCodVenta = '';
-
-      this.goDeshabilitarControles();
-
-      resp.forEach(xFila => {
-        isCadenaVentaGenerado = isCadenaVentaGenerado + `Ud. Genero correctamente la Venta ${xFila.codventa} <br>`;
-        if (this.isCodVenta === '') {
-          this.isCodVenta = xFila.codventa;
-        } else {
-          this.isCodVenta = this.isCodVenta +' , ' + xFila.codventa;
-        }
-        
-      });
-
-      swal.fire(this.globalConstants.msgInfoSummary, isCadenaVentaGenerado, 'success');
-    },
-      (error) => {
-        this.isDisplaySave = false;
-        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
-    });
-
-  }
-
-  goDeshabilitarControles(){
-    this.formularioCabecera.controls.listMedico.disable();
-    this.formularioCabecera.controls.observacionGeneral.disable();
-    this.formularioCabecera.controls.tipoCliente.disable();
-  }
-
-  goCancelarGrabar() {
-    this.isAutenticar =!this.isAutenticar;
-  }
-
   goGetProductosGenericos() {
+
     const body = this.formularioCabecera.getRawValue();
 
     if (body.codAlmacen === null) {
@@ -1767,11 +1382,7 @@ export class VentaCreateComponent implements OnInit {
     this.isVisibleGenerico =!this.isVisibleGenerico;
   }
 
-  goSimuladorVenta() {
-    this.isVisibleSimuladorVentas =! this.isVisibleSimuladorVentas;
-  }
-
-  goSalirVentaSimulada(){
-    this.isVisibleSimuladorVentas =! this.isVisibleSimuladorVentas;
+  goSalir() {
+    this.eventoSalir.emit(true);
   }
 }

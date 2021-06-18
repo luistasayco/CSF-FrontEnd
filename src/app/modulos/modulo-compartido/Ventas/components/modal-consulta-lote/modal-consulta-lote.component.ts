@@ -53,7 +53,7 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
       this.columnas = [
         { field: 'batchNum', header: 'Lote' },
         { field: 'expDate', header: 'Fecha Vencimiento' },
-        { field: 'quantity', header: 'Cantidad' }
+        { field: 'quantityLote', header: 'Cantidad' }
       ];
     }
     
@@ -61,7 +61,7 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
       this.columnas = [
         { field: 'batchNum', header: 'Lote' },
         { field: 'expDate', header: 'Fecha Vencimiento' },
-        { field: 'quantity', header: 'Cantidad' },
+        { field: 'quantityLote', header: 'Cantidad' },
         { field: 'quantityinput', header: 'Cantidad a vender' }
       ];
     }

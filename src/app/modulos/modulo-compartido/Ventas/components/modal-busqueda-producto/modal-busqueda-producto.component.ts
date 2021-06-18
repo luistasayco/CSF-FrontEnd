@@ -78,7 +78,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
       { field: 'itemName', header: 'Nombre' },
       { field: 'u_SYP_CS_LABORATORIO', header: 'Laboratorio' },
       { field: 'price', header: 'Precio' },
-      { field: 'onHand_1', header: 'Stock' }
+      { field: 'onHandALM', header: 'Stock' }
     ];
 
     this.columnasGenerico = [
@@ -87,7 +87,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
       { field: 'itemName', header: 'Nombre' },
       { field: 'u_SYP_CS_LABORATORIO', header: 'Laboratorio' },
       { field: 'price', header: 'Precio' },
-      { field: 'onHand_1', header: 'Stock' }
+      { field: 'onHandALM', header: 'Stock' }
     ];
   }
 
@@ -186,6 +186,9 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     this.subscription$ = this.ventaCompartidoService.getListStockPorFiltro(this.isCodAlmacen, formBody.nombre, formBody.codigo, true)
     .pipe(
       map((data: IStock[])=> {
+
+        console.log('this.listModelo', this.listModelo);
+
         this.listModelo = [];
         this.listModelo = data;
 
@@ -205,21 +208,28 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.seleccionItem.u_SYP_CS_FAMILIA === null) {
+    if (this.seleccionItem.u_SYP_CS_PRODCI === null) {
+      swal.fire(this.globalConstants.msgInfoSummary, 'Código Prod.DCI en Blanco','error')
       return;
     }
 
-    // this.loadingGenerico = true;
-    // this.subscription$ = new Subscription();
-    // this.subscription$ = this.ventaCompartidoService.getListProductoGenericoPorCodigo(this.seleccionItem.u_SYP_CS_FAMILIA)
-    // .subscribe((data: IProducto[]) => {
-    //   this.listModeloGenerico = [];
-    //   this.listModeloGenerico = data;
-    //   this.loadingGenerico = false;
-    // },
-    // (error) => {
-    //   this.loadingGenerico = false;
-    // });
+    if (this.seleccionItem.u_SYP_CS_PRODCI === undefined) {
+      swal.fire(this.globalConstants.msgInfoSummary, 'Código Prod.DCI en Blanco','error')
+      return;
+    }
+
+    this.loadingGenerico = true;
+    this.subscription$ = new Subscription();
+    this.subscription$ = this.ventaCompartidoService.getListProductoGenericoPorCodigo(this.isCodAlmacen, this.seleccionItem.u_SYP_CS_PRODCI, true)
+    .subscribe((data: IStock[]) => {
+      this.listModeloGenerico = [];
+      this.listModeloGenerico = data;
+      this.loadingGenerico = false;
+    },
+    (error) => {
+      this.loadingGenerico = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
+    });
   }
 
   goClearGenerico() {

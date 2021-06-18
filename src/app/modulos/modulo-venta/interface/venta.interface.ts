@@ -178,6 +178,7 @@ export interface INewVentaCabecera {
     nombremaquina: string;
     usuario?: string;
     listaVentaDetalle: INewVentaDetalle[];
+    flgsinstock: boolean;
 }
 
 export interface INewVentaDetalle {
@@ -210,6 +211,7 @@ export interface INewVentaDetalle {
     listStockLote: IStock[];
     stockfraccion: number;
     cantidadpedido: number;
+    u_SYP_CS_PRODCI: string;
 }
 
 export interface INewVentaDetalleDato {

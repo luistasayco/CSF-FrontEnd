@@ -6,7 +6,7 @@ export interface IProducto {
     // manageBatchNumbers: string;
     u_SYP_CS_LABORATORIO: string;
     u_SYP_FAMILIA: string;
-    // codproducto: string;
+    u_SYP_CS_PRODCI: string;
     u_SYP_CS_CLASIF: string;
     u_SYP_CS_EABAS: string;
     // u_SYP_CS_SIC: string;

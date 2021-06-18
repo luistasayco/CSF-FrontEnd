@@ -16,6 +16,7 @@ import { ICentroCosto } from '../../../modulo-administracion/models/aprobadorCen
 import { ICentro } from '../interfaces/centro.interface';
 import { IStock } from '../interfaces/stock.interface';
 import { IVentaDetalle } from '../../../modulo-venta/interface/venta.interface';
+import { IGenerico } from '../interfaces/generico.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,29 @@ export class VentaCompartidoService {
     parametros = parametros.append('warehouseName', warehouseName);
     return this.http.get<IWarehouses[]>
     (`${environment.url_api_venta}Warehouses/GetListWarehousesContains/`, { params: parametros });
+  }
+
+  getListGenericoPorProDCI(codprodci: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codprodci', codprodci);
+    return this.http.get<IGenerico[]>
+    (`${environment.url_api_venta}Generico/GetListGenericoPorProDCI/`, { params: parametros });
+  }
+
+  getListGenericoPorFiltro(name: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('name', name);
+    return this.http.get<IGenerico[]>
+    (`${environment.url_api_venta}Generico/GetListGenericoPorFiltro/`, { params: parametros });
+  }
+
+  getListProductoGenericoPorDCI(codalmacen: string, coddci: string, constock: boolean) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('coddci', coddci);
+    parametros = parametros.append('constock', constock.toString());
+    return this.http.get<IStock[]>
+    (`${environment.url_api_venta}Stock/GetListProductoGenericoPorDCI/`, { params: parametros });
   }
 
   getWarehousesPorCodigo(warehouseCode: string) {
@@ -80,16 +104,14 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Medico/GetListMedicoPorNombre/`, { params: parametros });
   }
 
-  // getListProductoPorFiltro(codalmacem: string, codigo: string, nombre: string, codaseguradora: string, codcia: string) {
-  //   let parametros = new HttpParams();
-  //   parametros = parametros.append('codalmacem', codalmacem);
-  //   parametros = parametros.append('codigo', codigo);
-  //   parametros = parametros.append('nombre', nombre);
-  //   parametros = parametros.append('codaseguradora', codaseguradora);
-  //   parametros = parametros.append('codcia', codcia);
-  //   return this.http.get<IProducto[]>
-  //   (`${environment.url_api_venta}Producto/GetListProductoPorFiltro/`, { params: parametros });
-  // }
+  getListProductoGenericoPorCodigo(codalmacen: string, codprodci: string, constock: boolean) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('codprodci', codprodci);
+    parametros = parametros.append('constock', constock.toString());
+    return this.http.get<IStock[]>
+    (`${environment.url_api_venta}Stock/GetListProductoGenericoPorCodigo/`, { params: parametros });
+  }
 
   getProductoPorCodigo(codalmacen: string, codproducto: string, codaseguradora: string, codcia: string, tipomovimiento: string, codtipocliente: string, codcliente: string, codpaciente: string, tipoatencion: number) {
     let parametros = new HttpParams();

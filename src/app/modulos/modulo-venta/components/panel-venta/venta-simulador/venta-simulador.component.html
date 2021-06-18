@@ -1,26 +1,17 @@
 <p-card>
     <div class="ui-g ui-fluid">
         <form [formGroup]="formularioCabecera">
-            <div class="ui-g-12 ui-md-4">
-                <h2><strong>Nro. Venta - {{isCodVenta}}</strong></h2>
-            </div>
-            <div class="ui-g-12 ui-md-1">
-                {{isMensajePolizaBCR}}
-            </div>
-            <div class="ui-g-12 ui-md-1">
-                {{isMensajeAviso}}
-            </div>
-            <div class="ui-g-12 ui-md-1 sba-checkbox-gratuita">
-                <p-checkbox styleClass="sba-checked" formControlName="flggratuito" label="VTA Gratuita ?" binary="true"></p-checkbox>
-            </div>
-            <div class="ui-g-12 ui-md-1">
-                <app-label-estado [isEstado]="'GENERADO'"></app-label-estado>
-            </div>
-            <div class="ui-g-12  ui-md-2">
-                <p-toggleButton formControlName="sinStock" onLabel="'Vale de Venta - SIN MOVER STOCK'" (onChange)="goChangeSinStock($event)" offLabel="'Vale de Venta - MOVER STOCK'" onIcon="{{globalConstants.icoCancelar}}" offIcon="{{globalConstants.icoAceptar}}" class="btn btn-block"></p-toggleButton>
+            <div class="ui-g-12 ui-md-6">
+                <h2><strong>VENTA SIMULADA</strong></h2>
             </div>
             <div class="ui-g-12 ui-md-2">
-                <app-btn-salir [isMargenTop]="false"></app-btn-salir>
+                {{isMensajePolizaBCR}}
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                {{isMensajeAviso}}
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="{{globalConstants.cSalir}}" icon="{{globalConstants.icoSalir}}" class="ui-button-danger" (click)="goSalir()"></button>
             </div>
             <div class="ui-g-12 ui-md-3">
                 <label class="label-custom">Almacen: </label>
@@ -34,18 +25,15 @@
                 <label class="label-custom" for="float-input-tc">TC: </label>
                 <input id="float-input-tc" type="number" formControlName="tipoCambio" pInputText placeholder="TC">
             </div>
+            <div class="ui-g-12 ui-md-2">
+            </div>
             <div class="ui-g-12 ui-md-1">
                 <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" (click)="goNuevaVenta('01')" class="sba-button btn btn-block"></button>
             </div>
             <div class="ui-g-12 ui-md-1">
-                <button pButton type="button" label="{{globalConstants.cReceta}}" icon="{{globalConstants.icoPedido}}" (click)="goReceta()" [disabled]="isHabilitaBotonReceta" class="sba-button btn btn-block"></button>
+                <button pButton type="button" label="Valida Venta" icon="{{globalConstants.icoGrabar}}" [disabled]="isGrabar" (click)="goConfirmGrabar()" class="sba-button btn btn-block"></button>
             </div>
-            <div class="ui-g-12 ui-md-1">
-                <button pButton type="button" label="{{globalConstants.cPedido}}" icon="{{globalConstants.icoPedido}}" (click)="goPedido()" [disabled]="isHabilitaBotonPedido" class="sba-button btn btn-block"></button>
-            </div>
-            <div class="ui-g-12 ui-md-1">
-                <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" [disabled]="isGrabar" (click)="goConfirmGrabar()" class="sba-button btn btn-block"></button>
-            </div>
+
             <div class="ui-g-12 ui-md-2">
                 <p-splitButton label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" [model]="items" styleClass="sba-button"></p-splitButton>
             </div>
@@ -224,7 +212,7 @@
             </div>
 
             <div class="ui-g-12 ui-md-2">
-                <app-modal-busqueda-producto [isCodAlmacen]="isWarehouseCode" [(isHabilitaBotonPedido)]="isHabilitaBotonPedido" (eventoAceptar)="goProductoSeleccionado($event)" [isCodAseguradora]="isCodAseguradora" [isCodContratante]="isCodContratante"></app-modal-busqueda-producto>
+                <app-modal-busqueda-producto [isCodAlmacen]="isWarehouseCode" [isHabilitaBotonPedido]="false" (eventoAceptar)="goProductoSeleccionado($event)" [isCodAseguradora]="isCodAseguradora" [isCodContratante]="isCodContratante"></app-modal-busqueda-producto>
             </div>
 
             <div class="ui-g-12 ui-md-10">
@@ -232,7 +220,7 @@
             </div>
         </form>
         <div class="ui-g-12 ui-md-9">
-            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codproducto" editMode="row" [(selection)]="isSeleccionItemVentaDetalle" selectionMode="single" autoLayout="true" [responsive]="true" [resizableColumns]="true">
+            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codproducto" editMode="row" autoLayout="true" [responsive]="true" [resizableColumns]="true">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th>...</th>
@@ -243,7 +231,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
-                    <tr [pSelectableRow]="rowData">
+                    <tr>
                         <td class="custom-td-ico">
                             <button *ngIf="!isGrabar" pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger" (click)="goEliminarItemDetalleVenta(index)"></button>
                         </td>
@@ -343,22 +331,6 @@
     </div>
 </p-card>
 
-<!-- <p-toast class="ui-toast-bottom-right" position="bottom-right"></p-toast> -->
-
-<!-- <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog> -->
-
-<p-dialog *ngIf="isAutenticar" header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
-    <app-modal-autenticacion [isAnular]="false" (eventoAceptar)="goAceptarGrabar($event)" (eventoCancelar)="goCancelarGrabar()"></app-modal-autenticacion>
-</p-dialog>
-
-<p-dialog #appendReceta header="Lista de Recetas" *ngIf="isVisibleReceta" [(visible)]="isVisibleReceta" [modal]="true" [closable]="false">
-    <app-modal-busqueda-receta [append]="appendReceta" (eventoAceptar)="goRecetaSeleccionado($event)" (eventoCancelar)="goRecetaCancelado()"></app-modal-busqueda-receta>
-</p-dialog>
-
-<p-dialog #appendPedido header="Lista de Pedido" *ngIf="isVisiblePedido" [(visible)]="isVisiblePedido" [modal]="true" [closable]="false" [autoZIndex]>
-    <app-modal-busqueda-pedido [append]="appendPedido" (eventoAceptar)="goPedidoSeleccionado($event)" (eventoCancelar)="goPedidoCancelado()"></app-modal-busqueda-pedido>
-</p-dialog>
-
 <p-dialog header="Lista de Genérico por Producto" *ngIf="isVisibleGenerico" [(visible)]="isVisibleGenerico" [modal]="true" [closable]="false" [autoZIndex]>
     <app-modal-busqueda-generico [isCodProDCI]="isU_SYP_CS_PRODCI" [isCodAlmacen]="isWarehouseCode" (eventoCancelar)="goCancelarGenerico()"></app-modal-busqueda-generico>
 </p-dialog>
@@ -414,10 +386,4 @@
         <app-modal-busqueda-historial-venta [isCodPaciente]="isCodPaciente" (eventoCancelar)="goCerrarChequearVentaAnterior()"></app-modal-busqueda-historial-venta>
     </div>
 
-</p-dialog>
-
-<p-dialog header="VENTA SIMULADA" *ngIf="isVisibleSimuladorVentas" [(visible)]="isVisibleSimuladorVentas" [modal]="true" [closable]="false" [autoZIndex]>
-    <div class="ui-g ui-fluid">
-        <app-venta-simulador (eventoSalir)="goSalirVentaSimulada()"></app-venta-simulador>
-    </div>
 </p-dialog>

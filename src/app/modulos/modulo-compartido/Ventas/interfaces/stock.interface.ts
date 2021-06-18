@@ -4,7 +4,7 @@ export interface IStock {
     manBtchNum: string;
     manSerNum: string;
     u_SYP_CS_FAMILIA: string;
-    // u_SYP_CS_SIC: string;
+    u_SYP_CS_PRODCI: string;
     u_SYP_CS_EABAS: string;
     u_SYP_CS_CLASIF: string;
     u_SYP_CS_LABORATORIO: string;
@@ -15,12 +15,12 @@ export interface IStock {
     onOrder: number;
     isCommited: number;
     price: number;
-    onHand_1: number;
-    onOrder_1: number;
-    isCommited_1: number;
-    quantity: number;
-    isCommited_2: number;
-    onOrder_2: number;
+    onHandALM: number;
+    onOrderALM: number;
+    isCommitedALM: number;
+    quantityLote: number;
+    isCommitedLote: number;
+    onOrderLote: number;
     whsName: string;
     expDate: Date;
 

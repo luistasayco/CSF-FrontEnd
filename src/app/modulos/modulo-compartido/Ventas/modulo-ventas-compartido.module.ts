@@ -28,6 +28,7 @@ import { ModalBusquedaPlanesComponent } from './components/modal-busqueda-planes
 import { ModalAutenticacionComponent } from './components/modal-autenticacion/modal-autenticacion.component';
 import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-centro-costo/modal-busqueda-centro-costo.component';
 import { ModalBusquedaHistorialVentaComponent } from './components/modal-busqueda-historial-venta/modal-busqueda-historial-venta.component';
+import { ModalBusquedaMaestroGenericoComponent } from './components/modal-busqueda-maestro-generico/modal-busqueda-maestro-generico.component';
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import { ModalBusquedaHistorialVentaComponent } from './components/modal-busqued
         ModalAutenticacionComponent,
         ModalBusquedaCentroCostoComponent,
         ModalAutenticacionComponent,
-        ModalBusquedaHistorialVentaComponent
+        ModalBusquedaHistorialVentaComponent,
+        ModalBusquedaMaestroGenericoComponent
     ],
     imports: [ 
         CommonModule,
@@ -91,7 +93,8 @@ import { ModalBusquedaHistorialVentaComponent } from './components/modal-busqued
         ModalAutenticacionComponent,
         ModalBusquedaCentroCostoComponent,
         ModalAutenticacionComponent,
-        ModalBusquedaHistorialVentaComponent
+        ModalBusquedaHistorialVentaComponent,
+        ModalBusquedaMaestroGenericoComponent
     ],
     providers: [],
 })

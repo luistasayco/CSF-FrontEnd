@@ -34,6 +34,7 @@ import { SeriePorComprobanteCreateComponent } from './components/panel-serie-por
 import { EstacionTrabajoUpdateComponent } from './components/panel-estacion-trabajo/estacion-trabajo-update/estacion-trabajo-update.component';
 import { PanelSeparacionCuentasComponent } from './components/panel-separacion-cuentas/panel-separacion-cuentas.component';
 import { PanelAsigEstacionTrabajoComponent } from './components/panel-asig-estacion-trabajo/panel-asig-estacion-trabajo.component';
+import { VentaSimuladorComponent } from './components/panel-venta/venta-simulador/venta-simulador.component';
 @NgModule({
     declarations: [PanelVentaComponent,
         VentaCreateComponent,
@@ -63,7 +64,8 @@ import { PanelAsigEstacionTrabajoComponent } from './components/panel-asig-estac
         SeriePorComprobanteCreateComponent,
         EstacionTrabajoUpdateComponent,
         PanelSeparacionCuentasComponent,
-        PanelAsigEstacionTrabajoComponent
+        PanelAsigEstacionTrabajoComponent,
+        VentaSimuladorComponent
         ],
     imports: [ CommonModule,
         VentaPrimeNgModule,
