@@ -17,7 +17,7 @@
         </div>
 
         <div class="ui-g-12" *ngIf="!isDetalleVentas">
-            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" autoLayout="true" [responsive]="true">
+            <p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePage" autoLayout="true" [responsive]="true">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th *ngFor="let col of columns">

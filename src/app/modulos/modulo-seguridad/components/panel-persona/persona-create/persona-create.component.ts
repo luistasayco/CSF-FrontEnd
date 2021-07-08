@@ -14,6 +14,7 @@ import { GlobalsConstantsForm } from '../../../../../constants/globals-constants
 import { ConstantesVarios } from '../../../../../constants/ConstantesVarios';
 import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
 import { ICentroCosto } from '../../../../modulo-administracion/models/aprobadorCentroCosto.interface';
+import { UtilService } from '../../../../../services/util.service';
 
 @Component({
   selector: 'app-persona-create',
@@ -53,7 +54,9 @@ export class PersonaCreateComponent implements OnInit, OnDestroy {
               private router: Router,
               private breadcrumbService: BreadcrumbService,
               public app: LayoutComponent,
-              private cifrarDataService: CifrarDataService) {
+              private cifrarDataService: CifrarDataService,
+              private utilService: UtilService
+              ) {
                 this.breadcrumbService.setItems([
                     { label: 'Módulo Seguridad' },
                     { label: 'Usuario', routerLink: ['module-se/panel-persona'] },
@@ -83,7 +86,7 @@ export class PersonaCreateComponent implements OnInit, OnDestroy {
         'numeroTelefono' : new FormControl(''),
         'flgEstado' : new FormControl({value: true, disabled: true}, Validators.compose([Validators.required])),
         'usuario' : new FormControl('', Validators.compose([Validators.required, Validators.maxLength(20), Validators.minLength(2)])),
-        'password' : new FormControl('', Validators.compose([Validators.required, Validators.maxLength(15), Validators.minLength(4)])),
+        // 'password' : new FormControl('', Validators.compose([Validators.required, Validators.maxLength(15), Validators.minLength(4)])),
         'email' : new FormControl('', Validators.compose([Validators.required, Validators.email])),
         'perfil' : new FormControl('', Validators.compose([Validators.required])),
         'foto' : new FormControl(''),
@@ -158,18 +161,19 @@ export class PersonaCreateComponent implements OnInit, OnDestroy {
   }
 
   onClickSave() {
-    this.modelo.apellidoPaterno = this.modeloForm.controls['apellidoPaterno'].value;
-    this.modelo.apellidoMaterno = this.modeloForm.controls['apellidoMaterno'].value;
-    this.modelo.nombre = this.modeloForm.controls['nombre'].value;
+    this.modelo.apellidoPaterno = this.utilService.convertirMayuscula(this.modeloForm.controls['apellidoPaterno'].value);
+    this.modelo.apellidoMaterno = this.utilService.convertirMayuscula(this.modeloForm.controls['apellidoMaterno'].value);
+    this.modelo.nombre = this.utilService.convertirMayuscula(this.modeloForm.controls['nombre'].value);
     this.modelo.nroDocumento = this.modeloForm.controls['numeroDocumento'].value.toString();
     this.modelo.nroTelefono = this.modeloForm.controls['numeroTelefono'].value.toString();
     this.modelo.flgActivo = this.modeloForm.controls['flgEstado'].value;
-    this.modelo.codCentroCosto = this.modeloForm.controls['codCentroCosto'].value;
+    this.modelo.codCentroCosto = this.utilService.convertirMayuscula(this.modeloForm.controls['codCentroCosto'].value);
     this.modelo.entidadUsuario = new UsuarioModel();
     this.modelo.entidadUsuario.imagen = this.modeloForm.controls['foto'].value;
-    this.modelo.entidadUsuario.usuario = this.modeloForm.controls['usuario'].value;
-    this.modelo.entidadUsuario.claveOrigen = this.cifrarDataService.encrypt(this.modeloForm.controls['password'].value);
-    this.modelo.entidadUsuario.email = this.modeloForm.controls['email'].value;
+    this.modelo.entidadUsuario.usuario = this.utilService.convertirMayuscula(this.modeloForm.controls['usuario'].value);
+    // this.modelo.entidadUsuario.claveOrigen = this.cifrarDataService.encrypt(this.modeloForm.controls['password'].value);
+    this.modelo.entidadUsuario.claveOrigen = this.cifrarDataService.encrypt('123456CSF');
+    this.modelo.entidadUsuario.email = this.utilService.convertirMayuscula(this.modeloForm.controls['email'].value);
     
     if (this.modeloForm.controls['perfil'].value) {
       let itemPerfil = this.modeloForm.controls['perfil'].value;

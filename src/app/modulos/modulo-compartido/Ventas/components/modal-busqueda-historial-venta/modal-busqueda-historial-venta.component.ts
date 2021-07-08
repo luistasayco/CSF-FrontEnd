@@ -6,6 +6,7 @@ import { IVentaDetalle } from '../../../../modulo-venta/interface/venta.interfac
 import { map } from 'rxjs/operators';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { IProductoHistorial } from '../../interfaces/producto.interface';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-historial-venta',
@@ -26,6 +27,7 @@ export class ModalBusquedaHistorialVentaComponent implements OnInit {
 
   isEtiquetaBoton: string;
   isDetalleVentas: boolean;
+  loading: boolean;
 
   @Input() isCodPaciente: string;
   @Output() eventoCancelar = new EventEmitter<IVentaDetalle>();
@@ -64,7 +66,7 @@ export class ModalBusquedaHistorialVentaComponent implements OnInit {
         { field: 'codproducto', header: 'Código' },
         { field: 'nombreproducto', header: 'Nombre' },
         { field: 'cantidad', header: 'Qty.Vta' },
-        { field: 'cantidad', header: 'Qty.Dev' },
+        { field: 'cantidadDevolucion', header: 'Qty.Dev' },
         { field: 'stockfraccion', header: 'Stk.Fracción' }
       ];
     }
@@ -76,17 +78,18 @@ export class ModalBusquedaHistorialVentaComponent implements OnInit {
     const body = this.formularioBusqueda.value;
 
     let cuantosmesesantes = body.cuantosmesesantes === null ? 0 : body.cuantosmesesantes;
-
+    this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getVentasChequea1MesAntes(this.isCodPaciente, cuantosmesesantes)
     .pipe(
       map((resp: IVentaDetalle[]) => {
+        this.loading = false;
         this.listModelo = resp;
 
         this.listModelo.forEach(xFila => {
           
           let existe = this.listModeloProducto.filter(xProducto => xProducto.codproducto === xFila.codproducto).length;
-          
+          debugger;
           if (existe === 0) {
             if(xFila.tipomovimiento === 'DV') {
               this.listModeloProducto.push({codproducto: xFila.codproducto, nombreproducto: xFila.nombreproducto, cantidad: xFila.cantidad, cantidadDevolucion: 0, stockfraccion: xFila.stockfraccion});
@@ -104,7 +107,13 @@ export class ModalBusquedaHistorialVentaComponent implements OnInit {
 
       })
     )
-    .subscribe();
+    .subscribe(
+      () => {},
+      (error) => {
+        this.loading = false;
+        swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
+      }
+    );
   }
 
   goCambiarVistar() {

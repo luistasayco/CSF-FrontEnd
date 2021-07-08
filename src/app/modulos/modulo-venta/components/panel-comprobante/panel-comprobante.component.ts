@@ -12,6 +12,7 @@ import { IVentaCabeceraSingle } from '../../interface/venta.interface';
 import { IResultBusquedaComprobante } from '../../interface/comprobante.interface';
 import { LanguageService } from '../../../../services/language.service';
 import swal from'sweetalert2';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-panel-comprobante',
@@ -38,6 +39,13 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   formularioBusqueda: FormGroup;
   itemSeleccionadoGrilla: IResultBusquedaComprobante;
   subscription$: Subscription;
+  loading: boolean;
+
+  // PDF Imprimir Venta
+  isDisplayVisualizar: boolean;
+  isDisplayVisualizarDocumento: boolean;
+  isDataBlob: Blob;
+
   constructor(private breadcrumbService: BreadcrumbService,
               private readonly formBuilder: FormBuilder,
               private readonly ventasService: VentasService,
@@ -110,17 +118,20 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   goListar() {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
+    this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.getListaComprobantesPorFiltro(body.codcomprobante, body.fechaIni, body.fechaFin)
     .pipe(
       map((resp: IResultBusquedaComprobante[]) => {
           this.listModelo = resp;
+          this.loading = false;
         }
       )
     )
     .subscribe(  
     (resp) => {},
     (error) => {
+      this.loading = false;
       swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
     });
   }
@@ -155,6 +166,27 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
   }
 
   onImprimirVenta() {
+    this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.getGenerarValeVentaPrint( this.itemSeleccionadoGrilla.codventa )
+    .subscribe((resp: any) =>  {
+
+      switch (resp.type) {
+        case HttpEventType.DownloadProgress:
+          break;
+        case HttpEventType.Response:
+          this.isDataBlob = new Blob([resp.body], {type: resp.body.type});
+          this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+          this.isDisplayVisualizarDocumento = !this.isDisplayVisualizarDocumento;
+          break;
+      }
+    },
+      (error) => {
+        this.isDisplayVisualizar =! this.isDisplayVisualizar;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
 
   }
 

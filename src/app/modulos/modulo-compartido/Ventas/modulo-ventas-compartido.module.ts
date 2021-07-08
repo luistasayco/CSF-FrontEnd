@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalBusquedaAlmacenComponent } from './components/modal-busqueda-almacen/modal-busqueda-almacen.component';
@@ -29,6 +29,8 @@ import { ModalAutenticacionComponent } from './components/modal-autenticacion/mo
 import { ModalBusquedaCentroCostoComponent } from './components/modal-busqueda-centro-costo/modal-busqueda-centro-costo.component';
 import { ModalBusquedaHistorialVentaComponent } from './components/modal-busqueda-historial-venta/modal-busqueda-historial-venta.component';
 import { ModalBusquedaMaestroGenericoComponent } from './components/modal-busqueda-maestro-generico/modal-busqueda-maestro-generico.component';
+import { ModalVisorPdfComponent } from './components/modal-visor-pdf/modal-visor-pdf.component';
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 
 @NgModule({
     declarations: [
@@ -59,13 +61,16 @@ import { ModalBusquedaMaestroGenericoComponent } from './components/modal-busque
         ModalBusquedaCentroCostoComponent,
         ModalAutenticacionComponent,
         ModalBusquedaHistorialVentaComponent,
-        ModalBusquedaMaestroGenericoComponent
+        ModalBusquedaMaestroGenericoComponent,
+        ModalVisorPdfComponent
     ],
     imports: [ 
         CommonModule,
         FormsModule,
         VentasCompartidoPrimeNgModule,
-        ReactiveFormsModule ],
+        ReactiveFormsModule,
+        NgxDocViewerModule
+     ],
     exports: [
         ModalBusquedaAlmacenComponent,
         ModalBusquedaTipoVentaComponent,
@@ -94,8 +99,12 @@ import { ModalBusquedaMaestroGenericoComponent } from './components/modal-busque
         ModalBusquedaCentroCostoComponent,
         ModalAutenticacionComponent,
         ModalBusquedaHistorialVentaComponent,
-        ModalBusquedaMaestroGenericoComponent
+        ModalBusquedaMaestroGenericoComponent,
+        ModalVisorPdfComponent
     ],
     providers: [],
+    schemas: [
+        CUSTOM_ELEMENTS_SCHEMA
+    ]
 })
 export class VentasCompartidoModule {}

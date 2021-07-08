@@ -109,3 +109,22 @@
     <app-venta-ver [isVisibleAnular]="isAnular" [modeloItem]="modeloItem" (eventoCerrar)="goCerrarDetalle()">
     </app-venta-ver>
 </p-dialog>
+
+<p-dialog *ngIf="isDisplayVisualizar" header="Visualizar" [(visible)]="isDisplayVisualizar" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">
+
+    Generando visor del registro seleccionado...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
+</p-dialog>
+
+<p-dialog *ngIf="isDisplayVisualizarDocumento" [header]="itemSeleccionadoGrilla.codventa" [(visible)]="isDisplayVisualizarDocumento" [modal]="true" [style]="{width: '80vw'}" [autoZIndex] [maximizable]="true">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <app-modal-visor-pdf [isFile]="isDataBlob"></app-modal-visor-pdf>
+        </div>
+    </div>
+</p-dialog>

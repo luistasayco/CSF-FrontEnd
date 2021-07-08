@@ -90,6 +90,9 @@ export class VentaSimuladorComponent implements OnInit {
   isVisibleChequearVentaAnterior: boolean = false;
 
   isSeleccionItemVentaDetalle: INewVentaDetalle;
+  isSeleccionItemVentaDetalleProducto: INewVentaDetalle;
+  isSeleccionItemVentaDetalleLote: INewVentaDetalle;
+
   isIndexItemVentaDetalle: number;
 
   isGrabar: boolean = false;
@@ -126,8 +129,6 @@ export class VentaSimuladorComponent implements OnInit {
     this.buildFormTotales();
 
     this.goInicializaVariables();
-
-    this.onOpcionesSplitButtonCabecera();
 
     this.onColumnasGrilla();
     
@@ -194,20 +195,6 @@ export class VentaSimuladorComponent implements OnInit {
       montoTotalPaciente: [{value:0, disabled: true}],
       montoTotalAseguradora: [{value:0, disabled: true}],
     });
-  }
-
-  private onOpcionesSplitButtonCabecera() {
-    this.items = [
-      {separator: true},
-      {label: this.globalConstants.cGanancia, icon: this.globalConstants.icoGanancia,
-        command: () => {
-        // this.update();
-      }},
-      {label: this.globalConstants.cGenerico, icon: this.globalConstants.icoGenerico,
-        command: () => {
-        this.goGetProductosGenericos();
-      }},
-    ];
   }
 
   private goInicializaVariables() {
@@ -1086,13 +1073,13 @@ export class VentaSimuladorComponent implements OnInit {
   }
 
   goChangeVisibleProducto(event: INewVentaDetalle, index: number) {
-    this.isSeleccionItemVentaDetalle = event;
+    this.isSeleccionItemVentaDetalleProducto = event;
     this.isIndexItemVentaDetalle = index;
     this.isVisualizarProducto =!this.isVisualizarProducto; 
   }
 
   goChangeVisibleLote(event: INewVentaDetalle, index: number) {
-    this.isSeleccionItemVentaDetalle = event;
+    this.isSeleccionItemVentaDetalleLote = event;
     this.isIndexItemVentaDetalle = index;
     this.isVisualizarLote =!this.isVisualizarLote; 
   }

@@ -64,8 +64,8 @@ export class ModalConsultaProductoComponent implements OnInit, OnDestroy, OnChan
     this.columnas = [
       { field: 'whsName', header: 'Almacén' },
       { field: 'onHandALM', header: 'Stock' },
-      { field: 'isCommitedALM', header: 'Solicitado' },
-      { field: 'onOrderALM', header: 'Reservado' }
+      { field: 'onOrderALM', header: 'Solicitado' },
+      { field: 'isCommitedALM', header: 'Reservado' }
     ];
   }
 

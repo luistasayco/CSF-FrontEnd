@@ -101,6 +101,8 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit, OnDestr
     .pipe(
       map((resp: IDetallePedidoPorPedido[]) => {
         this.listDetallePedido = resp;
+
+        console.log('this.listDetallePedido', this.listDetallePedido);
       })
     )
     .subscribe(

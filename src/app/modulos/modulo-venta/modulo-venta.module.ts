@@ -35,6 +35,7 @@ import { EstacionTrabajoUpdateComponent } from './components/panel-estacion-trab
 import { PanelSeparacionCuentasComponent } from './components/panel-separacion-cuentas/panel-separacion-cuentas.component';
 import { PanelAsigEstacionTrabajoComponent } from './components/panel-asig-estacion-trabajo/panel-asig-estacion-trabajo.component';
 import { VentaSimuladorComponent } from './components/panel-venta/venta-simulador/venta-simulador.component';
+
 @NgModule({
     declarations: [PanelVentaComponent,
         VentaCreateComponent,

@@ -12,6 +12,7 @@ import { CifrarDataService } from '../../../../../services/cifrar-data.service';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { MensajePrimeNgService } from '../../../../../services/mensaje-prime-ng.service';
 import { ICentroCosto } from '../../../../modulo-administracion/models/aprobadorCentroCosto.interface';
+import { UtilService } from '../../../../../services/util.service';
 
 @Component({
   selector: 'app-persona-update',
@@ -54,7 +55,8 @@ export class PersonaUpdateComponent implements OnInit, OnDestroy {
               private breadcrumbService: BreadcrumbService,
               public app: LayoutComponent,
               private readonly route: ActivatedRoute,
-              private readonly cifrarDataService: CifrarDataService) {
+              private readonly cifrarDataService: CifrarDataService,
+              private readonly utilService: UtilService) {
                 this.breadcrumbService.setItems([
                     { label: 'Módulo Seguridad' },
                     { label: 'Usuario', routerLink: ['module-se/panel-persona'] },
@@ -193,25 +195,28 @@ export class PersonaUpdateComponent implements OnInit, OnDestroy {
   }
 
   onClickSave() {
-    this.modelo.apellidoPaterno = this.modeloForm.controls['apellidoPaterno'].value;
-    this.modelo.apellidoMaterno = this.modeloForm.controls['apellidoMaterno'].value;
-    this.modelo.nombre = this.modeloForm.controls['nombre'].value;
+    this.modelo.apellidoPaterno = this.utilService.convertirMayuscula(this.modeloForm.controls['apellidoPaterno'].value);
+    this.modelo.apellidoMaterno = this.utilService.convertirMayuscula(this.modeloForm.controls['apellidoMaterno'].value);
+    this.modelo.nombre = this.utilService.convertirMayuscula(this.modeloForm.controls['nombre'].value);
     this.modelo.nroDocumento = this.modeloForm.controls['numeroDocumento'].value.toString();
     this.modelo.nroTelefono = this.modeloForm.controls['numeroTelefono'].value.toString();
     this.modelo.flgActivo = this.modeloForm.controls['flgEstado'].value;
-    this.modelo.codCentroCosto = this.modeloForm.controls['codCentroCosto'].value;
+    this.modelo.codCentroCosto = this.utilService.convertirMayuscula(this.modeloForm.controls['codCentroCosto'].value);
     this.modelo.entidadUsuario.imagen = this.modeloForm.controls['foto'].value;
-    this.modelo.entidadUsuario.usuario = this.modeloForm.controls['usuario'].value;
+    this.modelo.entidadUsuario.usuario = this.utilService.convertirMayuscula(this.modeloForm.controls['usuario'].value);
     this.modelo.entidadUsuario.claveOrigen = this.cifrarDataService.encrypt(this.modeloForm.controls['password'].value);
-    this.modelo.entidadUsuario.email = this.modeloForm.controls['email'].value;
+    this.modelo.entidadUsuario.email = this.utilService.convertirMayuscula(this.modeloForm.controls['email'].value);
+
     if (this.modeloForm.controls['perfil'].value) {
       let itemPerfil = this.modeloForm.controls['perfil'].value;
       this.modelo.entidadUsuario.idPerfil = itemPerfil.value;
     }
+
     this.modelo.entidadUsuario.imagen = this.modeloForm.controls['foto'].value;
     this.modelo.entidadUsuario.themeDark = Boolean(this.modeloForm.controls['dark'].value);
     this.modelo.entidadUsuario.typeMenu = this.modeloForm.controls['menu'].value;
     this.modelo.entidadUsuario.themeColor = this.modeloForm.controls['theme'].value;
+
     this.subscription = new Subscription();
     this.subscription = this.seguridadService.setUpdatePersona(this.modelo)
     .subscribe(() =>  {

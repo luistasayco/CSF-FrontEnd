@@ -10,6 +10,7 @@ import { Subscription } from 'rxjs';
 import { LanguageService } from '../../../../services/language.service';
 import { Router } from '@angular/router';
 import swal from'sweetalert2';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-panel-venta',
@@ -38,7 +39,9 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
   // Visualizar registro seleccionado
   isVerModalDetalle: boolean;
   isAnular: boolean;
-
+  isDisplayVisualizar: boolean;
+  isDisplayVisualizarDocumento: boolean;
+  isDataBlob: Blob;
   subscription$: Subscription;
 
   constructor(private readonly breadcrumbService: BreadcrumbService,
@@ -237,6 +240,27 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
   }
 
   onImprimirVenta() {
+    this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.getGenerarValeVentaPrint( this.itemSeleccionadoGrilla.codventa )
+    .subscribe((resp: any) =>  {
+
+      switch (resp.type) {
+        case HttpEventType.DownloadProgress:
+          break;
+        case HttpEventType.Response:
+          this.isDataBlob = new Blob([resp.body], {type: resp.body.type});
+          this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+          this.isDisplayVisualizarDocumento = !this.isDisplayVisualizarDocumento;
+          break;
+      }
+    },
+      (error) => {
+        this.isDisplayVisualizar =! this.isDisplayVisualizar;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
 
   }
 

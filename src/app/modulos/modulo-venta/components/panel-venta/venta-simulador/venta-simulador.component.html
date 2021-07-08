@@ -18,12 +18,12 @@
                 <app-modal-busqueda-almacen (eventoResgistroSeleccionado)="goAlmacenSeleccionado($event)" [isVenta]="true" [isWarehouseCode]="isWarehouseCode"></app-modal-busqueda-almacen>
             </div>
             <div class="ui-g-12 ui-md-2">
-                <label class="label-custom" for="float-input-fecha">Fecha Venta: </label>
-                <p-calendar id="float-input-fecha" formControlName="fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
+                <label class="label-custom">Fecha Venta: </label>
+                <p-calendar formControlName="fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
             </div>
             <div class="ui-g-12 ui-md-1">
-                <label class="label-custom" for="float-input-tc">TC: </label>
-                <input id="float-input-tc" type="number" formControlName="tipoCambio" pInputText placeholder="TC">
+                <label class="label-custom">TC: </label>
+                <input type="number" formControlName="tipoCambio" pInputText placeholder="TC">
             </div>
             <div class="ui-g-12 ui-md-2">
             </div>
@@ -35,7 +35,7 @@
             </div>
 
             <div class="ui-g-12 ui-md-2">
-                <p-splitButton label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" [model]="items" styleClass="sba-button"></p-splitButton>
+                <button pButton type="button" label="{{globalConstants.cGenerico}}" icon="{{globalConstants.icoGenerico}}" (click)="goGetProductosGenericos()" class="sba-button btn btn-block"></button>
             </div>
 
             <div class="ui-g-12">
@@ -46,16 +46,16 @@
                                 Tipo Cliente :
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <p-radioButton name="tipoCliente" value="01" label="Paciente" inputId="opt01" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
+                                <p-radioButton name="tipoCliente" value="01" label="Paciente" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <p-radioButton name="tipoCliente" value="02" label="Externo" inputId="opt02" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
+                                <p-radioButton name="tipoCliente" value="02" label="Externo" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <p-radioButton name="tipoCliente" value="03" label="Personal" inputId="opt03" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
+                                <p-radioButton name="tipoCliente" value="03" label="Personal" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <p-radioButton name="tipoCliente" value="04" label="Medíco" inputId="opt04" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
+                                <p-radioButton name="tipoCliente" value="04" label="Medíco" formControlName="tipoCliente" (onClick)="goTipoClienteChange()"></p-radioButton>
                             </div>
                             <div class="ui-g-12 ui-md-6">
 
@@ -75,64 +75,64 @@
                                     <button pButton type="button" label="Check 1Mes" icon="{{globalConstants.icoGenerico}}" class="sba-button btn btn-block" (click)="goChequearVentaAnterior()"></button>
                                 </div>
                                 <div class="ui-g-12 ui-md-3">
-                                    <label for="float-input-paciente-cliente">Paciente/Cliente</label>
-                                    <input id="float-input-paciente-cliente" type="text" formControlName="nombreClientePaciente" pInputText>
+                                    <label>Paciente/Cliente</label>
+                                    <input type="text" formControlName="nombreClientePaciente" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-3">
-                                    <label for="float-input-direccion">Dirección</label>
-                                    <input id="float-input-direccion" type="text" formControlName="direccion" pInputText>
+                                    <label>Dirección</label>
+                                    <input type="text" formControlName="direccion" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-cod-aseguradora">Cod.Aseguradora</label>
-                                    <input id="float-input-cod-aseguradora" type="text" formControlName="codAseguradora" pInputText>
+                                    <label>Cod.Aseguradora</label>
+                                    <input type="text" formControlName="codAseguradora" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-aseguradora">Aseguradora</label>
-                                    <input id="float-input-aseguradora" type="text" formControlName="aseguradora" pInputText>
+                                    <label>Aseguradora</label>
+                                    <input type="text" formControlName="aseguradora" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '01'">
-                                    <label for="float-input-paciente">Paciente</label>
-                                    <input id="float-input-paciente" type="text" formControlName="paciente" pInputText>
+                                    <label>Paciente</label>
+                                    <input type="text" formControlName="paciente" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '02'">
-                                    <label for="float-input-externo">Externo</label>
+                                    <label>Externo</label>
                                     <app-modal-busqueda-cliente-externo (eventoAceptar)="goClienteExternoSeleccionado($event)"></app-modal-busqueda-cliente-externo>
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '03'">
-                                    <label for="float-input-personal">Personal</label>
+                                    <label>Personal</label>
                                     <app-modal-busqueda-personal-clinica (eventoAceptar)="goPersonalClinicaSeleccionado($event)"></app-modal-busqueda-personal-clinica>
                                 </div>
                                 <div class="ui-g-12 ui-md-2" *ngIf="isTipoCliente === '04'">
-                                    <label for="float-input-medico">Médico</label>
+                                    <label>Médico</label>
                                     <app-modal-busqueda-medico (eventoAceptar)="goMedicoSeleccionado($event)"></app-modal-busqueda-medico>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-list-medico-por-atencion">Médico por Atención</label>
-                                    <p-dropdown id="float-input-list-medico-por-atencion" class="ui dropdown-item-text" [options]="listMedicosPorAtencion" formControlName="listMedico" placeholder="Seleccionar Médico" optionLabel="label" [showClear]="true"></p-dropdown>
+                                    <label>Médico por Atención</label>
+                                    <p-dropdown class="ui dropdown-item-text" [options]="listMedicosPorAtencion" formControlName="listMedico" placeholder="Seleccionar Médico" optionLabel="label" [showClear]="true"></p-dropdown>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-plan">Plan</label>
+                                    <label>Plan</label>
                                     <app-modal-busqueda-planes (eventoAceptar)="goPlanSeleccionado($event)" [isHabilitaControl]="isHabilitaControlPlan" [isCodPlan]="isCodPlan"></app-modal-busqueda-planes>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
                                     <label for="float-input-dscto-plan">Dscto Plan</label>
-                                    <input id="float-input-dscto-plan" type="text" formControlName="descuentoPlan" pInputText>
+                                    <input type="text" formControlName="descuentoPlan" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-coaseguro">Coaseguro</label>
-                                    <input id="float-input-coaseguro" type="text" formControlName="coaseguro" pInputText>
+                                    <label>Coaseguro</label>
+                                    <input type="text" formControlName="coaseguro" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-especialidad">Especialidad</label>
-                                    <input id="float-input-especialidad" type="text" formControlName="especialidad" pInputText>
+                                    <label>Especialidad</label>
+                                    <input type="text" formControlName="especialidad" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-tipo-consulta">Tipo Consulta</label>
-                                    <input id="float-input-tipo-consulta" type="text" formControlName="tipoconsulta" pInputText>
+                                    <label>Tipo Consulta</label>
+                                    <input type="text" formControlName="tipoconsulta" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-cobertura">Cobertura</label>
-                                    <input id="float-input-cobertura" type="text" formControlName="cobertura" pInputText>
+                                    <label>Cobertura</label>
+                                    <input type="text" formControlName="cobertura" pInputText>
                                 </div>
                             </div>
                         </div>
@@ -141,44 +141,44 @@
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-12">
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-cod-contratante">Cod.Contratante</label>
-                                    <input id="float-input-cod-contratante" type="text" formControlName="codContratante" pInputText>
+                                    <label>Cod.Contratante</label>
+                                    <input type="text" formControlName="codContratante" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-contratante">Contratante</label>
-                                    <input id="float-input-contratante" type="text" formControlName="contratante" pInputText>
+                                    <label>Contratante</label>
+                                    <input type="text" formControlName="contratante" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-titular">Titular</label>
-                                    <input id="float-input-titular" type="text" formControlName="titular" pInputText>
+                                    <label>Titular</label>
+                                    <input type="text" formControlName="titular" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-cama">Cama</label>
-                                    <input id="float-input-cama" type="text" formControlName="cama" pInputText>
+                                    <label>Cama</label>
+                                    <input type="text" formControlName="cama" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-telefono">Telefono</label>
-                                    <input id="float-input-telefono" type="text" formControlName="telefono" pInputText>
+                                    <label>Telefono</label>
+                                    <input type="text" formControlName="telefono" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-poliza">Póliza</label>
-                                    <input id="float-input-poliza" type="text" formControlName="poliza" pInputText>
+                                    <label>Póliza</label>
+                                    <input type="text" formControlName="poliza" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-cod-empresa">Cod.Empresa</label>
-                                    <input id="float-input-cod-empresa" type="text" formControlName="codEmpresa" pInputText>
+                                    <label>Cod.Empresa</label>
+                                    <input type="text" formControlName="codEmpresa" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-2">
-                                    <label for="float-input-empresa">Empresa</label>
-                                    <input id="float-input-empresa" type="text" formControlName="empresa" pInputText>
+                                    <label>Empresa</label>
+                                    <input type="text" formControlName="empresa" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-plan-detalle">Plan</label>
-                                    <input id="float-input-plan-detalle" type="text" formControlName="planPoliza" pInputText>
+                                    <label>Plan</label>
+                                    <input type="text" formControlName="planPoliza" pInputText>
                                 </div>
                                 <div class="ui-g-12 ui-md-1">
-                                    <label for="float-input-deducible">Deducible</label>
-                                    <input id="float-input-deducible" type="text" formControlName="deducible" pInputText>
+                                    <label>Deducible</label>
+                                    <input type="text" formControlName="deducible" pInputText>
                                 </div>
                             </div>
                         </div>
@@ -186,24 +186,24 @@
                     <p-tabPanel header="Observaciones" leftIcon="pi pi-user">
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-12 ui-md-6">
-                                <label class="label-custom" for="float-input-observacion-paciente">Observación Paciente: </label>
-                                <textarea id="float-input-observacion-paciente" rows="3" cols="30" formControlName="observacionPaciente" pInputTextarea></textarea>
+                                <label class="label-custom">Observación Paciente: </label>
+                                <textarea rows="3" cols="30" formControlName="observacionPaciente" pInputTextarea></textarea>
                             </div>
                             <div class="ui-g-12 ui-md-6">
-                                <label class="label-custom" for="float-input-observacion-atencion">Observación Atención: </label>
-                                <textarea id="float-input-observacion-atencion" rows="3" cols="30" formControlName="observacionAtencion" pInputTextarea></textarea>
+                                <label class="label-custom">Observación Atención: </label>
+                                <textarea rows="3" cols="30" formControlName="observacionAtencion" pInputTextarea></textarea>
                             </div>
                         </div>
                     </p-tabPanel>
                     <p-tabPanel header="Otros" leftIcon="pi pi-user">
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-12 ui-md-6">
-                                <label for="float-input-diagnostico">Diagnostico</label>
-                                <input id="float-input-diagnostico" type="text" formControlName="diagnostico" pInputText>
+                                <label>Diagnostico</label>
+                                <input type="text" formControlName="diagnostico" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-6">
-                                <label for="float-input-list-medico">Médico</label>
-                                <input id="float-input-list-medico" type="text" formControlName="medicoOtros" pInputText>
+                                <label>Médico</label>
+                                <input type="text" formControlName="medicoOtros" pInputText>
 
                             </div>
                         </div>
@@ -220,7 +220,7 @@
             </div>
         </form>
         <div class="ui-g-12 ui-md-9">
-            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codproducto" editMode="row" autoLayout="true" [responsive]="true" [resizableColumns]="true">
+            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codproducto" editMode="row" [(selection)]="isSeleccionItemVentaDetalle" selectionMode="single" autoLayout="true" [responsive]="true" [resizableColumns]="true">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th>...</th>
@@ -231,7 +231,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
-                    <tr>
+                    <tr [pSelectableRow]="rowData">
                         <td class="custom-td-ico">
                             <button *ngIf="!isGrabar" pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger" (click)="goEliminarItemDetalleVenta(index)"></button>
                         </td>
@@ -256,7 +256,7 @@
 
                             <span *ngSwitchCase="'tipoAutorizacion'">
                                 <div *ngIf="!isGrabar">
-                                    <p-dropdown id="dropdown-tipoAutorizacion" class="ui dropdown-item-text" [options]="listTipoAutorizacion"  optionLabel="label" appendTo="body" (onChange) ="goChangeTipoAutorizacion($event, index)"></p-dropdown>
+                                    <p-dropdown class="ui dropdown-item-text" [options]="listTipoAutorizacion"  optionLabel="label" appendTo="body" (onChange) ="goChangeTipoAutorizacion($event, index)"></p-dropdown>
                                 </div>
                                 <div *ngIf="isGrabar">
                                     {{ rowData.nombretipoautorizacion }}
@@ -282,48 +282,48 @@
             <form [formGroup]="formularioTotales">
                 <div class="ui-g ui-fluid">
                     <div class="ui-g-12 ui-md-6">
-                        <label class="label-custom" for="float-input-m-dscto-plan">M. Dscto Plan: </label>
-                        <input id="float-input-m-dscto-plan" type="number" pInputText placeholder="Dscto. Plan" formControlName="montoDescuentoPlan">
+                        <label class="label-custom">M. Dscto Plan: </label>
+                        <input type="number" pInputText placeholder="Dscto. Plan" formControlName="montoDescuentoPlan">
                     </div>
                     <div class="ui-g-12 ui-md-6">
-                        <label class="label-custom" for="float-input-gnc">M. GNC: </label>
-                        <input id="float-input-gnc" type="number" pInputText placeholder="M. GNC" formControlName="montoGNC">
+                        <label class="label-custom">M. GNC: </label>
+                        <input type="number" pInputText placeholder="M. GNC" formControlName="montoGNC">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-sub-total-1">Sub Total: </label>
-                        <input id="float-input-sub-total-1" type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotal">
+                        <label class="label-custom">Sub Total: </label>
+                        <input type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotal">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-sub-total-2">Sub Total (Paciente): </label>
-                        <input id="float-input-sub-total-2" type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotalPaciente">
+                        <label class="label-custom">Sub Total (Paciente): </label>
+                        <input type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotalPaciente">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-sub-total-3">Sub Total (Asegurado): </label>
-                        <input id="float-input-sub-total-3" type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotalAseguradora">
+                        <label class="label-custom">Sub Total (Asegurado): </label>
+                        <input type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotalAseguradora">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-igv-1">IGV: </label>
-                        <input id="float-input-igv-1" type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGV">
+                        <label class="label-custom">IGV: </label>
+                        <input type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGV">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-igv-2">IGV (Paciente): </label>
-                        <input id="float-input-igv-2" type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGVPaciente">
+                        <label class="label-custom">IGV (Paciente): </label>
+                        <input type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGVPaciente">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-igv-3">IGV (Asegurado): </label>
-                        <input id="float-input-igv-3" type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGVAseguradora">
+                        <label class="label-custom">IGV (Asegurado): </label>
+                        <input type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGVAseguradora">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-total-1">Total: </label>
-                        <input id="float-input-total-1" type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotal">
+                        <label class="label-custom">Total: </label>
+                        <input type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotal">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-total-2">Total (Paciente): </label>
-                        <input id="float-input-total-2" type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotalPaciente">
+                        <label class="label-custom">Total (Paciente): </label>
+                        <input type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotalPaciente">
                     </div>
                     <div class="ui-g-12 ui-md-4">
-                        <label class="label-custom" for="float-input-total-3">Total (Asegurado): </label>
-                        <input id="float-input-total-3" type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotalAseguradora">
+                        <label class="label-custom">Total (Asegurado): </label>
+                        <input type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotalAseguradora">
                     </div>
                 </div>
             </form>
@@ -372,12 +372,12 @@
 
 </p-dialog>
 
-<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [closable]="false">
-    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalle.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
+<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalleProducto.codproducto}} - {{isSeleccionItemVentaDetalleProducto.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [closable]="false">
+    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalleProducto.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
 </p-dialog>
 
-<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
-    <app-modal-consulta-lote [isActivoVenta]="true" [isActivoVentaDetalleLote]="false" [isCantidadInput]="isSeleccionItemVentaDetalle.cantidad" [isCodProducto]="isSeleccionItemVentaDetalle.codproducto" [isListLoteVta]="isSeleccionItemVentaDetalle.listStockLote"
+<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalleLote.codproducto}} - {{isSeleccionItemVentaDetalleLote.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
+    <app-modal-consulta-lote [isActivoVenta]="true" [isActivoVentaDetalleLote]="false" [isCantidadInput]="isSeleccionItemVentaDetalleLote.cantidad" [isCodProducto]="isSeleccionItemVentaDetalleLote.codproducto" [isListLoteVta]="isSeleccionItemVentaDetalleLote.listStockLote"
         [isCodAlmacen]="isWarehouseCode" (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
 </p-dialog>
 

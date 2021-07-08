@@ -115,22 +115,27 @@ export class ModalConsultaLoteComponent implements OnInit, OnDestroy {
   onAsignaCantidadLote() {
     this.listModelo.forEach(xFila => {
 
+      xFila.quantityLote = xFila.quantityLote === null ? 0 : xFila.quantityLote;
+      xFila.quantityLote = xFila.quantityLote === undefined ? 0 : xFila.quantityLote;
+
       if (this.isCantidadInput > 0) {
-        if (this.isCantidadInput <= xFila.quantity) {
+
+        if (this.isCantidadInput <= xFila.quantityLote) {
           xFila.quantityinput = this.isCantidadInput;
           this.isCantidadInput = 0;
         } else {
           xFila.quantityinput = 0;
 
           // Obteniendo diferencia
-          let newResul = (this.isCantidadInput - xFila.quantity)
+          let newResul = (this.isCantidadInput - xFila.quantityLote)
 
           xFila.quantityinput = this.isCantidadInput - newResul;
           this.isCantidadInput = newResul;
         }
-      }
 
+      }
     });
+    this.loading = false;
   }
 
   onListaDetalleLoteVenta() {

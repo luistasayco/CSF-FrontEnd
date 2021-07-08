@@ -30,6 +30,7 @@ export class ModalBusquedaPedidoComponent implements OnInit, OnDestroy {
   seleccionItem: IListarPedido;
   columnas: any;
   listModelo: IListarPedido[];
+  loading: boolean;
 
   @Output() eventoAceptar = new EventEmitter<IListarPedido>();
   @Output() eventoCancelar = new EventEmitter<IListarPedido>();
@@ -93,18 +94,22 @@ export class ModalBusquedaPedidoComponent implements OnInit, OnDestroy {
 
     let tipoPedido = body.tipopedido === null ? '' : body.tipopedido.value
 
-    console.log('tipoPedido', tipoPedido);
+    this.loading = true;
 
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListPedidosPorFiltro(tipoPedido, body.fechainicio, body.fechafin, body.codpedido)
     .pipe(
       map((resp: IListarPedido[]) => {
 
-        console.log('resp', resp);
+        this.loading = false;
         this.listModelo = resp;
       })
     )
-    .subscribe();
+    .subscribe(() => {},
+    (error) => {
+      this.loading = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
+    });
   }
 
   clickAceptar() {

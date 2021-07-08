@@ -29,6 +29,7 @@ import { HeaderInterceptorService } from './interceptor/header-interceptor.servi
 import { DomSeguroImagenBase64Pipe } from './pipes/dom-seguro-imagen-base64.pipe';
 import { SeguridadModule } from './modulos/modulo-seguridad/modulo-seguridad.module';
 import { ModuloBaseDatosLocalModule } from './modulos/modulo-base-datos-local/modulo-base-datos-local.module';
+import { NgxDocViewerModule } from 'ngx-doc-viewer';
 
 registerLocaleData(localePy, 'es');
 
@@ -60,7 +61,8 @@ registerLocaleData(localePy, 'es');
     ModuloEstadoInternetModule,
     SeguridadModule,
     DialogModule,
-    ModuloBaseDatosLocalModule
+    ModuloBaseDatosLocalModule,
+    NgxDocViewerModule
   ],
   providers: [ DatePipe,
               { provide: LOCALE_ID, useValue: 'es' },

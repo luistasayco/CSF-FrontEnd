@@ -91,4 +91,15 @@ export class UtilService {
     let isNumero = Number(numero.toFixed(decimales));
     return isNumero;
   }
+
+  convertirMayuscula(data: string): string {
+
+    data = data === null ? '': data;
+    data = data === undefined ? '' : data;
+
+    let mayus = data.toUpperCase();
+
+    return mayus;
+
+  }
 }

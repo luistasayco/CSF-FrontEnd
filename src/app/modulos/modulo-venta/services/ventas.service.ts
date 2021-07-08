@@ -340,6 +340,12 @@ export class VentasService {
     (`${environment.url_api_venta}TipoCambio/GetObtieneTipoCambio/`);
   }
 
+  getGenerarValeVentaPrint(codventa: string) {
+    return this.http.get
+    (`${environment.url_api_venta}Venta/GenerarValeVentaPrint/${codventa}`,
+    {responseType: 'blob',  observe: 'response', reportProgress: true });
+  }
+
   setValidacionRegistraVentaCabecera(value: INewVentaCabecera) {
     value = this.setAsignaValoresAuditabilidad<INewVentaCabecera>(value);
     console.log(value);

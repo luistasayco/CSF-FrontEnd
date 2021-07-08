@@ -343,10 +343,6 @@
     </div>
 </p-card>
 
-<!-- <p-toast class="ui-toast-bottom-right" position="bottom-right"></p-toast> -->
-
-<!-- <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog> -->
-
 <p-dialog *ngIf="isAutenticar" header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
     <app-modal-autenticacion [isAnular]="false" (eventoAceptar)="goAceptarGrabar($event)" (eventoCancelar)="goCancelarGrabar()"></app-modal-autenticacion>
 </p-dialog>
@@ -400,16 +396,16 @@
 
 </p-dialog>
 
-<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [closable]="false">
-    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalle.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
+<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalleProducto.codproducto}} - {{isSeleccionItemVentaDetalleProducto.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [closable]="false">
+    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalleProducto.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
 </p-dialog>
 
-<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
-    <app-modal-consulta-lote [isActivoVenta]="true" [isActivoVentaDetalleLote]="false" [isCantidadInput]="isSeleccionItemVentaDetalle.cantidad" [isCodProducto]="isSeleccionItemVentaDetalle.codproducto" [isListLoteVta]="isSeleccionItemVentaDetalle.listStockLote"
+<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalleLote.codproducto}} - {{isSeleccionItemVentaDetalleLote.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
+    <app-modal-consulta-lote [isActivoVenta]="true" [isActivoVentaDetalleLote]="false" [isCantidadInput]="isSeleccionItemVentaDetalleLote.cantidad" [isCodProducto]="isSeleccionItemVentaDetalleLote.codproducto" [isListLoteVta]="isSeleccionItemVentaDetalleLote.listStockLote"
         [isCodAlmacen]="isWarehouseCode" (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
 </p-dialog>
 
-<p-dialog header="Chequear Ventas Anteriores" *ngIf="isVisibleChequearVentaAnterior" [(visible)]="isVisibleChequearVentaAnterior" [modal]="true" [closable]="false" [autoZIndex]>
+<p-dialog header="Chequear Ventas Anteriores : {{isCodPaciente}}" *ngIf="isVisibleChequearVentaAnterior" [(visible)]="isVisibleChequearVentaAnterior" [modal]="true" [closable]="false" [autoZIndex]>
     <div class="ui-g ui-fluid">
         <app-modal-busqueda-historial-venta [isCodPaciente]="isCodPaciente" (eventoCancelar)="goCerrarChequearVentaAnterior()"></app-modal-busqueda-historial-venta>
     </div>

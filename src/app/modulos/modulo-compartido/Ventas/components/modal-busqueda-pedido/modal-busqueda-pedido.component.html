@@ -47,7 +47,7 @@
     </form>
 </p-panel>
 
-<p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" [(selection)]="seleccionItem" dataKey="key" selectionMode="single" autoLayout="true" [responsive]="true">
+<p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePageModal" [(selection)]="seleccionItem" dataKey="key" selectionMode="single" autoLayout="true" [responsive]="true">
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns">

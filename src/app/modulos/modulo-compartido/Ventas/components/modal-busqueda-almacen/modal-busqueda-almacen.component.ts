@@ -4,6 +4,7 @@ import { IWarehouses } from '../../interfaces/warehouses.interface';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { Subscription } from 'rxjs';
+import { UtilService } from '../../../../../services/util.service';
 import swal from'sweetalert2';
 
 @Component({
@@ -34,7 +35,8 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy, OnChang
   @Output() eventoCancelar = new EventEmitter<IWarehouses>();
 
   constructor(private readonly fb: FormBuilder,
-              private readonly ventaCompartidoService: VentaCompartidoService) { }
+              private readonly ventaCompartidoService: VentaCompartidoService,
+              private readonly utilService: UtilService) { }
 
   ngOnChanges() {
     if (this.isWarehouseCode === undefined) {
@@ -104,14 +106,25 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy, OnChang
     },
     (error) => {
       this.seleccionItem = null;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
     });
   }
 
   getListWarehousesContains() {
+
     const formBody = this.formularioBusqueda.value;
+
+    let almacen = formBody.nombre === null ? '' : formBody.nombre;
+    almacen = almacen === undefined ? '' : almacen;
+
+    if (almacen.length < 3){
+      swal.fire(this.globalConstants.msgInfoSummary, 'Ingresar al menos 3 caracteres', 'info');
+      return;
+    }
+    
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListWarehousesContains(formBody.nombre.toUpperCase())
+    this.subscription$ = this.ventaCompartidoService.getListWarehousesContains(this.utilService.convertirMayuscula(almacen))
     .subscribe((data: IWarehouses[]) => {
       this.listModelo = [];
       this.listModelo = data;

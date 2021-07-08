@@ -83,6 +83,7 @@ export class VentaCreateComponent implements OnInit {
   isTipoCambio: number = 0;
   isTrabajaVariosIGV: boolean = false;
   isCodVenta: string;
+  isCodVentaSingle: string;
   isFlgGeneroVenta: boolean;
   isDisplaySave: boolean;
   isDisplayValidacion: boolean = false;
@@ -104,6 +105,10 @@ export class VentaCreateComponent implements OnInit {
   isVisibleChequearVentaAnterior: boolean = false;
 
   isSeleccionItemVentaDetalle: INewVentaDetalle;
+
+  isSeleccionItemVentaDetalleProducto: INewVentaDetalle;
+  isSeleccionItemVentaDetalleLote: INewVentaDetalle;
+
   isIndexItemVentaDetalle: number;
 
   isGrabar: boolean = false;
@@ -217,13 +222,9 @@ export class VentaCreateComponent implements OnInit {
       }},
       {label: this.globalConstants.cCaja, icon: this.globalConstants.icoCaja,
         command: () => {
-        // this.update();
+        this.onCaja();
       }},
       {separator: true},
-      {label: this.globalConstants.cGanancia, icon: this.globalConstants.icoGanancia,
-        command: () => {
-        // this.update();
-      }},
       {label: this.globalConstants.cGenerico, icon: this.globalConstants.icoGenerico,
         command: () => {
         this.goGetProductosGenericos();
@@ -386,7 +387,8 @@ export class VentaCreateComponent implements OnInit {
       observacionAtencion: null,
       diagnostico: null,
       medicoOtros: null,
-      observacionGeneral: null
+      observacionGeneral: null,
+      codpedido: null
     });
 
     this.formularioTotales.patchValue({
@@ -875,13 +877,24 @@ export class VentaCreateComponent implements OnInit {
         isValorDescuentoPlan = bodyCabecera.descuentoPlan;
       }
 
+      let codPedido = producto.codPedido === null ? '' : producto.codPedido;
+      codPedido = codPedido === undefined ? '' : codPedido;
+
+      let cantidad: number = 0;
+
+      if (codPedido.length === 14) {
+        cantidad = producto.cantidadPedido;
+      } else {
+        cantidad = 0;
+      }
+
       const newDetalle: INewVentaDetalle  = {
         manBtchNum: producto.manbtchnum,
         codalmacen: bodyCabecera.codAlmacen,
         tipomovimiento: 'DV',
         codproducto: producto.itemCode,
         nombreproducto: producto.itemName,
-        cantidad: 0,
+        cantidad: cantidad,
         precioventaPVP: isValorPVP,
         valorVVP: isValorVVP,
         stockalmacen: producto.productoStock,
@@ -912,6 +925,12 @@ export class VentaCreateComponent implements OnInit {
       }
 
       this.listModelo.push(newDetalle);
+debugger;
+      if (codPedido.length === 14) {
+        let index = this.listModelo.indexOf(newDetalle);
+  
+        this.goChangeCantidad(newDetalle, index);
+      }
 
       isIngresar = false;
     }
@@ -1181,7 +1200,6 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goPedidoSeleccionado(modelo: IListarPedido) {
-
     this.isVisiblePedido = !this.isVisiblePedido;
 
     this.formularioCabecera.patchValue({
@@ -1374,19 +1392,19 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goChangeVisibleProducto(event: INewVentaDetalle, index: number) {
-    this.isSeleccionItemVentaDetalle = event;
+    this.isSeleccionItemVentaDetalleProducto = event;
     this.isIndexItemVentaDetalle = index;
-    this.isVisualizarProducto =!this.isVisualizarProducto; 
+    this.isVisualizarProducto = !this.isVisualizarProducto; 
   }
 
   goChangeVisibleLote(event: INewVentaDetalle, index: number) {
-    this.isSeleccionItemVentaDetalle = event;
+    this.isSeleccionItemVentaDetalleLote = event;
     this.isIndexItemVentaDetalle = index;
-    this.isVisualizarLote =!this.isVisualizarLote; 
+    this.isVisualizarLote = !this.isVisualizarLote; 
   }
 
   goSalirProducto() {
-    this.isVisualizarProducto =!this.isVisualizarProducto; 
+    this.isVisualizarProducto = !this.isVisualizarProducto; 
     this.isIndexItemVentaDetalle = 0;
   }
 
@@ -1715,6 +1733,7 @@ export class VentaCreateComponent implements OnInit {
         isCadenaVentaGenerado = isCadenaVentaGenerado + `Ud. Genero correctamente la Venta ${xFila.codventa} <br>`;
         if (this.isCodVenta === '') {
           this.isCodVenta = xFila.codventa;
+          this.isCodVentaSingle = xFila.codventa;
         } else {
           this.isCodVenta = this.isCodVenta +' , ' + xFila.codventa;
         }
@@ -1773,5 +1792,32 @@ export class VentaCreateComponent implements OnInit {
 
   goSalirVentaSimulada(){
     this.isVisibleSimuladorVentas =! this.isVisibleSimuladorVentas;
+  }
+
+  onCaja(){
+
+    const body = this.formularioCabecera.getRawValue();
+
+    if (!this.isGrabar) {
+      swal.fire(this.globalConstants.msgErrorSummary, `No se ha generado la venta`,'error');
+      return;
+    }
+
+    if (body.estado.substring(0,1) === 'C') {
+      swal.fire(this.globalConstants.msgErrorSummary, `NO puede hacer comprobante, Venta tiene Comprobante`,'error');
+      return;
+    }
+
+    let codatencion = body.codAtencion === '' ? null : body.codAtencion;
+    codatencion = codatencion === undefined ? null : codatencion;
+
+    if (codatencion !== null) {
+      if (codatencion.substring(0,1) === 'H') {
+        swal.fire(this.globalConstants.msgErrorSummary, `Atenciones de tipo 'H' no se facturan`,'error');
+        return;
+      }
+    }
+
+    this.router.navigate(['/main/modulo-ve/panel-caja'], {queryParams: {codventa: this.isCodVentaSingle}});
   }
 }

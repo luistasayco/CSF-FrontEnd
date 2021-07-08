@@ -2,11 +2,11 @@
     <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-6">
             <label class="label-custom">Usuario: </label>
-            <input type="text" pInputText placeholder="Usuario" formControlName="usuario">
+            <input type="text" pInputText placeholder="Usuario" autocomplete="off" formControlName="usuario">
         </div>
         <div class="ui-g-12 ui-md-6">
             <label class="label-custom">Clave: </label>
-            <input type="password" pInputText placeholder="Contraseña" formControlName="contrasena">
+            <input type="password" pInputText placeholder="Contraseña" autocomplete="off" formControlName="contrasena">
         </div>
         <div *ngIf="isAnular" class="ui-g-12 ui-md-12">
             <label class="label-custom">Motivo de Anulación: </label>
