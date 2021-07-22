@@ -52,9 +52,9 @@ export class ConsolidadoRequerimientoCrearComponent implements OnInit, OnDestroy
   itemSeleccionado: any
   opciones: any = [];
 
-  bodyParams: any;//JC
+  bodyParams: any;
   
-  loading = true; //jc
+  loading = true;
 
   //Modal RQ
   isActivateBusquedaArticulo = false;
@@ -68,6 +68,10 @@ export class ConsolidadoRequerimientoCrearComponent implements OnInit, OnDestroy
   isActivateBusquedaAlmacen: boolean = false;
   //variables almacen
   codAlmacen:string="";
+
+  //modal socio de negocio
+  indiceModalSocioNegocio: number;
+  isActivateBusquedaSocioNegocio: boolean = false;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -142,13 +146,12 @@ obtenerParametrosDeRuta() {
     
 
         for (const item of event) {
-            debugger;
 
             this.requerimientoItemService.getByIdRequerimiento(item.idRequerimiento,this.codAlmacen)
             .subscribe(   
               (resp) => {
               if (resp) {
-                   debugger;
+                   
                    var obj = {
                     idRequerimiento: item.idRequerimiento,
                     ConsolidadoItem: []
@@ -253,7 +256,6 @@ obtenerParametrosDeRuta() {
 
     this.listFilteredProducto.splice(+this.indiceItemElegidoGrilla, 1);
      var element = this.itemSeleccionado.codArticulo;
-
     
 
     for (var i =0; i < this.listRequerimiento.length; i++){
@@ -286,8 +288,6 @@ obtenerParametrosDeRuta() {
       observacion
     } = this.formularioSuperior.value;
     
-    ////idusuario=this.userContextService.getCodigoCentroCosto(),
-
 
     if(this.codAlmacen==""){
       this.mensajePrimeNgService.onToErrorMsg(null, "SELECCIONE EL ALMACEN")
@@ -304,7 +304,7 @@ obtenerParametrosDeRuta() {
       CodCentroCosto:this.userContextService.getCodigoCentroCosto(),
       Observacion:observacion,
       RegCreateIdUsuario:this.userContextService.getIdUsuario(),
-      ConsolidadoReq: this.listRequerimiento //this.listRequerimientoItem
+      ConsolidadoReq: this.listRequerimiento
 
     }
     
@@ -338,10 +338,7 @@ obtenerParametrosDeRuta() {
   }
 
   editarCantidadBuscado(event: any[]) {
-    console.log("editarCantidadBuscado");
-    console.log(event);
-    debugger
-    debugger;
+    
     //Actualizamos lo editado la cantidad
     for (const item of event) {
 
@@ -386,14 +383,12 @@ obtenerParametrosDeRuta() {
           const { codArticulo, desArticulo, codSocioNegocioCompra,codUnidadMedida,stock } = products;
           this.listFilteredProducto.push({ codArticulo, desArticulo, codSocioNegocioCompra,cantidad:cantidadSum,cantidadCompra,stock,codUnidadMedida});
           
-
       }
   });
 
   }
 
   clickActivateEditarCantidad() {
-    console.log("clickActivateEditarCantidad");
     this.isActivateCantidadEditar = !this.isActivateCantidadEditar;
   }
 
@@ -404,13 +399,40 @@ obtenerParametrosDeRuta() {
 
   almacenSeleccionado(event: any) {
    
-    debugger;
     this.codAlmacen = event.warehouseCode;
 
     this.formularioSuperior.patchValue({
       almacen: event.warehouseName,
     });
 
+  }
+
+  socioNegocioSeleccionado(event: any) {
+    
+    this.listFilteredProducto[this.indiceModalSocioNegocio].codSocioNegocioCompra =  event.cardCode;
+    
+    Array.from(this.listRequerimiento, el => {
+
+      Array.from(el["ConsolidadoItem"], x => {
+        if(this.listFilteredProducto[this.indiceModalSocioNegocio].codArticulo ==x["codArticulo"]){
+            x["codSocioNegocioCompra"]=event.cardCode
+          }
+      });
+    });
+
+    Array.from(this.listRequerimientoItem, el => {
+        if(this.listFilteredProducto[this.indiceModalSocioNegocio].codArticulo ==el["codArticulo"]){
+          el["codSocioNegocioCompra"]=event.cardCode
+        }
+    });
+
+    this.activarModalSocioNegocio();
+    
+  }
+
+  activarModalSocioNegocio(indice?: number) {
+    this.indiceModalSocioNegocio = indice;
+    this.isActivateBusquedaSocioNegocio = !this.isActivateBusquedaSocioNegocio; 
   }
 
 }

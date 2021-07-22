@@ -14,6 +14,7 @@ import { CantidadEditarComponent } from './components/panel-consolidado-requerim
 import { RequerimientoVerDetalleComponent } from './components/panel-consolidado-requerimiento/requerimiento-ver-detalle/requerimiento-ver-detalle.component';
 import { ConsolidadoRequerimientoVerComponent } from './components/panel-consolidado-requerimiento/consolidado-requerimiento-ver/consolidado-requerimiento-ver-component';
 import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimiento/modulo-requerimiento-compartido.module';
+import { ConsolidadoRequerimientoEditarComponent } from './components/panel-consolidado-requerimiento/consolidado-requerimiento-editar/consolidado-requerimiento-editar.component';
 
 //import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimiento/modulo-requerimiento-compartido.module';
 
@@ -24,7 +25,8 @@ import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimient
         RequerimientoListadoComponent,
         CantidadEditarComponent,
         RequerimientoVerDetalleComponent,
-        ConsolidadoRequerimientoVerComponent
+        ConsolidadoRequerimientoVerComponent,
+        ConsolidadoRequerimientoEditarComponent
     ],
     imports: [ CommonModule, ConsolidadoRequerimientoPrimeNgModule, ConsolidadoRequerimientoRoutingModule, ReactiveFormsModule, FormsModule,RequerimientoCompartidoModule],
     exports: [],

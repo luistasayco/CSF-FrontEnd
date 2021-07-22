@@ -7,17 +7,15 @@
    <!-- Filtros -->
    <p-panel >
         <form [formGroup]="formularioSuperior">
-            
             <div class="ui-g ui-fluid">
-               
                 <div class="ui-g-12 ui-md-1">
-                         <label class="label-custom" for="float-input-cod-socio">Codigo Socio:</label>
+                         <label class="label-custom" for="float-input-cod-socio">Código Socio:</label>
                         <input id="float-input-cod-socio"  type="text" formControlName="codSocioNegocio" pInputText disabled  />
                     </div>
                 <div class="ui-g-12 ui-md-3">
                     <label class="label-custom" for="float-input-socio">Socio de Negocio:</label>
                     <div class="ui-inputgroup">
-                        <input type="text" id="float-input-socio" formControlName="desSocioNegocio" placeholder="Socio Negocio" pInputText disabled  />
+                        <input type="text" id="float-input-socio" formControlName="desSocioNegocio" pInputText disabled  />
                         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="onToBuscarSocio()" class="ui-button-success"></button>
                     </div>
                 </div>
@@ -32,16 +30,16 @@
             </div>
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-socio">Almacen Origen:</label>
+                    <label class="label-custom" for="float-input-socio">Almacén Origen:</label>
                     <div class="ui-inputgroup">
-                        <input type="text" id="float-input-socio" formControlName="almacenOrigen" placeholder="Almacen origen" pInputText disabled  />
+                        <input type="text" id="float-input-socio" formControlName="almacenOrigen" pInputText disabled  />
                         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalAlmacen('origen')" class="ui-button-success"></button>
                     </div>
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-socio">Almacen Destino:</label>
+                    <label class="label-custom" for="float-input-socio">Almacén Destino:</label>
                     <div class="ui-inputgroup">
-                        <input type="text" id="float-input-socio" formControlName="almacenDestino" placeholder="Almacen destino" pInputText disabled  />
+                        <input type="text" id="float-input-socio" formControlName="almacenDestino" pInputText disabled  />
                         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalAlmacen('destino')" class="ui-button-success"></button>
                     </div>
                 </div>
@@ -98,7 +96,7 @@
                         </p-splitButton>
                     </td>
                     <td>
-                        <span class="p-column-title">Num Linea</span> {{ri + 1 }}
+                        <span class="p-column-title">Num Linea</span> {{ri + 0 }}
                     </td>
                     <td>
                         <span class="p-column-title">Cod Articulo:</span> {{ modelo.codArticulo }}
@@ -110,10 +108,10 @@
                         <span class="p-column-title">Cantidad:</span>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input pInputText type="number" [(ngModel)]="modelo.cantidad" />
+                                <input pInputText type="number" [(ngModel)]="modelo.cantidadSolicitada" />
                             </ng-template>
                             <ng-template pTemplate="output">
-                                {{ modelo.cantidad }}
+                                {{ modelo.cantidadSolicitada }}
                             </ng-template>
                         </p-cellEditor>
                     </td>

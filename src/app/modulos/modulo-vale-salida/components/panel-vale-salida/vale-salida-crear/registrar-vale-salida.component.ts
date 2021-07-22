@@ -80,32 +80,9 @@ export class RegistrarValeSalidaComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // if (this.subscription$) {
-    //   this.subscription$.unsubscribe();
-    // }
+  
   }
 
-  // datosAlmacen() {
-  //   this.almacenService
-  //     .getAlmacen()
-  //     .pipe(
-  //       map((resp) => {
-  //         this.rowAlmacen=[];
-  //         for (let item of resp) {
-  //           this.rowAlmacen.push({ label: item.warehouseName, value: item.warehouseCode }); 
-  //         }
-  //       })
-  //     )
-  //     .subscribe(
-  //       (resp) => {
-  //         this.loading = false;
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //       }
-  //     );
-          
-  // }
 
 private buildFormSuperior() {
   this.formularioSuperior = this.fb.group({
@@ -126,9 +103,7 @@ obtenerParametrosDeRuta() {
         codCentroCosto: params.get('codCentroCosto'),
         desCentroCosto: params.get('desCentroCosto'),        
       };
-      // this.formularioSuperior.patchValue({
-      //   observacionValeSalida: this.bodyParams.codCentroCosto,
-      // });
+     
     })
   )
   .subscribe();

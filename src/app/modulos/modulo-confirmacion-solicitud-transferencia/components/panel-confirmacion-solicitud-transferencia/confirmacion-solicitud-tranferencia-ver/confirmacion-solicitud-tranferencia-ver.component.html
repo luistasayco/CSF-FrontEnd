@@ -1,0 +1,131 @@
+<p-panel header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Nro Confirmación: </strong></span>{{ item.idConfirmacionSolicitudTransferencia }}
+        </div>
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Nro Atención: </strong></span>{{ itemConfirmadoSolicitud.idAtencionSolicitudTransferencia}}
+        </div>
+        <div class="ui-g-12 ui-md-6">
+            <span><strong>Nro Atención Estado: </strong></span>{{itemConfirmadoSolicitud.atencionSolicitudTransferencia.desAtencionSolicitudTransferenciaEstado}}
+        </div>   
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Nro Solicitud: </strong></span>{{ itemConfirmadoSolicitud.atencionSolicitudTransferencia.idSolicitudTraslado }}
+        </div>
+        <div class="ui-g-12 ui-md-6">
+            <span><strong>Nro Solicitud Estado: </strong></span>{{itemConfirmadoSolicitud.atencionSolicitudTransferencia.solicitudTraslado.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <span><strong>Socio Negocio: </strong></span> {{itemConfirmadoSolicitud.codSocioNegocio}} - {{itemConfirmadoSolicitud.nombreSocioNegocio}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <span><strong>Contacto: </strong></span> {{itemConfirmadoSolicitud.contacto}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <span><strong>Destino: </strong></span> {{itemConfirmadoSolicitud.destino}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-6">
+            <span><strong>Almacén Origen: </strong></span>  {{itemConfirmadoSolicitud.codAlmacenOrigen}} - {{itemConfirmadoSolicitud.desAlmacenOrigen}}
+        </div>
+        <div class="ui-g-12 ui-md-6">
+            <span><strong>Almacén Destino: </strong></span> {{itemConfirmadoSolicitud.codAlmacenDestino}} - {{itemConfirmadoSolicitud.desAlmacenDestino}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <span><strong>Motivo:</strong></span> {{ itemConfirmadoSolicitud.desConfirmacionSolicitudTransferenciaTipoMovimiento}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <span><strong>Responsable: </strong></span> {{ itemConfirmadoSolicitud.usuario.nombresApellidos}}
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Observación: </strong></span> 
+        </div>
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-8">
+            <div style="word-break: break-all;">{{ item.observacion }}</div>
+        </div>
+    </div>
+</p-panel>
+
+<p-panel header="Lista de Articulos" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <p-table [value]="itemConfirmadoSolicitud.confirmacionSolicitudTransferenciaItem"  [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idValeSalida" autoLayout="true" [responsive]="true">
+        <!-- Header -->
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th>Linea</th>
+                <th>Cod Articulo</th>
+                <th>Descripción Articulo</th>
+                <th>Almacén origen</th>
+                <th>O. Ubicación</th>
+                <th>Almacén destino</th>
+                <th>D. Ubicación</th>
+                <th>Lote</th>
+                <th>Ubicación</th>
+                <th>Cantidad Atendida</th>
+                <th>Cantidad Entregada</th>
+                <th>Cod Unidad Medida</th>
+                <th>Descripción Unidad Medida</th>
+            </tr>
+        </ng-template>
+    <!-- body -->
+    <ng-template pTemplate="body" let-modelo let-ri="rowIndex">
+        <tr>
+            <td>
+                <span class="ui-column-title"></span> {{modelo.numLinea}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> {{modelo.codArticulo}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> {{modelo.desArticulo}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> {{itemConfirmadoSolicitud.desAlmacenOrigen}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> 0
+            </td>
+            <td>
+                <span class="ui-column-title"></span> {{itemConfirmadoSolicitud.desAlmacenDestino}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> 0
+            </td>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.isLote}}
+            </td>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.isUbicacion}}
+            </td>
+            <td style="text-align: right">
+                <span class="ui-column-title"></span> {{modelo.cantidadAtendida}}
+            </td>
+            <td style="text-align: right">
+                <span class="ui-column-title"></span> {{modelo.cantidadEntregada}}
+            </td>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.codUnidadMedida}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> {{modelo.desUnidadMedida}}
+            </td>
+        </tr>
+        </ng-template>
+    </p-table>
+</p-panel>

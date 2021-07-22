@@ -1,11 +1,11 @@
 <div class="card card-w-title">
     <h1><strong>{{titulo}}</strong></h1>
 
-      <!-- Filtros -->
-      <p-panel header="Busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <!-- Filtros -->
+    <p-panel header="Busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
-                
+
                 <div class="ui-g-12 ui-md-2">
                     <label class="label-custom" for="float-input-fecha-ini">Fecha Inicio: </label>
                     <p-calendar id="float-input-fecha-ini" formControlName="fechaInicio" placeholder="Seleccionar Fecha Inicio" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
@@ -23,9 +23,9 @@
             </div>
         </form>
     </p-panel>
- 
-      <!-- Grilla de Datos     -->
-      <p-panel header="Lista de {{titulo}}">
+    <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
+    <!-- Grilla de Datos     -->
+    <p-panel header="Lista de {{titulo}}">
         <p-table [value]="listGrilla" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idConsolidado" autoLayout="true" [responsive]="true">
             <!-- Header -->
             <ng-template pTemplate="header" let-columns>
@@ -35,9 +35,9 @@
                     </th>
                 </tr>
             </ng-template>
-        <!-- body -->
-        <ng-template pTemplate="body" let-modelo let-editing="editing" let-ri="rowIndex">
-            <tr #opt class="row-hover" [ngClass]="modelo.idConsolidado === idConsolidadoResaltar? 'resaltarFila': null">
+            <!-- body -->
+            <ng-template pTemplate="body" let-modelo let-editing="editing" let-ri="rowIndex">
+                <tr #opt class="row-hover" [ngClass]="modelo.idConsolidado === idConsolidadoResaltar? 'resaltarFila': null">
                     <td class="action-td">
                         <p-splitButton icon="pi pi-cog" [model]="opciones" (onDropdownClick)="itemElegido(modelo)" appendTo="body">
                         </p-splitButton>
@@ -46,7 +46,7 @@
                         <span class="ui-column-title"></span> {{modelo.idConsolidado}}
                     </td>
                     <td>
-                        <span class="ui-column-title"></span> {{modelo.fecConsolidado | date:'MM-dd-yyyy'}}
+                        <span class="ui-column-title"></span> {{modelo.fecConsolidado | date: 'dd/MM/yyyy hh:mm'}}
                     </td>
                     <td>
                         <span class="ui-column-title"></span> {{modelo.nombreCompleto}}
@@ -60,10 +60,11 @@
                     <td>
                         <span [ngSwitch]="modelo.idConsolidadoEstado">
                             <span class="label" style="background:green" *ngSwitchCase="1">{{modelo.desConsolidadoEstado}}</span>
-                            <span class="label" style="background:red" *ngSwitchCase="2">{{modelo.desConsolidadoEstado}}</span>
-                            <span class="label" style="background:burlywood" *ngSwitchCase="3">{{modelo.desConsolidadoEstado}}</span>
-                            <span class="label" *ngSwitchDefault>{{modelo.desConsolidadoEstado}}</span>
-                         </span>
+                        <span class="label" style="background:red" *ngSwitchCase="2">{{modelo.desConsolidadoEstado}}</span>
+                        <span class="label" style="background:burlywood" *ngSwitchCase="3">{{modelo.desConsolidadoEstado}}</span>
+                        <span class="label" style="background:burlywood" *ngSwitchCase="4">{{modelo.desConsolidadoEstado}}</span>
+                        <span class="label" *ngSwitchDefault>{{modelo.desConsolidadoEstado}}</span>
+                        </span>
                     </td>
                 </tr>
             </ng-template>
@@ -81,9 +82,8 @@
 </div>
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
-<p-dialog *ngIf="isVerModal" [header]="tituloModalVer" [(visible)]="isVerModal" [transitionOptions]="timeAnimationModal" [modal]="true">
+
+<p-dialog *ngIf="isVerModal" [header]="tituloModalVer" [(visible)]="isVerModal" [transitionOptions]="timeAnimationModal" [modal]="true" [style]="{width: '80vw'}" [autoZIndex]>
     <app-consolidado-requerimiento-ver [inputConsolidado]="this.itemSeleccionado">
     </app-consolidado-requerimiento-ver>
 </p-dialog>
-
-

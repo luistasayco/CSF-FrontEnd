@@ -1,0 +1,190 @@
+<!-- Filtros -->
+<p-panel>
+    <form [formGroup]="formularioSuperior">
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-1">
+                <label class="label-custom" for="numsolicitu">Solicitud: </label>
+                <input type="text" formControlName="numsolicitud" pInputText disabled/>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <label class="label-custom" for="float-input-fecha-ini">Fecha Registro: </label>
+                <p-calendar id="float-input-fecha-ini" formControlName="fechaRegistro" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" disabled="true"></p-calendar>
+            </div>
+            <div class="ui-g-12 ui-md-3">
+                <label class="label-custom" for="float-input-socio">Socio de Negocio:</label>
+                <div class="ui-inputgroup">
+                    <input type="text" id="float-input-socio" formControlName="desSocioNegocio" placeholder="Socio Negocio" pInputText disabled />
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-3">
+                <label class="label-custom" for="float-input-cbpersonal">Personal Contacto:</label>
+                <div class="ui-inputgroup">
+                    <p-dropdown placeholder="Seleccionar" formControlName="cbpersonal" [(ngModel)]="selectSocioNegocioContacto" [options]="rowSocioNegocioContacto" filter="true" optionLabel="label" [disabled]="true"></p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-3">
+                <label class="label-custom" for="float-input-destino">Destino:</label>
+                <div class="ui-inputgroup">
+                    <p-dropdown placeholder="Seleccionar" formControlName="cbdestino" [(ngModel)]="selectSocioNegocioDireccion" [options]="rowSocioNegocioDireccion" filter="true" optionLabel="label" [disabled]="true"></p-dropdown>
+                </div>
+            </div>
+
+        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-3">
+                <label class="label-custom" for="float-input-socio">Tipo Movimiento:</label>
+                <div class="ui-inputgroup">
+                    <p-dropdown placeholder="Seleccionar" [(ngModel)]="tipoMovimientoSelect" formControlName="cbtipomoviento" [options]="rowTipoMovimiento" filter="true" optionLabel="label" [disabled]="true"></p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-3">
+                <label class="label-custom" for="float-input-socio">Almacén Origen:</label>
+                <div class="ui-inputgroup">
+                    <input type="text" id="float-input-socio" formControlName="almacenOrigen" placeholder="Almacen origen" pInputText disabled />
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-3">
+                <label class="label-custom" for="float-input-socio">Almacén Destino:</label>
+                <div class="ui-inputgroup">
+                    <input type="text" id="float-input-socio" formControlName="almacenDestino" placeholder="Almacen destino" pInputText disabled />
+                </div>
+            </div>
+
+            <div class="ui-g-12 ui-md-2">
+                <label>Estado: </label>
+                <input type="text" formControlName="estado" pInputText disabled />
+            </div>
+        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-3">
+                <label>Responsable: </label>
+                <input type="text" formControlName="responsable" pInputText disabled />
+            </div>
+        </div>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-8">
+                <span class="ui-column-title">Descripción</span>
+                <textarea pInputTextarea autoResize="autoResize" formControlName="observacion"></textarea>
+            </div>
+        </div>
+    </form>
+    <HR>
+    <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
+    <!--Grilla de Datos-->
+    <p-panel header="Lista de Articulos">
+        <p-table [value]="listArticulosItem" [paginator]="true" [rows]="globalConstants.sizePage" editMode="row" autoLayout="true" dataKey="codArticulo" #tablaGrillaDetalle>
+            <!-- Header -->
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th>Opciones</th>
+                    <th>Num Linea</th>
+                    <th>Código Articulo</th>
+                    <th>Descripción Articulo</th>
+                    <th>Almacén Origen</th>
+                    <th>O. Ubicacion</th>
+                    <th>Almacén Destino</th>
+                    <th>D. Ubicación</th>
+                    <th>Cant. Atendida</th>
+                    <th>Cant. Entregada</th>
+                    <th>Lote</th>
+                    <th>Ubicación</th>
+                    <th>Cod UM</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-modelo let-editing="editing" let-ri="rowIndex">
+                <tr #opt class="row-hover" [ngClass]="modelo.isLote === 'Y'? 'resaltarFilaLote': null">
+                    <td class="action-td">
+                        <p-splitButton icon="pi pi-cog" [model]="opciones" (onDropdownClick)="itemElegido(modelo)" appendTo="body">
+                        </p-splitButton>
+                    </td>
+                    <td>
+                        <span class="p-column-title">Num Linea</span> {{modelo.numLinea}}
+                    </td>
+                    <td style="text-align: center" class="action-td">
+                        <span class="ui-column-title"></span> {{modelo.codArticulo}}
+                    </td>
+                    <td>
+                        <span class="ui-column-title"></span> {{modelo.desArticulo}}
+                    </td>
+                    <td>
+                        <span class="ui-column-title"></span>{{itemSelect.desAlmacenOrigen}}
+                    </td>
+                    <td>
+                        <div class="ui-inputgroup">
+                            <div *ngIf="modelo.isUbicacion=== 'Y'">
+                                <div *ngIf="modelo.UBOrigenBinAbs; else loggedOut">
+                                    {{modelo.UBOrigenBinAbs}}
+                                    <button pButton icon="pi pi-tag" styleClass="ui-button-outlined ui-button-danger" style="width:5px;margin-left:10px" (click)="ubicacionModel(modelo,'origen')"></button>
+                                </div>
+                                <ng-template #loggedOut>
+                                    <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="ui-column-title"></span>{{itemSelect.desAlmacenDestino}}
+                    </td>
+                    <td>
+                        <div class="ui-inputgroup">
+                            <div *ngIf="modelo.isUbicacion=== 'Y'">
+                                <div *ngIf="modelo.UBDestinoBinCode; else loggedOut">
+                                    {{modelo.UBDestinoBinCode}}
+                                    <button pButton icon="pi pi-tag" styleClass="ui-button-outlined ui-button-danger" style="width:5px;margin-left:10px" (click)="ubicacionModel(modelo,'destino')"></button>
+                                </div>
+                                <ng-template #loggedOut>
+                                    <i class="pi pi-spin pi-spinner loading-icon" aria-hidden="true"></i>
+                                </ng-template>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: right">
+                        {{modelo.cantidadAtendida}}
+                    </td>
+                    <td style="text-align: right">
+                        {{modelo.cantidadEntregada}}
+
+                    </td>
+                    <td style="text-align: center">
+                        <div class="ui-inputgroup">
+                            <span class="ui-column-title"></span> {{modelo.isLote}}
+                            <div *ngIf="modelo.isLote=== 'Y'">
+                                <button pButton icon="pi pi-bell" styleClass="ui-button-outlined ui-button-danger" style="width:5px;margin-left:10px" (click)="loteCantidaModel(modelo)"></button>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="text-align: center">
+                        <div class="ui-inputgroup">
+                            <span class="ui-column-title"></span> {{modelo.isUbicacion}}
+                        </div>
+                    </td>
+                    <td style="text-align: center">
+                        <span class="ui-column-title"></span> {{modelo.codUnidadMedida}}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <p-footer>
+        <div class="ui-grid ui-fluid">
+            <div class="ui-g-12 ui-md-6">
+                <button pButton type="button" id="btnsave" label="{{globalConstants.cAceptar}}" icon="{{globalConstants.icoAceptar}}" (click)="clickGuardar()"></button>
+            </div>
+            <div class="ui-g-12 ui-md-6">
+                <button pButton type="button" label="Cerrar" icon="{{globalConstants.icoCancelar}}" (click)="clickCancelar()"></button>
+            </div>
+        </div>
+    </p-footer>
+</p-panel>
+
+<app-confirmacion-solicitud-tranferencia-lote *ngIf="isActivateCantidadEditar" [isDisplayCantidaEditar]="isActivateCantidadEditar" [itemArticulo]="indiceItemElegidoGrilla" [itemAlmacen]="selectAlmacenOrigen" (itemSeleccionado)="editarCantidadBuscado($event)"
+    (cancel)="clickActivateEditarCantidad()">
+</app-confirmacion-solicitud-tranferencia-lote>
+
+<p-dialog *ngIf="isArticuloVerModal" widgetVar="dlg2" [responsive]="true" width="auto" [header]="tituloArticuloVerModal" [(visible)]="isArticuloVerModal" [transitionOptions]="timeAnimationModal" [modal]="true">
+    <app-confirmacion-solicitud-tranferencia-articulo-ver [item]="indiceItemElegidoGrilla" [itemAlmacen]="selectAlmacenOrigen">
+    </app-confirmacion-solicitud-tranferencia-articulo-ver>
+</p-dialog>
+
+<app-modal-busqueda-ubicacion-lt *ngIf="isActivateUbicacion" [isDisplayBusqueda]="isActivateUbicacion" [itemCode]="ModalUbicacionItemCode" [whsCode]="ModalUbicacionWhsCode" [entorno]="ModalUbicacionEntorno" (cancel)="clickActivateUbicacion()" (eventoRegistroSeleccionado)="ubicacionSelecccioando($event)">
+</app-modal-busqueda-ubicacion-lt>

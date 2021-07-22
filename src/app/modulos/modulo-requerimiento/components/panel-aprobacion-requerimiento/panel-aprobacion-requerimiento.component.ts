@@ -204,7 +204,7 @@ export class PanelAprobacionRequerimientoComponent implements OnInit {
       { field: 'origen', header: 'Origen', visibility: false, tipoFlag: "", formatoFecha: "" },
       { field: 'fecRequerimiento', header: 'Fecha', visibility: true, tipoFlag: "", formatoFecha: "" },
       { field: 'idUsuario', header: 'idUsuario', visibility: false, tipoFlag: "", formatoFecha: "" },
-      { field: 'usuario', header: 'Usuario', visibility: true, tipoFlag: "", formatoFecha: "" },
+      { field: 'usuario', header: 'Solicitante', visibility: true, tipoFlag: "", formatoFecha: "" },
       { field: 'codCentroCosto', header: 'Id Centro Costo', visibility: false, tipoFlag: "", formatoFecha: "" },
       { field: 'desCentroCosto', header: 'Centro Costo', visibility: true, tipoFlag: "", formatoFecha: "" },
       { field: 'idSolicitudSAP', header: 'Solicitud SAP', visibility: true, tipoFlag: "", formatoFecha: "" },

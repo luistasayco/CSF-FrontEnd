@@ -9,16 +9,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
 
 //interfaces
-//import { IArticulo } from '../../../../modulo-requerimiento/models/requerimiento-item-bus.interface';
-import { IRequerimientoItemBus } from '../../interfaces/requerimiento-item-bus.interface';
-
 //services
-//import { RequerimientoCompartidoService } from '../../services/requerimiento-compartido.service';
+
 import { SolicitudTrasladoService } from '../../../../modulo-solicitud-traslado/services/solicitud-traslado.service';
 
 import { LanguageService } from '../../../../../services/language.service';
 import { UtilService } from '../../../../../services/util.service';
-import { StoreFeatureModule } from '@ngrx/store';
+
 //OnChanges
 @Component({
   selector: 'app-modal-busqueda-articulo-stock',
@@ -28,19 +25,13 @@ import { StoreFeatureModule } from '@ngrx/store';
 
 export class ModalBusquedaArticuloStockComponent implements OnInit {
 
-
   @Input() isDisplayBusquedaArticulo = false;
   @Input() almacenSelect:any;
   @Output() articuloSeleccionado = new EventEmitter<any>();
   @Output() cancel = new EventEmitter<any>();
 
-  //@Input() selectionMode:string = 'multiple';
   @Input() tipoArticulo: number = 0;
   
-
-  //@Input() numRq: number = 0;
-  //@Input() isInventariable: boolean = false;
-
   rowListaArticulo: any[] = [];
   seleccionArticulo: any;
 
@@ -62,9 +53,6 @@ export class ModalBusquedaArticuloStockComponent implements OnInit {
   //GRILLA
   opciones: any = [];
 
-  //Parametros
-  //bodyParams : any;
-
   constructor(
     private readonly fb: FormBuilder,
     private solicitudTrasladoService: SolicitudTrasladoService,
@@ -73,64 +61,27 @@ export class ModalBusquedaArticuloStockComponent implements OnInit {
     public readonly lenguageService: LanguageService) {}
 
   ngOnInit(): void {
-    debugger;
-
-    console.log("this.almacenSelect");
-    console.log(this.almacenSelect);
-    console.log("tipoArticulo");
-    console.log(this.tipoArticulo);
     
 
     this.buildFormRq();
     this.cabeceraTabla();
-    //this.getArticulos();
+    
     this.opcionesTabla();
     this.datosTipoArticulo();
-
-    debugger;
-    console.log("this.almacenSelect");
-    console.log(this.almacenSelect);
-
+    
     this.tituloAlmacen="ALMACEN CENTRAL";
 
-    debugger;
-
-  
-    // this.activeRoute.queryParamMap
-    // .pipe(
-    //   map((params) => {
-    //     this.bodyParams = {
-    //       codAlmacen: params.get('codAlmacen'),
-    //       desAlmacen: params.get('desAlmacen')
-    //     };
-        
-    //     this.tituloAlmacen=this.bodyParams.desAlmacen;
-    //     // this.formularioBusqueda.patchValue({
-    //     //   centroCosto: this.bodyParams.desCentroCosto,
-    //     // });
-    //   })
-    // )
-    // .subscribe();
-
-
   }
-
-  // ngOnChanges() {
-  //   // if (this.isDisplayBusquedaArticulo) {
-      
-  //   // }
-  // }
 
   cabeceraTabla() {
     this.cols = [
-      { field: 'itemCode', header: 'Cod. Articulo' },
-      { field: 'itemName', header: 'Des. Articulo' },
+      { field: 'itemCode', header: 'Código Articulo' },
+      { field: 'itemName', header: 'Descripción Articulo' },
       { field: 'stock', header: 'Stock' }
     ];
   }
-  //numRq
+  
   getArticulos() {
-debugger;
 
     const formBody = this.formularioBusquedaAr.value;
     const cbtipoArticulo = formBody.cbtipoArticulo;
@@ -138,8 +89,7 @@ debugger;
     var nomArt=formBody.nomArticulo;
     
     this.loadingArticulo = true;
-    //seleccionArticulo
-    //.pipe(map((resp) => (this.rowListaArticulo = resp)))
+    
     this.solicitudTrasladoService
       .getArticuloStock(idtipoArticulo,this.almacenSelect.value,nomArt)
       .pipe(map((resp) => (this.rowListaArticulo = resp)))
@@ -171,7 +121,7 @@ debugger;
     this.cancel.emit();
   }
   onToBuscar() {
-    debugger;
+    
     this.getArticulos();
   }
   
@@ -201,8 +151,6 @@ debugger;
 
             this.seleccionTipoArticulo=this.rowTipoArticulo[0];
 
-            console.log("this.seleccionTipoArticulo");
-            console.log(this.seleccionTipoArticulo);
           }
           
         })

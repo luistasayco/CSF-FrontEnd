@@ -20,6 +20,12 @@ export class AlmacenService {
         `${environment.url_api_requerimiento}/Almacen/GetStockPorCodArt_CodAlmacen?itemCode=${itemCode}&whsCode=${whsCode}`
       );
     }
+
+    getAlmacenByid(id:string) {
+      return this.http.get<any>(
+        `${environment.url_api_requerimiento}/Almacen/GetById?WarehouseCode=${id}`
+      );
+    }
  
 
 }

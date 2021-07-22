@@ -17,6 +17,7 @@ import { ModalBusquedaRequerimientoComponent } from './components/modal-busqueda
 import { ModalBusquedaArticuloStockComponent } from './components/modal-busqueda-articulo-stock/modal-busqueda-articulo-stock.component';
 import { ModalBusquedaAlmacenLtComponent } from './components/modal-busqueda-almacenes-lt/modal-busqueda-almacenes-lt.component';
 import { ModalBusquedaSocioNegocioLtComponent } from './components/modal-busqueda-socio-negocio-lt/modal-busqueda-socio-negocio-lt.component';
+import { ModalBusquedaUbicacionLtComponent } from './components/modal-busqueda-ubicaciones-lt/modal-busqueda-ubicacion-lt.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { ModalBusquedaSocioNegocioLtComponent } from './components/modal-busqued
         ModalBusquedaAlmacenLtComponent,
         ModalBusquedaSocioNegocioLtComponent,
         LoadingComponent,
-        TableCompartidoComponent],
+        TableCompartidoComponent,
+        ModalBusquedaUbicacionLtComponent],
     imports: [ CommonModule, 
                RequerimientoCompartidoPrimeNgModule, 
                FormsModule,
@@ -53,7 +55,8 @@ import { ModalBusquedaSocioNegocioLtComponent } from './components/modal-busqued
         ModalBusquedaAlmacenLtComponent,
         ModalBusquedaSocioNegocioLtComponent,
         LoadingComponent,
-        TableCompartidoComponent],
+        TableCompartidoComponent,
+        ModalBusquedaUbicacionLtComponent],
     providers: [ ],
 })
 export class RequerimientoCompartidoModule {}

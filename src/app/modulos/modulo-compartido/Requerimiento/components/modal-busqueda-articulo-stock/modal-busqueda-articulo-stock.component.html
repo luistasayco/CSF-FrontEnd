@@ -33,6 +33,11 @@
                 </th>
             </tr>
         </ng-template>
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+             <td [attr.colspan]="5" class="text-center">No se encontrarón registros</td>
+            </tr>
+          </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr [pSelectableRow]="rowData">
                 <td class="action-td">
@@ -42,7 +47,7 @@
                 <td>
                     <p-tableCheckbox [value]="rowData">
                     </p-tableCheckbox>        
-              </td>
+                </td>
                 <td *ngFor="let col of columns">
                     <span class="p-column-title">{{col.header}}</span> {{ rowData[col.field] }}
                 </td>

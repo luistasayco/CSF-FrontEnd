@@ -1,10 +1,10 @@
 <p-panel *ngIf="detalleDelItemSeleccionado" header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
     <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-3">
+        <!-- <div class="ui-g-12 ui-md-3">
             <span><strong>Id Trabajador:</strong></span>{{ detalleDelItemSeleccionado.idUsuario }}
-        </div>
+        </div> -->
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Trabajador:</strong></span>{{ detalleDelItemSeleccionado.usuario }}
+            <span><strong>Solicitante:</strong></span>{{ detalleDelItemSeleccionado.usuario }}
         </div>
         <div class="ui-g-12 ui-md-3">
             <span><strong>COD C.C:</strong></span>{{ detalleDelItemSeleccionado.codCentroCosto }}
@@ -64,21 +64,21 @@
         <div class="ui-g-12 ui-md-4">
             <span><strong>Usuario Revisión:</strong></span>{{ detalleDelItemSeleccionado.requerimientoAprobadorEconomato.nombreCompletoRevisado }}
         </div>
-        <div class="ui-g-12 ui-md-2">
+        <div class="ui-g-12 ui-md-8">
             <span><strong>Fecha:</strong></span>{{ detalleDelItemSeleccionado.requerimientoAprobadorEconomato.fecRevisado | date: 'dd/MM/yy' }}
         </div>
-        <div class="ui-g-12 ui-md-6">
+        <!-- <div class="ui-g-12 ui-md-6">
             <span><strong>Observación</strong></span>{{ detalleDelItemSeleccionado.requerimientoAprobadorEconomato.obsRevisado }}
-        </div>
+        </div> -->
         <div class="ui-g-12 ui-md-4">
             <span><strong>Usuario Aprobación:</strong></span>{{ detalleDelItemSeleccionado.requerimientoAprobadorEconomato.nombreCompletoAprobacion }}
         </div>
-        <div class="ui-g-12 ui-md-2">
+        <div class="ui-g-12 ui-md-8">
             <span><strong>Fecha:</strong></span>{{ detalleDelItemSeleccionado.requerimientoAprobadorEconomato.fecAprobacion | date: 'dd/MM/yy' }}
         </div>
-        <div class="ui-g-12 ui-md-6">
+        <!-- <div class="ui-g-12 ui-md-6">
             <span><strong>Observación</strong></span>{{ detalleDelItemSeleccionado.requerimientoAprobadorEconomato.obsAprobacion }}
-        </div>
+        </div> -->
     </div>
 </p-panel>
 

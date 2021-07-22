@@ -112,17 +112,17 @@ export class RegistrarRequerimientoEconomatoComponent implements OnInit {
 
   private buildFormSuperior() {
     this.formularioSuperior = this.fb.group({
-      idUsuario: [null],
-      trabajador: [null],
-      codCentroCosto: [null],
-      desCentroCosto: [null],
-      codSocioNegocio: [null],
-      cardName: [null],
+      idUsuario: [{value: null, disabled: true}],
+      trabajador: [{value: null, disabled: true}],
+      codCentroCosto: [{value: null, disabled: true}],
+      desCentroCosto: [{value: null, disabled: true}],
+      codSocioNegocio: [{value: null, disabled: true}],
+      cardName: [{value: null, disabled: true}],
       observacion: [null],
       motivo: [null],
-      fechaReq: [new Date()],
-      fechaNecesaria: [new Date()],
-      fechaValidez: [new Date()],
+      fechaReq: [{value: new Date(), disabled: true}],
+      fechaNecesaria: [{value: new Date(), disabled: false}],
+      fechaValidez: [{value: new Date(), disabled: false}],
     });
   }
 
@@ -292,7 +292,7 @@ export class RegistrarRequerimientoEconomatoComponent implements OnInit {
       codCentroCosto,
       codSocioNegocio,
       observacion,
-    } = this.formularioSuperior.value;
+    } = this.formularioSuperior.getRawValue();
 
     const { idUbicacion } = this.formularioFindArticulo.value;
 
@@ -318,7 +318,7 @@ export class RegistrarRequerimientoEconomatoComponent implements OnInit {
       idUsuario: idUsuario,
       codMotivoRequerimiento: this.motivoSeleccionadoEnCombo.codMotivoRequerimiento,
       observacion: observacion ? observacion : '',
-      codCentroCosto: this.formularioSuperior.value.codCentroCosto,
+      codCentroCosto: codCentroCosto,
       regCreateIdUsuario: this.userContextService.getIdUsuario(),
       idRequerimientoEstado: 1,
       idTipoRequerimiento: 2,
@@ -379,7 +379,7 @@ export class RegistrarRequerimientoEconomatoComponent implements OnInit {
   }
 
   cambioDeEstructuraDeArticulo_AddFechaNecesaria(event: UbicacionPorStockModel[]) {
-    const { fechaNecesaria,codCentroCosto } = this.formularioSuperior.value;
+    const { fechaNecesaria,codCentroCosto } = this.formularioSuperior.getRawValue();
 
     for (const item of event) {
       const newArticulo: INewArticulo = {

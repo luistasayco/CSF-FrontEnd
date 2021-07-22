@@ -11,7 +11,7 @@ import { AdminAprobadorService } from '../../../../modulo-administracion/service
 import { map } from 'rxjs/operators';
 import { UserContextService } from '../../../../../services/user-context.service';
 import { interfaceUsuario } from '../../../../modulo-administracion/models/usuario.interface';
-import { IArticulo, INewArticulo } from '../../../models/articulo.interface';
+import { INewArticulo } from '../../../models/articulo.interface';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { IMensajeResultadoApi } from '../../../../modulo-compartido/Requerimiento/interfaces/mensajeRespuestaApi.interface';
 import { ICentroCosto } from '../../../../modulo-administracion/models/aprobadorCentroCosto.interface';
@@ -98,14 +98,14 @@ export class RegistrarRequerimientoComponent implements OnInit, AfterViewChecked
   private buildFormSuperior() {
     this.formularioSuperior = this.fb.group({
       idUsuario: [null],
-      trabajador: [null],
-      codCentroCosto: [null],
-      desCentroCosto: [null],
-      codSocioNegocio: [null],
+      trabajador: [{value: null, disabled: true}],
+      codCentroCosto: [{value: null, disabled: true}],
+      desCentroCosto: [{value: null, disabled: true}],
+      codSocioNegocio: [{value: null, disabled: true}],
       cardName: [null],
       observacion: [null],
       motivo: [null],
-      fechaReq: [new Date()],
+      fechaReq: [{value: new Date(), disabled: true}],
       fechaNecesaria: [new Date()],
       fechaValidez: [new Date()],
     });
@@ -242,7 +242,7 @@ export class RegistrarRequerimientoComponent implements OnInit, AfterViewChecked
       codCentroCosto,
       codSocioNegocio,
       observacion,
-    } = this.formularioSuperior.value;
+    } = this.formularioSuperior.getRawValue();
 
     // console.log(this.ArrayUploadedFiles);
     const arrayAnexos: IAnexo[] = [];
@@ -268,7 +268,7 @@ export class RegistrarRequerimientoComponent implements OnInit, AfterViewChecked
       idUsuario: idUsuario,
       codMotivoRequerimiento: this.motivoSeleccionadoEnCombo.codMotivoRequerimiento,
       observacion: observacion ? observacion : '',
-      codCentroCosto: this.formularioSuperior.value.codCentroCosto,
+      codCentroCosto: codCentroCosto,
       regCreateIdUsuario: this.userContextService.getIdUsuario(),
       idRequerimientoEstado: 1,
       idTipoRequerimiento: 1,
@@ -333,7 +333,7 @@ export class RegistrarRequerimientoComponent implements OnInit, AfterViewChecked
   }
 
   cambioDeEstructuraDeArticulo_AddFechaNecesaria(event: IServicio[]) {
-    const { fechaNecesaria,codCentroCosto } = this.formularioSuperior.value;
+    const { fechaNecesaria,codCentroCosto } = this.formularioSuperior.getRawValue();
 
     for (const item of event) {
       const newArticulo: INewArticulo = {

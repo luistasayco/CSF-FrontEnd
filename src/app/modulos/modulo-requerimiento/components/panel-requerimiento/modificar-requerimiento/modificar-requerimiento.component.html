@@ -49,10 +49,10 @@
                             <label>Nro SAP: </label>
                             <input type="text" formControlName="proceSap" pInputText />
                         </div>
-                        <div class="ui-g-12 ui-md-2">
+                        <!-- <div class="ui-g-12 ui-md-2">
                             <label>Conform: </label>
                             <p-dropdown [options]="arrayComboConformidad" formControlName="conformidad" placeholder="Seleccionar" optionLabel="desOption"></p-dropdown>
-                        </div>
+                        </div> -->
                     </div>
                 </form>
             </div>
@@ -94,9 +94,9 @@
                                     </ng-template>
                                 </p-cellEditor>
                             </td> -->
-                            <td class="action-td">
+                            <!-- <td class="action-td">
                                 <span class="p-column-title">Cod Servicio:</span> {{ rowData.codArticulo }}
-                            </td>
+                            </td> -->
                             <td class="ui-fluid" [pEditableColumn]="rowData" [pEditableColumnField]="'desArticulo'" [pEditableColumnRowIndex]="index">
                                 <span class="p-column-title">Des Servicio:</span>
                                 <p-cellEditor>
@@ -136,7 +136,7 @@
                                     </ng-template>
                                 </p-cellEditor> -->
                             </td>
-                            <td [pEditableColumn]="rowData" [pEditableColumnField]="'codSocioNegocio'" [pEditableColumnRowIndex]="index">
+                            <td class="ui-fluid" [pEditableColumn]="rowData" [pEditableColumnField]="'codSocioNegocio'" [pEditableColumnRowIndex]="index">
                                 <span class="p-column-title">Cod Socio Negocio:</span>
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
@@ -147,7 +147,7 @@
                                     </ng-template>
                                 </p-cellEditor>
                             </td>
-                            <td [pEditableColumn]="rowData" [pEditableColumnField]="'fecNecesaria'" [pEditableColumnRowIndex]="index">
+                            <td class="action-td-10" [pEditableColumn]="rowData" [pEditableColumnField]="'fecNecesaria'" [pEditableColumnRowIndex]="index">
                                 <span class="p-column-title">Fecha Necesaria:</span>
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
@@ -174,7 +174,7 @@
                 </p-table>
             </ng-container>
             <ng-container *ngIf="isAprobadoDesaprobadoAnulado || isProcesadoSAP">
-                <p-table [value]="dataGrilla" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo" [columns]="cols" #tablaGrilla>
+                <p-table [value]="dataGrilla" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo" [columns]="cols" #tablaGrilla [autoLayout]="true">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns">
@@ -187,16 +187,16 @@
                             <td class="action-td">
 
                             </td>
-                            <td>
+                            <td class="action-td">
                                 <span class="p-column-title">Num Linea</span> {{ index + 1 }}
                             </td>
                             <!-- <td>
                                 <span class="p-column-title">Nro Orden Trabajo:</span> {{ rowData.nroOrdenTrabajo }}
                             </td> -->
-                            <td>
+                            <!-- <td>
                                 <span class="p-column-title">Cod Servicio:</span> {{ rowData.codArticulo }}
-                            </td>
-                            <td>
+                            </td> -->
+                            <td class="ui-fluid">
                                 <span class="p-column-title">Des Servicio:</span> {{ rowData.desArticulo }}
                             </td>
                             <!-- <td>
@@ -208,16 +208,16 @@
                             <td>
                                 <span class="p-column-title">Cantidad necesaria:</span> {{ rowData.cantidadNecesaria }}
                             </td> -->
-                            <td>
+                            <td class="action-td">
                                 <span class="p-column-title">Cod centro costo:</span> {{ rowData.codCentroCosto }}
                             </td>
-                            <td>
+                            <td class="ui-fluid">
                                 <span class="p-column-title">Cod Socio Negocio:</span> {{ rowData.codSocioNegocio }}
                             </td>
-                            <td>
+                            <td class="action-td-10">
                                 <span class="p-column-title">Fecha Necesaria:</span> {{ rowData.fecNecesaria | date: 'dd/MM/yy' }}
                             </td>
-                            <td>
+                            <td class="ui-fluid">
                                 <span class="p-column-title">Comentario:</span> {{ rowData.comentario }}
                             </td>
                         </tr>

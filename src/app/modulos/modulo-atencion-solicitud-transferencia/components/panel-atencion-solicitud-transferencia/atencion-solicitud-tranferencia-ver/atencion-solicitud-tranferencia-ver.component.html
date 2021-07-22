@@ -1,21 +1,20 @@
 <!-- <p-panel *ngIf="ValeSalida" header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}"></p-panel> -->
 <p-panel header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
     <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-2">
-            <span><strong>Nro Atencion: </strong></span>{{ item.idAtencionSolicitudTransferencia }}
-        </div>
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Nro Atencion Estado: </strong></span> {{ itemAtencionSolicitud.desAtencionSolicitudTransferenciaEstado }}
+            <span><strong>Nro Atención: </strong></span>{{ item.idAtencionSolicitudTransferencia }}
         </div>
-        <div class="ui-g-12 ui-md-2">
-            <span><strong>Nro Solicitud: </strong></span>{{ itemAtencionSolicitud.idSolicitudTraslado }}
-        </div>
-        <div class="ui-g-12 ui-md-5">
-            <span><strong>Nro Solicitud Estado: </strong></span>{{itemAtencionSolicitud.desSolicitudTrasladoEstado}}
+        <div class="ui-g-12 ui-md-9">
+            <span><strong>Nro Atención Estado: </strong></span> {{ itemAtencionSolicitud.desAtencionSolicitudTransferenciaEstado }}
         </div>   
     </div>
     <div class="ui-g ui-fluid">
-            
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Nro Solicitud: </strong></span>{{ itemAtencionSolicitud.idSolicitudTraslado }}
+        </div>
+        <div class="ui-g-12 ui-md-9">
+            <span><strong>Nro Solicitud Estado: </strong></span>{{itemAtencionSolicitud.desSolicitudTrasladoEstado}}
+        </div>   
     </div>
     <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-12">
@@ -34,10 +33,10 @@
     </div>
     <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-6">
-            <span><strong>Almacen Origen: </strong></span>  {{itemAtencionSolicitud.codAlmacenOrigen}} - {{itemAtencionSolicitud.desAlmacenOrigen}}
+            <span><strong>Almacén Origen: </strong></span>  {{itemAtencionSolicitud.codAlmacenOrigen}} - {{itemAtencionSolicitud.desAlmacenOrigen}}
         </div>
         <div class="ui-g-12 ui-md-6">
-            <span><strong>Almacen Destino: </strong></span> {{itemAtencionSolicitud.codAlmacenDestino}} - {{itemAtencionSolicitud.desAlmacenDestino}}
+            <span><strong>Almacén Destino: </strong></span> {{itemAtencionSolicitud.codAlmacenDestino}} - {{itemAtencionSolicitud.desAlmacenDestino}}
         </div>
     </div>
     <div class="ui-g ui-fluid">
@@ -63,32 +62,40 @@
 </p-panel>
 
 <p-panel header="Lista de Articulos" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
-    <p-table [value]="itemAtencionSolicitud.atencionSolicitudTransferenciaItem"  [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idValeSalida" autoLayout="true" [responsive]="true">
+    <p-table [value]="itemAtencionSolicitud.atencionSolicitudTransferenciaItem"  [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idValeSalida" autoLayout="true">
         <!-- Header -->
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th>Id Item</th>
                 <th>Cod Articulo</th>
-                <th>Des Articulo</th>
-                <th>Cantidad</th>
+                <th>Descripción Articulo</th>
+                <th>Lote</th>
+                <th>Ubicación</th>
+                <th>Cantidad Solicitada</th>
+                <th>Cantidad Atendida</th>
                 <th>Cod Unidad Medida</th>
-                <th>Des Unidad Medida</th>
+                <th>Descripción Unidad Medida</th>
             </tr>
         </ng-template>
     <!-- body -->
     <ng-template pTemplate="body" let-modelo let-editing="editing" let-ri="rowIndex">
         <tr>
-                <td class="action-td" style="text-align: center">
-                    <span class="ui-column-title"></span> {{modelo.idAtencionSolicitudTransferenciaItem}}
-                </td>
                 <td>
                     <span class="ui-column-title"></span> {{modelo.codArticulo}}
                 </td>
                 <td>
                     <span class="ui-column-title"></span> {{modelo.desArticulo}}
                 </td>
+                <td>
+                    <span class="ui-column-title"></span> {{modelo.isLote}}
+                </td>
+                <td style="text-align: center">
+                    <span class="ui-column-title"></span> {{modelo.isUbicacion}}
+                </td>
                 <td style="text-align: right">
-                    <span class="ui-column-title"></span> {{modelo.cantidad}}
+                    <span class="ui-column-title"></span> {{modelo.cantidadSolicitada}}
+                </td>
+                <td style="text-align: right">
+                    <span class="ui-column-title"></span> {{modelo.cantidadAtendida}}
                 </td>
                 <td style="text-align: center">
                     <span class="ui-column-title"></span> {{modelo.codUnidadMedida}}

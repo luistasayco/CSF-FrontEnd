@@ -47,7 +47,7 @@ export class SolicitudTrasladoService {
     }
     getParam(fechaInicio: any,fechaFin: any, idSolicitudTraslado: number,idMotivoSolicitudTraslado : number,codAlmacenOrigen: string,codAlmacenDestino: string) {
       return this.http.get<any[]>(
-        `${environment.url_api_requerimiento}/SolicitudTraslado/GetParam?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&idSolicitudTraslado=${idSolicitudTraslado}&idMotivoSolicitudTraslado=${idMotivoSolicitudTraslado}&codAlmacenOrigen=${codAlmacenOrigen}&codAlmacenDestino=${codAlmacenDestino}`);
+        `${environment.url_api_requerimiento}/SolicitudTraslado/GetParam?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}&idSolicitudTraslado=${idSolicitudTraslado}&idMotivoSolicitudTraslado=${idMotivoSolicitudTraslado}&codAlmacenOrigen=${codAlmacenOrigen}&codAlmacenDestino=${codAlmacenDestino}&interno=SI`);
     }
 
     getDetalle(idSolicitudTraslado: number) {

@@ -1,7 +1,7 @@
 <div class="card card-w-title">
     <div class="box">
         <div class="titulo">
-            <h1>Consolidado RQ | Nuevo</h1>
+            <h1>Consolidado RQ | Editar</h1>
         </div>
     </div>
    <!-- Filtros -->
@@ -14,8 +14,11 @@
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <label>Almacen: </label>
-                    <!-- (onChange)="onChange($event)" -->
-                    <p-dropdown placeholder="Seleccionar" formControlName="cbalmacen" [options]="rowAlmacen" filter="true" optionLabel="label"  required></p-dropdown>
+                    <div class="ui-inputgroup">
+                        <input type="text" id="float-input-socio" formControlName="almacen" placeholder="SELECCIONE ALMACEN" pInputText  />
+                        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalAlmacen()" class="ui-button-success"></button>
+                    </div>
+                    <!-- <p-dropdown placeholder="Seleccionar" formControlName="cbalmacen" [options]="rowAlmacen" [ngModel]="selectAlmacen" filter="true" optionLabel="label"  required></p-dropdown> -->
                 </div>
             </div>
             <div class="ui-g ui-fluid">
@@ -27,6 +30,7 @@
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-6">
                     <span class="ui-column-title">Comentario</span>
+                    <!--  -->
                     <textarea pInputTextarea autoResize="autoResize" formControlName="observacion"></textarea>
                 </div>
                 <div class="ui-g-12 ui-md-2">
@@ -75,8 +79,16 @@
                     <td>
                         <span class="p-column-title">Des Articulo:</span> {{ modelo.desArticulo }}
                     </td>
-                    <td>
-                        <span class="p-column-title">Cod Socio Compra:</span> {{ modelo.codSocioNegocioCompra }}
+                    <td class="ui-fluid" pEditableColumn>
+                        <span class="p-column-title">Socio de Negocio:</span>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <button pButton type="button" label="Agregar Socio de Negocio" icon="pi pi-plus" (click)="activarModalSocioNegocio(ri)"></button>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ modelo.codSocioNegocioCompra }}
+                            </ng-template>
+                        </p-cellEditor>
                     </td> 
                     <td>
                         {{ modelo.cantidad }}
@@ -117,5 +129,10 @@
 <app-cantidad-editar *ngIf="isActivateCantidadEditar" [isDisplayCantidaEditar]="isActivateCantidadEditar" [listaCantidaEditar]="listModalRequerimientoProducto" (editarCantidaSeleccionado)="editarCantidadBuscado($event)" (cancel)="clickActivateEditarCantidad()">
 </app-cantidad-editar>
 
+<app-modal-busqueda-socio-negocio [isDisplayBusqueda]="isActivateBusquedaSocioNegocio" (eventoRegistroSeleccionado)="socioNegocioSeleccionado($event)" (cancel)="activarModalSocioNegocio()">
+</app-modal-busqueda-socio-negocio>
 
-
+<div *ngIf="isActivateBusquedaAlmacen">
+    <app-modal-busqueda-almacenes-lt [isDisplayBusqueda]="isActivateBusquedaAlmacen" (eventoRegistroSeleccionado)="almacenSeleccionado($event)" (cancel)="activarModalAlmacen()">
+    </app-modal-busqueda-almacenes-lt>
+</div>

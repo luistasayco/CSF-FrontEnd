@@ -1,0 +1,65 @@
+<p-dialog [(visible)]="isDisplayCantidaEditar" header="LOTE" [modal]="true" [transitionOptions]="timeAnimationModal">
+    <p-toast key="myKey1"></p-toast>
+    <p-panel>
+        <div class="ui-g ui-fluid">
+            <div class="ui-g-12 ui-md-12">
+                <label class="label-custom" style="color:blue">ALMACEN ORIGEN:</label>
+                <div class="ui-inputgroup">
+                    <span><strong>{{itemAlmacen.codAlmacenOrigen}} {{itemAlmacen.desAlmacenOrigen}}</strong></span>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-12">
+                <label class="label-custom" style="color:blue">ARTICULO:</label>  
+                <div class="ui-inputgroup">
+                    <span><strong>{{itemArticulo.codArticulo}} {{itemArticulo.desArticulo}}</strong></span>
+                </div>
+            </div>
+            <div class="ui-g-12 ui-md-12" style="color:red">
+                <label class="label-custom" >TOTAL CANTIDAD A ATENDER:</label>  
+                <div class="ui-inputgroup">
+                    <span><strong>{{itemArticulo.cantidadAtendida}}</strong></span>
+                </div>
+            </div>
+        </div>
+    </p-panel>
+    <hr>
+    
+    <p-messages [(value)]="mensajePrimeNgService.msgs"></p-messages>
+    <p-table [value]="listaLoteItem" [paginator]="true"  [loading]="loading" [rows]="globalConstants.sizePage" dataKey="num" selectionMode="single" autoLayout="true" [responsive]="true" [(selection)]="seleccionArticulo" >
+        <ng-template pTemplate="header">
+            <tr>
+                 <th>Lote</th>
+                 <th>Cantidad</th>
+                 <th>Cantidad a Atender</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-modelo let-editing="editing">
+            <tr>
+                <td>
+                    {{modelo.numLote}}
+                </td>
+                <td>
+                    {{modelo.cantidad}}
+                </td>
+                <td pEditableColumn>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input" >
+                            <input pInputText type="number" min="1" max="{{modelo.cantidad}}" [(ngModel)]="modelo.cantidadAtendida" (keypress)="onKeypressEvent(modelo,$event)" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{ modelo.cantidadAtendida }}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+    <p-footer>
+        <div class="ui-grid ui-fluid">
+            <div class="ui-g-12 ui-md-12">
+                <button pButton type="button" label="{{globalConstants.cAceptar}}" icon="{{globalConstants.icoAceptar}}" (click)="clickAceptar()"></button>
+            </div>
+        </div>
+    </p-footer>
+
+</p-dialog>

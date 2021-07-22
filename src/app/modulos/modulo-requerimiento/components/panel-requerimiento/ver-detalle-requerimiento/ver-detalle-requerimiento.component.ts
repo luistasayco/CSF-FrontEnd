@@ -50,12 +50,8 @@ export class VerDetalleRequerimientoComponent implements OnInit {
   cabeceraTabla() {
     this.cols = [
       { field: 'numLinea', header: 'Línea' },
-      // { field: 'nroOrdenTrabajo', header: 'Nro. Orden T.' },
       { field: 'codArticulo', header: 'Cod. Servicio' },
-      { field: 'desArticulo', header: 'Descripción Servicio' },
-      // { field: 'codUnidadMedida', header: 'Cod. U.M.' },
-      // { field: 'codAlmacen', header: 'Cod Almacen'},
-      // { field: 'cantidadNecesaria', header: 'Cantidad Necesaria'},      
+      { field: 'desArticulo', header: 'Descripción Servicio' },    
       { field: 'codCentroCosto', header: 'Cod Centro Costo' },
       { field: 'codSocioNegocio', header: 'Cod Socio Negocio' },
       { field: 'fecNecesaria', header: 'Fecha' },
@@ -88,17 +84,9 @@ export class VerDetalleRequerimientoComponent implements OnInit {
       console.log('resp',resp);
       switch (resp.type) {
         case HttpEventType.DownloadProgress:
-          // let progressStatus: ProgressStatus =
-          // {status: ProgressStatusEnum.IN_PROGRESS, percentage: Math.round((resp.loaded / resp.total) * 100)};
-          // this.mensajePrimeNgService.onToInfoMsg(null,  'EN PROCESO');
-          // this.downloadStatus.emit( {status: ProgressStatusEnum.IN_PROGRESS, percentage: Math.round((resp.loaded / resp.total) * 100)});
           break;
         case HttpEventType.Response:
-          // this.mensajePrimeNgService.onToInfoMsg(null, 'DESCARGA COMPLETA');
           saveAs(new Blob([resp.body], {type: resp.body.type}),nombreArchivo);
-          // let file = new window.Blob([resp.body], {type: resp.body.type}, nombreArchivo);
-          // let fileURL = window.URL.createObjectURL(file);
-          // window.open(fileURL, '_blank');
           this.displayDescarga = false;
           break;
       }

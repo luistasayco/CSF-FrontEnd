@@ -10,13 +10,11 @@
                 <form [formGroup]="formularioSuperior">
                     <div class="p-grid form-group">
                         <div class="ui-g-12 ui-md-3">
-                            <label>Trabajador: </label>
-                            <!-- <input type="text" size="2" formControlName="idUsuario" pInputText required /> -->
+                            <label>Solicitante: </label>
                             <input type="text" size="28" pInputText formControlName="trabajador" required />
                         </div>
                         <div class="ui-g-12 ui-md-3">
                             <label>Centro Costo: </label>
-                            <!-- <input type="text" size="2" formControlName="codCentroCosto" pInputText /> -->
                             <input type="text" size="28" formControlName="desCentroCosto" pInputText />
                         </div>
                         <div class="ui-g-12 ui-md-2">
@@ -37,17 +35,16 @@
                         </div>
                         <div class="ui-g-12 ui-md-2">
                             <label>Motivo: </label>
-                            <!-- <input type="text" size="2" formControlName="codCentroCosto" pInputText /> -->
-                            <p-dropdown placeholder="Seleccionar" formControlName="motivo" [options]="comboMotivo" filter="true" (onChange)="cambioEnComboMotivo($event.value)" optionLabel="desMotivoRequerimiento" required></p-dropdown>
+                            <p-dropdown placeholder="Seleccionar" formControlName="motivo" [options]="comboMotivo" (onChange)="cambioEnComboMotivo($event.value)" optionLabel="desMotivoRequerimiento" required></p-dropdown>
                         </div>
                         <div class="ui-g-12 ui-md-2">
                             <label>Nro SAP: </label>
                             <input type="text" pInputText disabled />
                         </div>
-                        <div class="ui-g-12 ui-md-2">
+                        <!-- <div class="ui-g-12 ui-md-2">
                             <label>Conform: </label>
                             <input type="text" pInputText disabled />
-                        </div>
+                        </div> -->
                     </div>
                 </form>
             </div>

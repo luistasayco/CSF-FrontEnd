@@ -13,6 +13,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadModule } from 'primeng/fileupload';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { CheckboxModule } from 'primeng/checkbox';
+import {ToastModule} from 'primeng/toast';
+// import { Tooltip } from 'primeng/tooltip';
 
 // Sevices
 import { ConfirmationService } from 'primeng/api';
@@ -34,7 +36,8 @@ import { MessageService } from 'primeng/api';
             InputTextModule,
             FileUploadModule,
             InputTextareaModule,
-            CheckboxModule],
+            CheckboxModule,
+            ToastModule],
     providers: [ConfirmationService, MessageService],
 })
 export class AtencionSolicitudTransferenciaPrimeNgModule {}

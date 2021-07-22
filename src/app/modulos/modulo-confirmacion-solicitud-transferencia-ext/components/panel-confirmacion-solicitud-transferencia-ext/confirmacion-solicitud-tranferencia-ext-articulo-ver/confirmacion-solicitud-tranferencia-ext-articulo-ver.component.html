@@ -1,0 +1,46 @@
+<p-panel header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Codigo Articulo: </strong></span>{{ item.codArticulo }}
+        </div>
+        <div class="ui-g-12 ui-md-9">
+            <span><strong>Descripción Articulo: </strong></span> {{ itemArticulo.itemName }}
+        </div>   
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-3">
+            <span><strong>Codigo Almacen: </strong></span>{{ itemArticulo.whsCode }}
+        </div>
+        <div class="ui-g-12 ui-md-9">
+            <span><strong>Descripción Almacen: </strong></span>{{itemArticulo.whsName}}
+        </div>   
+    </div>
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-12">
+            <span><strong>Lote: </strong></span> {{itemArticulo.manBtchNum}}
+        </div>
+    </div>
+</p-panel>
+
+<!-- <div *ngIf="isVisibleLote">
+    <p-panel header="Lista de Articulos" closable="false"  [style]="{'margin-bottom':'20px'}">
+        <p-table [value]="itemArticulo.lote"  [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idValeSalida" autoLayout="true">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th>Nro Lote</th>
+                    <th>Cantidad</th>
+                </tr>
+            </ng-template>
+        <ng-template pTemplate="body" let-modelo let-editing="editing" let-ri="rowIndex">
+            <tr>
+                <td>
+                    <span class="ui-column-title"></span> {{modelo.batchNum}}
+                </td>
+                <td style="text-align: right">
+                    <span class="ui-column-title"></span> {{modelo.quantity}}
+                </td>
+            </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+</div> -->

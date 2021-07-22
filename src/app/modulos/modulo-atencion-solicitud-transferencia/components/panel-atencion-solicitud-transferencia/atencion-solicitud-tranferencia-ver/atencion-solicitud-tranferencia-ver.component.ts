@@ -24,9 +24,6 @@ export class AtencionSolicitudTraslaVerComponent implements OnInit {
       ) {}
   
   ngOnInit(): void {
-    
-    console.log("this.item");
-    console.log(this.item);
 
     this.itemAtencionSolicitud={
       desAtencionSolicitudTransferenciaEstado:"",
@@ -50,8 +47,6 @@ export class AtencionSolicitudTraslaVerComponent implements OnInit {
       .pipe(
         map((resp) => {
           this.itemAtencionSolicitud = resp;
-          console.log("this.itemAtencionSolicitud");
-          console.log(this.itemAtencionSolicitud);
         })
       )
       .subscribe();

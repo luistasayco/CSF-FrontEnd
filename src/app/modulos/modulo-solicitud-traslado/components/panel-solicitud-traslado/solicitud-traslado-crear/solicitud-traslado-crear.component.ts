@@ -79,13 +79,11 @@ export class SolicitudTrasladoCrearComponent implements OnInit, OnDestroy {
     private readonly utilService: UtilService) { }
 
   ngOnInit(): void {
-    debugger;
+    
 
     this.buildFormSuperior();
     this.obtenerParametrosDeRuta();
     this.opcionesTabla();
-    //this.datosAlmacen();
-
     this.rowMotivo=[];
     this.rowMotivo.push({"value":1,"label":"NORMAL"},{"value":2,"label":"URGENTE"});
 
@@ -95,39 +93,12 @@ export class SolicitudTrasladoCrearComponent implements OnInit, OnDestroy {
     
   }
 
-  // datosAlmacen() {
-  //   this.almacenService
-  //     .getAlmacen()
-  //     .pipe(
-  //       map((resp) => {
-  //         this.rowAlmacen=[];
-  //         for (let item of resp) {
-  //           this.rowAlmacen.push({ label: item.warehouseName, value: item.warehouseCode }); 
-  //         }
-
-  //         this.almacenOrigenSelect=  this.rowAlmacen[0];
-
-  //       })
-  //     )
-  //     .subscribe(
-  //       (resp) => {
-  //         this.loading = false;
-  //       },
-  //       (error) => {
-  //         console.log(error);
-  //       }
-  //     );
-          
-  // }
-
 private buildFormSuperior() {
   this.formularioSuperior = this.fb.group({
     fechaReg: [new Date()],
-    codSocioNegocio:'',
-    desSocioNegocio:'',
-    observacion:'',
-    // cbAlmacenOrigen:'',
-    // cbAlmacenDestino:'',
+    codSocioNegocio:null,
+    desSocioNegocio:null,
+    observacion:null,
     cbMotivo:'',
     almacenOrigen:'',
     almacenDestino:'',
@@ -154,7 +125,7 @@ obtenerParametrosDeRuta() {
 }
 
 articuloBuscado(event: any[]) {
-    debugger;
+    
     this.cambioDeEstructuraDeArticulo_AddFechaNecesaria(event);
     this.activarModalArticuloStock();
     
@@ -162,19 +133,20 @@ articuloBuscado(event: any[]) {
   
   cambioDeEstructuraDeArticulo_AddFechaNecesaria(event: any[]) {
 
-  debugger;
+    //item.salesUnit -> //item.uomCode = unidad de medida,
 
   for (const item of event) {
             var newRq = {
               codArticulo:item.itemCode,
               desArticulo: item.itemName,
-              codUnidadMedida: item.salesUnit,
-              desUnidadMedida: item.salesUnit,
-              cantidad: parseFloat(item.stock.toFixed(2))
+              codUnidadMedida: item.uomCode,
+              desUnidadMedida: item.uomName,
+              isLote: item.manBtchNum,
+              isUbicacion: item.binActivat,
+              cantidadSolicitada: parseFloat(item.onHandALM.toFixed(2))
             }
           this.listArticulosItem.push(newRq);
           }
-
           
   }
 
@@ -212,13 +184,9 @@ articuloBuscado(event: any[]) {
 
   clickGuardar(){
 
-    debugger;
-
     const {
       codSocioNegocio,
       desSocioNegocio,
-      // cbAlmacenOrigen,
-      // cbAlmacenDestino,
       cbMotivo,
       observacion
     } = this.formularioSuperior.value;
@@ -261,20 +229,26 @@ articuloBuscado(event: any[]) {
     }
 
 
+    this.agregarNumLineas(this.listArticulosItem);
+
 
     var value={
       CodSocioNegocio:codSocioNegocio,
       NombreSocioNegocio:desSocioNegocio,
       RegCreateIdUsuario:this.userContextService.getIdUsuario(),
-      CodAlmacenOrigen:this.codAlmacenOrigen,//cbAlmacenOrigen.value,
-      CodAlmacenDestino:this.codAlmacenDestino,//cbAlmacenDestino.value,
+      CodAlmacenOrigen:this.codAlmacenOrigen,
+      CodAlmacenDestino:this.codAlmacenDestino,
       Observacion:observacion,
       IdMotivoSolicitudTraslado:cbMotivo.value,
+      Interno:"SI",
       SolicitudTrasladoItem:this.listArticulosItem
     }
     
     this.solicitudTrasladoService.setSolicitudTrasladoRegistrar(value).subscribe(
       (result: IMensajeResultadoApi) =>{
+
+        if(result["idRegistro"]>0) document.getElementById("btnsave").remove();
+
         this.sessionStorage.setItemEncrypt('idsolicitudtraslado', result["idRegistro"]);
         this.mensajePrimeNgService.onToExitoMsg(null, result["resultadoDescripcion"]);
         setTimeout(() => {
@@ -286,9 +260,14 @@ articuloBuscado(event: any[]) {
 
     );
 
-    document.getElementById("btnsave").remove();
     
-    
+  }
+
+  agregarNumLineas(data: any[]) {
+    let n = 0;
+    for (const i of data) {
+      i.numLinea = n++;
+    }
   }
 
   onToBuscarSocio(){
@@ -298,13 +277,13 @@ articuloBuscado(event: any[]) {
   }
 
   onToBuscarArticulo(){
-    debugger;
+    
     this.activarModalArticuloStock();
 
   }
 
   almacenSeleccionado(event: any) {
-   
+    
     if(this.inputAlmacen=="origen"){
         this.codAlmacenOrigen = event.warehouseCode;
         this.formularioSuperior.patchValue({
@@ -321,7 +300,7 @@ articuloBuscado(event: any[]) {
   }
 
   socioNegocioSeleccionado(event: any) {
-    debugger;
+    
     this.formularioSuperior.patchValue({
       codSocioNegocio: event.cardCode,
       desSocioNegocio: event.cardName
@@ -335,19 +314,17 @@ articuloBuscado(event: any[]) {
   }
 
   activarModalAlmacen(input="") {
-    debugger;
+    
     this.inputAlmacen=input;
     this.isActivateBusquedaAlmacen = !this.isActivateBusquedaAlmacen;
   }
 
   activarModalArticuloStock() {
-    debugger;
     
-       const {
+    const {
         almacenOrigen
     } = this.formularioSuperior.value;
 
-    //this.almacenOrigenSelect =this.formularioSuperior.value.cbAlmacenOrigen;
     this.almacenOrigenSelect = {label:almacenOrigen,value:this.codAlmacenOrigen};
 
     if(this.codAlmacenOrigen==""){
@@ -358,8 +335,6 @@ articuloBuscado(event: any[]) {
     else{
       this.isActivateBusquedaArticuloStock = !this.isActivateBusquedaArticuloStock;
     }
-
-    
     
   }
 
@@ -380,8 +355,8 @@ articuloBuscado(event: any[]) {
     let validado = true;
 
     data.forEach((el) => {
-      debugger
-      if (el.cantidad==0) {
+      
+      if (el.cantidadSolicitada==0) {
         validado = false;
         mensaje += `La cantidad no es válida para el artículo ${el.codArticulo}`
       }      

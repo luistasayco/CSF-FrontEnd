@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { SelectItem } from 'primeng';
 import { map, filter, mapTo } from 'rxjs/operators';//JC
+import { MessageService } from 'primeng/api';
 
 //constantes
 import { ConstantesGenerales } from '../../../../constants/Constantes-generales';
@@ -20,7 +21,7 @@ import { AtencionSolicitudTrasladoService  } from '../../services/atencion-solic
 //atencion-solicitud-traslado
 //Routing
 import { Router } from '@angular/router';
-import { debug } from 'console';
+
 
 @Component({
   selector: 'app-panel-atencion-solicitud-transferencia',
@@ -67,11 +68,11 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
   tituloModalVer: any;
 
   //modal almacen
-  isActivateBusquedaAlmacen: boolean = false;
+  isActivateBusquedaAlmacen= false;
 
   //modal crear
-  isActivateAtencionSolicitudCrear: boolean = false;
-  tituloModalAtencionSolicitud: String="Solicitud de Transferencia de stock";
+  isActivateAtencionSolicitudCrear=  false;
+  tituloModalAtencionSolicitud: String="Atención de Solicitud de Traslado - interno";
   // Suscripcion [para realizar el unsuscription al cerrar el formulario]
   subscription$: Subscription;
 
@@ -86,17 +87,15 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
     private readonly sessionStorage: SessionService,
     public userContextService: UserContextService,
     private readonly confirmationService: ConfirmationService,
+    private messageService: MessageService,
   ) { }
 
   ngOnInit() {
     this.onbuildForm();
     this.onTableColumna();
-    this.opcionesTabla();
-        
+    this.opcionesTabla();    
     this.onListar();
-    debugger
-    this.idResaltar = (this.sessionStorage.getItemDecrypt('idatencionsolicitudtraslado'))? parseInt(this.sessionStorage.getItemDecrypt('idatencionsolicitudtraslado')):0;
-
+    
   }
 
   private onbuildForm() {
@@ -108,8 +107,6 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
       almacenDestino:''
     });
   }
-
-  
   
   onToBuscar() {
     this.onListar();
@@ -119,16 +116,18 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
 
     this.columnas = [
       { header: 'Opciones' },
-      { header: 'Nro Atencion de Solicitud' },
-      { header: 'Nro Atencion Solicitud Estado' },
+      { header: 'Nro Atención de Solicitud' },
+      { header: 'Atención Solicitud Estado' },
+      { header: 'Fecha Atención Solicitud Registro' },
       { header: 'Nro Solicitud' },
-      { header: 'Nro Solicitud Estado' },
+      { header: 'Solicitud Estado' },
+      { header: 'Fecha Solicitud Registro' },
       { header: 'Socio de Negocio' },
-      { header: 'Fecha Registro' },
-      { header: 'Almacen Origen' },
-      { header: 'Almacen Destino' },
+      { header: 'Almacén Origen' },
+      { header: 'Almacén Destino' },
       { header: 'Responsable' },
-      { header: 'Comentario' }
+      { header: 'Comentario' },
+      { header: 'DocEntry' }
     ];
   }
 
@@ -157,12 +156,99 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
         command: () => {
             
             this.anular();
-            
+
+        },
+      },
+      {
+        label: 'Enviar a SAP BO',
+        icon: 'pi pi-eye',
+        command: () => {
+
+          this.confirmationService.confirm({
+            message: `Desea enviar a SAP BO la Atención solicitud de traslado con el Id ${this.itemSeleccionado.idAtencionSolicitudTransferencia} ?`,
+            header: 'Envió a SAP BO',
+            icon: 'pi pi-info-circle',
+            acceptLabel: 'Si',
+            rejectLabel: 'No',
+            accept: () => {
+              this.enviarSap();            
+            }
+          });
         },
       },
     ];
   }
 
+  enviarSap(){
+
+    this.atencionSolicitudTrasladoService
+      .getAllById(this.itemSeleccionado.idAtencionSolicitudTransferencia)
+      .pipe(
+        map((resp:any) => {
+          
+          var value={
+            CardCode: resp.codSocioNegocio,
+            CardName: resp.nombreSocioNegocio,
+            ContactPerson: resp.codigoInternoContacto,
+            Address: resp.destino,
+            JournalMemo: resp.observacion,
+            FromWarehouse: resp.codAlmacenOrigen,
+            ToWarehouse: resp.codAlmacenDestino,
+            U_SYP_MDTS: "TSI",
+            StockTransferLines:[]
+          }
+          
+          resp.atencionSolicitudTransferenciaItem.forEach((item) => {
+             var itemLinea ={
+               LineNum: item.numLinea,
+               ItemCode: item.codArticulo,
+               ItemDescription: item.desArticulo,
+               Quantity: item.cantidadAtendida,
+               FromWarehouseCode: resp.codAlmacenOrigen,
+               WarehouseCode: resp.codAlmacenDestino,
+               ProjectCode: "",
+             }
+
+            value.StockTransferLines.push(itemLinea);
+            
+          });
+
+          var send ={
+            Id:resp.idAtencionSolicitudTransferencia,
+            IdUsuario:this.userContextService.getIdUsuario(),
+            value:value
+          }
+
+          this.atencionSolicitudTrasladoService
+          .postSapSolicitudTraslado(send)
+          .pipe(
+            map((resp) => {
+              
+              if(resp["exito"]==true){
+                this.messageService.add({key: 'myKeyAtencion', severity:'info', summary: 'Mensaje', detail: `[SAP BO] SE ENVIO LA SOLICITUD CORRECTAMENTE - DocEntry ${resp["docEntry"]}`});
+              }else{
+                this.messageService.add({key: 'myKeyAtencion', severity:'error', summary: 'Mensaje', detail: ` ERROR DE ENVIAR A SAP BO LA SOLICITUD: ${resp["mensaje"]}`});
+              }
+              this.onListar();
+              
+            })
+          )
+          .subscribe(
+            (resp) => {
+              //this.loading = false;            
+            },
+            (error) => {
+              
+              this.messageService.add({key: 'myKeyAtencion', severity:'error', summary: 'Mensaje', detail: ` ERROR DE ENVIAR A SAP BO LA SOLICITUD`});
+
+            }
+          );
+
+        })
+      )
+      .subscribe();
+
+  }
   
   ver() {
 
@@ -177,16 +263,44 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
     this.itemSeleccionado = datosDelSeleccionado;
     
     if(id>0 && datosDelSeleccionado.desAtencionSolicitudTransferenciaEstado !="ANULADO"){
-      this.opciones.find(x=>x.label=="Anular").visible=true;
+      
+      if(datosDelSeleccionado.docEntry>0)
+      {
+        this.opciones.find(x=>x.label=="Anular").visible=false;
+      }else{
+        this.opciones.find(x=>x.label=="Anular").visible=true;
+      }
+
       this.opciones.find(x=>x.label=="Ver").visible=true;
+      this.opciones.find(x=>x.label=="Atender").visible=false;
     }else{
       this.opciones.find(x=>x.label=="Anular").visible=false;
       this.opciones.find(x=>x.label=="Ver").visible=false;
+      
+      if(datosDelSeleccionado.generarNuevo=="SI"){
+        this.opciones.find(x=>x.label=="Atender").visible=true;
+      }else{
+        this.opciones.find(x=>x.label=="Atender").visible=false;
+      }
+
     }
+
+    if(datosDelSeleccionado.docEntry>0){
+      this.opciones.find(x=>x.label=="Enviar a SAP BO").visible=false;
+    }else{
+      if(datosDelSeleccionado.idAtencionSolicitudTransferenciaEstado==1){
+        this.opciones.find(x=>x.label=="Enviar a SAP BO").visible=true;
+      }else{
+        this.opciones.find(x=>x.label=="Enviar a SAP BO").visible=false;
+      }
+    }   
     
   }
   
   onListar() {
+
+    this.idResaltar = (this.sessionStorage.getItemDecrypt('idatencionsolicitudtraslado'))? parseInt(this.sessionStorage.getItemDecrypt('idatencionsolicitudtraslado')):0;
+    
 
     const formBody = this.formularioBusqueda.value;
     const fechaIn = this.utilService.fecha_AAAAMMDD(formBody.fechaInicio);
@@ -228,8 +342,9 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
    
   }
 
+
   activarModalAlmacen(input="") {
-    debugger;
+    
     this.inputAlmacen=input;
     this.isActivateBusquedaAlmacen = !this.isActivateBusquedaAlmacen;
   }
@@ -253,8 +368,7 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
 
   anular(){
 
-    debugger;
-
+    this.confirmationService.close();
 
     this.confirmationService.confirm({
       message: `Desea anular la Atención solicitud de traslado con el Id ${this.itemSeleccionado.idAtencionSolicitudTransferencia} ?`,
@@ -283,10 +397,7 @@ export class PanelAtensionSolicitudTransferenciaComponent implements OnInit {
         
       },
     });
-
-
-  
-
+    
   }
 
   activarAtencionSolicitudCrear() {

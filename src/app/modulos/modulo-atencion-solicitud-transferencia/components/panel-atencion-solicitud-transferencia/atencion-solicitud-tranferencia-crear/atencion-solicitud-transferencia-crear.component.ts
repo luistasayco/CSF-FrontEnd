@@ -1,7 +1,7 @@
 //libreria
 import { Component,Input,Output, EventEmitter,OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-//import { HttpEvent, HttpEventType } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';//JC
 import { Location } from '@angular/common';
@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';//JC
 import { SelectItem } from 'primeng';
 //constante
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
+import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
 
 //services
 import { SessionService } from '../../../../../services/session.service';
@@ -21,7 +22,6 @@ import { AlmacenService } from '../../../services/almacen.service';
 
 //Interface
 import { IMensajeResultadoApi } from '../../../../modulo-compartido/Requerimiento/interfaces/mensajeRespuestaApi.interface';
-import { debug, Console } from 'console';
 
 @Component({
   selector: 'app-atencion-solicitud-transferencia-crear',
@@ -29,8 +29,10 @@ import { debug, Console } from 'console';
   styleUrls: ['./atencion-solicitud-transferencia-crear.component.css']
 })
 
-export class AtensionSolicitudTransferenciaCrearComponent implements OnInit, OnDestroy {
+
+export class AtensionSolicitudTransferenciaCrearComponent implements OnInit {
   formularioSuperior: FormGroup; //jc
+  timeAnimationModal = ConstantesGenerales.DURACION_ANIMACION_MODAL;
   // Suscripcion [para realizar el unsuscription al cerrar el formulario]
   subscription$: Subscription;
     
@@ -65,7 +67,10 @@ export class AtensionSolicitudTransferenciaCrearComponent implements OnInit, OnD
   isActivateBusquedaArticuloStock: boolean = false;
   columnas: any[];
   
-
+  //modal ver articulo
+  isArticuloVerModal = false;
+  tituloArticuloVerModal: any;
+  
   bodyParams: any;//JC
   //isActivateBusquedaArticulo = false; //jc
   loading = true; //jc
@@ -79,14 +84,11 @@ export class AtensionSolicitudTransferenciaCrearComponent implements OnInit, OnD
     private readonly location: Location,
     private readonly almacenService: AlmacenService,//jc
     private readonly sessionStorage: SessionService,
-    
+    private messageService: MessageService,
     private readonly utilService: UtilService) { }
 
   ngOnInit(): void {
    
-    console.log("crear this.itemSelect");
-    console.log(this.itemSelect);
-
     this.buildFormSuperior();
     this.onTableColumna();
     this.opcionesTabla();
@@ -94,28 +96,28 @@ export class AtensionSolicitudTransferenciaCrearComponent implements OnInit, OnD
     this.rowTipoMovimiento=[];
     this.rowTipoMovimiento.push({"value":1,"label":"DESCARGO POR TRANSFERENCIA"});
     this.tipoMovimientoSelect = this.rowTipoMovimiento[0];
-    
-    this.BPDireccionesContactos();
-    
+    this.BPDireccionesContactos();   
+
   }
 
   onTableColumna(){
 
     this.columnas = [
       { header: 'Opciones' },
-      { header: 'Cod Articulo' },
-      { header: 'Des Articulo' },
-      { header: 'Almacen Origen' },
-      { header: 'Almacen Destino' },
-      { header: 'Cantidad' },
-      { header: 'Codigo Unidad' },
+      { header: 'Num Linea' },
+      { header: 'Código Articulo' },
+      { header: 'Descripción Articulo' },
+      { header: 'Almacén Origen' },
+      { header: 'Almacén Destino' },
+      { header: 'Cantidad Solicitada' },
+      { header: 'Cantidad Atendida' },
+      { header: 'Lote' },
+      { header: 'Ubicación' },
+      { header: 'Código Unidad' },
     ];
-  }
-
-  ngOnDestroy() {
     
   }
-
+  
 private buildFormSuperior() {
 
   this.formularioSuperior = this.fb.group({
@@ -135,13 +137,13 @@ private buildFormSuperior() {
 
 BPDireccionesContactos(){
 
-  //añadimos el contacto que se grabo en la bd
+  if(this.itemSelect.codSocioNegocio==undefined || this.itemSelect.codSocioNegocio=="") return true;
   
   this.atencionSolicitudTrasladoService
   .getSocioNegocioDirecciones(this.itemSelect.codSocioNegocio)
   .pipe(
     map((resp) => {
-      debugger;
+      
       
       //añadimos la direccion que se grabo en la bd
       this.rowSocioNegocioDireccion=[];
@@ -158,12 +160,9 @@ BPDireccionesContactos(){
 
       //añadimos la direccion que se grabo en la bd
       this.rowSocioNegocioContacto=[];
-      if(this.itemSelect.contacto!="") {
-        this.rowSocioNegocioContacto.push({ value:1,label:this.itemSelect.contacto});
-        this.selectSocioNegocioContacto=this.rowSocioNegocioContacto[0];
-      }
       resp[0].contactEmployees.forEach(item => {
-        this.rowSocioNegocioContacto.push({value:item.name,label:item.name});
+        
+        this.rowSocioNegocioContacto.push({value:item.internalCode,label:item.name});
       });
 
     })
@@ -174,14 +173,12 @@ BPDireccionesContactos(){
       
     },
     (error) => {
-      console.log(error);
+      this.mensajePrimeNgService.onToErrorMsg(null, "error: al cargar el servicio de direcciones y contacto del socio de negocio "+error.status+" "+error.statusText)
+      //console.log(error);
     }
   );
 
 }
-
-
- 
 
   opcionesTabla() {
 
@@ -190,18 +187,18 @@ BPDireccionesContactos(){
         label: 'Ver',
         icon: 'pi pi-eye',
         command: () => {
-          //this.ver();
+          this.ver();
         },
       },
     ];  
-
-    if(this.itemSelect.idAtencionSolicitudTransferencia==undefined){
+    
+    // 2 = ANULADO
+    if(this.itemSelect.idAtencionSolicitudTransferencia==undefined || this.itemSelect.idAtencionSolicitudTransferenciaEstado==2){
 
         var objQuitar = {
           label: 'Quitar', 
           icon: 'pi pi-trash',
           command: () => {
-              console.log("anular");
               this.quitar();
           },}
 
@@ -210,10 +207,13 @@ BPDireccionesContactos(){
   }
  
   quitar() {
-    this.listArticulosItem.splice(+this.indiceItemElegidoGrilla, 1);
+    
+    this.listArticulosItem.splice(this.indiceItemElegidoGrilla.numLinea, 1);
+
   }
 
   itemElegido(item) {
+    
     this.indiceItemElegidoGrilla = item;
   }
   
@@ -223,8 +223,6 @@ BPDireccionesContactos(){
 
   clickGuardar(){
     
-    debugger;
-
     const {
       numsolicitud,
       desSocioNegocio,
@@ -237,30 +235,28 @@ BPDireccionesContactos(){
     } = this.formularioSuperior.value;
     
 
-    if(desSocioNegocio=="" || this.itemSelect.codSocioNegocio==""){
-      this.mensajePrimeNgService.onToErrorMsg(null, "SELECCIONE UN SOCIO DE NEGOCIO")
-      return;
-    }
-
-    if(cbdestino == undefined || cbdestino==""){
-      this.mensajePrimeNgService.onToErrorMsg(null, "SELECCIONE UN DESTINO")
-      return;
-    }
+    // if(desSocioNegocio=="" || this.itemSelect.codSocioNegocio==""){
+    //   this.messageService.add({key: 'myKeyAtencionCrear', severity:'warn', summary: 'Mensaje', detail: `SELECCIONE UN SOCIO DE NEGOCIO`});
+    //   return;
+    // }    
     
+    // if(cbdestino == undefined || cbdestino==""){
+    //   this.messageService.add({key: 'myKeyAtencionCrear', severity:'warn', summary: 'Mensaje', detail: `SELECCIONE UN DESTINO`});
+    //   return;
+    // }
+
+    if(almacenDestino=="" || this.itemSelect.codAlmacenDestino==""){
+      this.messageService.add({key: 'myKeyAtencionCrear', severity:'warn', summary: 'Mensaje', detail: `SELECCIONE EL ALMACEN DESTINO`});
+      return;
+    }
 
     if(almacenOrigen=="" || this.itemSelect.codAlmacenOrigen==""){
-       this.mensajePrimeNgService.onToErrorMsg(null, "SELECCIONE EL ALMACEN ORIGEN")
+       this.messageService.add({key: 'myKeyAtencionCrear', severity:'warn', summary: 'Mensaje', detail: `SELECCIONE EL ALMACEN ORIGEN`});
        return;
-     }
-
-     if(almacenDestino=="" || this.itemSelect.codAlmacenDestino==""){
-      this.mensajePrimeNgService.onToErrorMsg(null, "SELECCIONE EL ALMACEN DESTINO")
-      return;
-    }
-
+     } 
 
      if(this.listArticulosItem.length==0){
-       this.mensajePrimeNgService.onToErrorMsg(null, "NO HAY DATOS EN LA GRILLA")
+       this.messageService.add({key: 'myKeyAtencionCrear', severity:'warn', summary: 'Mensaje', detail: `NO HAY DATOS EN LA GRILLA`});
        return;
      }
 
@@ -269,18 +265,24 @@ BPDireccionesContactos(){
       return;
     }
 
-    var personalContacto= (cbpersonal==undefined)? "":cbpersonal.label;
     
-    var destino= (cbdestino==undefined)? "":cbdestino.label;
-    var idref = this.itemSelect.idSolicitudTraslado;
+    this.itemSelect.codSocioNegocio = (this.itemSelect.codSocioNegocio=="")? null:this.itemSelect.codSocioNegocio;
+    this.itemSelect.nombreSocioNegocio = (this.itemSelect.nombreSocioNegocio=="")? null:this.itemSelect.nombreSocioNegocio;
 
+    var personalContacto= (cbpersonal==undefined)? null:cbpersonal.label;
+    var codPersonalContacto= (cbpersonal==undefined)? null: parseInt(cbpersonal.value);
     
+    var destino = (cbdestino==undefined)? "":cbdestino.label;
+    var codDestino = (cbdestino==undefined)? "":cbdestino.value;
+    var idref = this.itemSelect.idSolicitudTraslado;   
 
     var value={
       IdSolicitudTraslado:idref,
-      CodSocioNegocio:this.itemSelect.codSocioNegocio,
+      CodSocioNegocio: this.itemSelect.codSocioNegocio,
       NombreSocioNegocio: this.itemSelect.nombreSocioNegocio,//desSocioNegocio,
+      CodigoInternoContacto: codPersonalContacto,
       Contacto: personalContacto,
+      CodDestino:codDestino,
       Destino:destino,
       RegCreateIdUsuario:this.userContextService.getIdUsuario(),
       CodAlmacenOrigen: this.itemSelect.codAlmacenOrigen,
@@ -295,23 +297,25 @@ BPDireccionesContactos(){
     
     this.atencionSolicitudTrasladoService.setAtencionSolicitudTrasladoRegistrar(value).subscribe(
       (result: IMensajeResultadoApi) =>{
+
         this.sessionStorage.setItemEncrypt('idatencionsolicitudtraslado', result["idRegistro"]);
         this.mensajePrimeNgService.onToExitoMsg(null, result["resultadoDescripcion"]);
 
-        setTimeout(() => {
-          this.clickCancelar();
-        }, 1500);
+        if(result["idRegistro"]>0){
+          
+          document.getElementById("btnsave").remove();
+          this.envioSap(value,result["idRegistro"]);
+        }
+
       },
       
       (error) => this.mensajePrimeNgService.onToErrorMsg(null, error.error)
 
     );
 
-    
-    
-    
   }
 
+  
   listarGrilla(){
 
     if(this.itemSelect.idAtencionSolicitudTransferencia== undefined){
@@ -320,9 +324,8 @@ BPDireccionesContactos(){
         .getSolicitudTrasladoDetalle(this.itemSelect.idSolicitudTraslado)
         .pipe(
           map((resp) => {
+           
             this.listArticulosItem=resp;
-            console.log("listArticulosItem");
-            console.log(this.listArticulosItem);
           })
         )
         .subscribe(
@@ -335,7 +338,6 @@ BPDireccionesContactos(){
         );
   }else{
 
-        debugger;
 
         this.formularioSuperior.patchValue({
           estado: "ATENDIDO",
@@ -347,18 +349,10 @@ BPDireccionesContactos(){
           map((resp) => {
             
             this.listArticulosItem=resp;
-              debugger;
-              
-            //if(this.itemSelect.idAtencionSolicitudTransferencia>0 && this.itemSelect.desAtencionSolicitudTransferenciaEstado!="ANULADO"){
-            // if(this.itemSelect.idAtencionSolicitudTransferencia>0 && this.itemSelect.desAtencionSolicitudTransferenciaEstado!="ANULADO"){
-            //     document.getElementById("save").remove();
-            // }
-
-            if(this.itemSelect.generarNuevo=="NO"|| this.itemSelect.generarNuevo=="" || this.itemSelect.generarNuevo==undefined){
-              document.getElementById("save").remove();
-            }
-
             
+            if(this.itemSelect.generarNuevo=="NO"|| this.itemSelect.generarNuevo=="" || this.itemSelect.generarNuevo==undefined){
+              document.getElementById("btnsave").remove();
+            }
 
           })
         )
@@ -407,10 +401,10 @@ BPDireccionesContactos(){
 
     let mensaje: string = '';
     let validado = true;
-
+        
     data.forEach((el) => {
-      debugger
-      if (!el.cantidad) {
+      
+      if (!el.cantidadAtendida) {
         validado = false;
         mensaje += `La cantidad no es válida para el artículo ${el.codArticulo}`
       }      
@@ -424,10 +418,94 @@ BPDireccionesContactos(){
     return validado;
   }
 
+  onKeypressEvent(model: any,event: any){
+    
+    setTimeout(() => {
+    
+      if(model.cantidadAtendida>model.cantidadSolicitada){
+        model.cantidadAtendida = model.cantidadSolicitada;
+        this.mensajePrimeNgService.onToErrorMsg(null, "La Cantidad atendida debe ser menor o gual, que la cantidad solicitada")
+        event.preventDefault();
+      }
+
+    }, 0);
+    
+ }
  
 
   clickCancelar(){
     this.cancel.emit();
   }
+
+  ver(){
+
+    this.isArticuloVerModal = !this.isArticuloVerModal;
+    const { codArticulo,desArticulo } = this.indiceItemElegidoGrilla;
+    this.tituloArticuloVerModal = `Ver Articulo - Id: ${codArticulo}`;
+
+  }
+  
+  envioSap(obj,idAtencion) {
+    
+    var value={
+      CardCode: obj.CodSocioNegocio,
+      CardName: obj.NombreSocioNegocio,
+      ContactPerson:obj.CodigoInternoContacto,
+      Address: obj.Destino,
+      JournalMemo: obj.Observacion,
+      FromWarehouse: obj.CodAlmacenOrigen,
+      ToWarehouse: obj.CodAlmacenDestino,
+      U_SYP_MDTS: "TSI",
+      StockTransferLines:[]
+    }
+
+    obj.AtencionSolicitudTransferenciaItem.forEach((item) => {
+      
+      var itemLinea ={
+        LineNum: item.numLinea,
+        ItemCode: item.codArticulo,
+        ItemDescription: item.desArticulo,
+        Quantity: item.cantidadAtendida,
+        FromWarehouseCode: obj.CodAlmacenOrigen,
+        WarehouseCode: obj.CodAlmacenDestino,
+        ProjectCode: "",
+      }
+
+      value.StockTransferLines.push(itemLinea);
+      
+    });
+
+    var send ={
+      Id:idAtencion,
+      IdUsuario:obj.RegCreateIdUsuario,
+      value:value
+    }
+
+    this.atencionSolicitudTrasladoService
+        .postSapSolicitudTraslado(send)
+        .pipe(
+          map((resp) => {
+            
+            this.clickCancelar();
+
+            if(resp["exito"]==true){
+              this.messageService.add({key: 'myKeyAtencion', severity:'info', summary: 'Mensaje', detail: `[SAP BO] SE ENVIO LA SOLICITUD CORRECTAMENTE`});
+            }else{
+              this.messageService.add({key: 'myKeyAtencion', severity:'error', summary: 'Mensaje', detail: ` ERROR DE ENVIAR A SAP BO LA SOLICITUD: ${resp["mensaje"]}`});
+            }
+            
+          })
+        )
+        .subscribe(
+          (resp) => {
+            
+          },
+          (error) => {
+            this.clickCancelar();
+            this.messageService.add({key: 'myKeyAtencion', severity:'error', summary: 'Mensaje', detail: ` ERROR DE ENVIAR A SAP BO LA SOLICITUD: error ${error.error}`});
+
+          }
+        );
+    }
 
 }

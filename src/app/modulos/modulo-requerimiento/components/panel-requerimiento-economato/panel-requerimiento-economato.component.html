@@ -73,7 +73,7 @@
 
 <app-modal-busqueda-usuario *ngIf="isActivateBusquedaUsuario" [isDisplayBusquedaUsuario]="isActivateBusquedaUsuario" (usuarioSeleccionado)="usuarioBuscado($event)" (cancel)="clickActivateBuscarUsuario()"></app-modal-busqueda-usuario>
 
-<p-dialog *ngIf="isVerModalDetalle" [header]="tituloDetalle" [(visible)]="isVerModalDetalle" [transitionOptions]="timeAnimationModal" [modal]="true">
+<p-dialog *ngIf="isVerModalDetalle" [header]="tituloDetalle" [(visible)]="isVerModalDetalle" [transitionOptions]="timeAnimationModal" [modal]="true" [style]="{width: '80vw'}" [autoZIndex]>
     <app-ver-detalle-requerimiento-economato [requerimiento]="this.itemSeleccionado">
     </app-ver-detalle-requerimiento-economato>
 </p-dialog>

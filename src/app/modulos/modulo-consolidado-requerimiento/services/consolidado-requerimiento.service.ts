@@ -17,6 +17,12 @@ import { environment } from 'src/environments/environment.prod';
         );
       }
 
+      getAllById(id: any) {
+        return this.http.get<any[]>(
+          `${environment.url_api_requerimiento}/Consolidado/GetAllById?idConsolidado=${id}`
+        );
+      }
+      
       getGetParamPorFiltro(fecInicio: any, fecFin: any) {
         return this.http.get<any[]>(
           `${environment.url_api_requerimiento}/Consolidado/GetParam?fecInicio=${fecInicio}&fecFin=${fecFin}`
@@ -42,6 +48,14 @@ import { environment } from 'src/environments/environment.prod';
       consolidadoAnular(value: any) {
         debugger;
         return this.http.put(`${environment.url_api_requerimiento}/Consolidado/Anular`, value );
+      }
+
+      setConsolidadoActualizar(value: any) {
+        return this.http.put(`${environment.url_api_requerimiento}/Consolidado/Put`, value );
+      }
+
+      consolidadoSap(value: any) {
+        return this.http.post(`${environment.url_api_requerimiento}/PurchaseOrders/Sap`, value );
       }
 
       // anularRequerimiento(body: IRequerimientoAnular) {

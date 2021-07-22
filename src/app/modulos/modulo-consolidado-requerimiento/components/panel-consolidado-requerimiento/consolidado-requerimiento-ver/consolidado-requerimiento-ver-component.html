@@ -4,7 +4,7 @@
             <span><strong>Id Consolidado: </strong></span>{{ this.Consolidado.idConsolidado }}
         </div>
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Fecha: </strong></span>{{ Consolidado.fecConsolidado }}
+            <span><strong>Fecha: </strong></span>{{ Consolidado.fecConsolidado | date: 'dd/MM/yyyy hh:mm' }}
         </div>
         <div class="ui-g-12 ui-md-3">
             <span><strong>Almacen: </strong></span>{{ Consolidado.desAlmacen }}
@@ -15,14 +15,14 @@
     </div>
     <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-2">
-            <span><strong>Observación:</strong></span> 
+            <span><strong>Observación:</strong></span> {{ Consolidado.observacion }}
         </div>
     </div>
-    <div class="ui-g ui-fluid">
+    <!-- <div class="ui-g ui-fluid">
         <div class="ui-g-12 ui-md-8">
             <div style="word-break: break-all;">{{ Consolidado.observacion }}</div>
         </div>
-    </div>
+    </div> -->
 </p-panel>
 
 <!-- //<p-panel *ngIf="ValeSalida" header="Lista de Vale de Salida Item" [toggleable]="true" [style]="{'margin-bottom':'20px'}"></p-panel> -->
@@ -52,35 +52,10 @@
                 <td>
                     <span class="ui-column-title"></span> {{modelo.cantidadCompra}}
                 </td>
+                <td>
+                    <span class="ui-column-title"></span> {{modelo.docEntry}}
+                </td>
             </tr>
         </ng-template>
-
     </p-table>
-
-
-    <!-- <p-table [value]="ValeSalida.ValeSalidaItem" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo" [columns]="cols" [autoLayout]="true">
-
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns">{{ col.header }}</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="ValeSalida.ValeSalidaItem" let-rowData let-columns="columns">
-            <tr>
-                <td *ngFor="let col of columns" [ngSwitch]="col.field">
-                    <span *ngSwitchCase="'fecNecesaria'" class="p-column-title"> {{ rowData[col.IdValeSalidaItem] }}</span>
-                    <span *ngSwitchCase="'fecNecesaria'">{{ rowData[col.idRequerimiento]}}</span>
-                    <span *ngSwitchDefault class="p-column-title">{{rowData[col.codArticulo]}}</span>
-                    <span *ngSwitchDefault>{{ rowData[col.desArticulo] }}</span>
-                </td>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="emptymessage" let-columns>
-            <tr>
-                <td [attr.colspan]="columns.length">
-                    Sin información.
-                </td>
-            </tr>
-        </ng-template>
-    </p-table> -->
 </p-panel>

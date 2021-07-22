@@ -107,6 +107,7 @@ export class PanelUbicacionPorStockComponent implements OnInit {
     .subscribe(resp => {
       if (resp) {
           this.listModelo = resp;
+          console.log('this.listModelo', this.listModelo);
         }
       },
       (error) => {

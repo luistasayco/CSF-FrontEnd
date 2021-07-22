@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 //import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';//JC
+import { ActivatedRoute,Params } from '@angular/router';//JC
 import { Location } from '@angular/common';
 import { map, filter, mapTo } from 'rxjs/operators';//JC
 import { SelectItem } from 'primeng';
@@ -24,9 +24,9 @@ import { AlmacenService } from '../../../services/almacen.service';
 import { IMensajeResultadoApi } from '../../../../modulo-compartido/Requerimiento/interfaces/mensajeRespuestaApi.interface';
 
 @Component({
-  selector: 'app-consolidado-requerimiento-crear',
-  templateUrl: './consolidado-requerimiento-crear.component.html',
-  styleUrls: ['./consolidado-requerimiento-crear.component.css']
+  selector: 'app-consolidado-requerimiento-editar',
+  templateUrl: './consolidado-requerimiento-editar.component.html',
+  styleUrls: ['./consolidado-requerimiento-editar.component.css']
 })
 
 export class ConsolidadoRequerimientoEditarComponent implements OnInit, OnDestroy {
@@ -37,16 +37,20 @@ export class ConsolidadoRequerimientoEditarComponent implements OnInit, OnDestro
     
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
   
+  // datos consolidados
   
+  Consolidado: any;
+
   //CB ALMACEN
   rowAlmacen: SelectItem[];
+  selectAlmacen: any;
 
   //GRILLA LISTA DE ARTICULOS
   listRequerimiento: any = [];
   listRequerimientoItem: any = [];
   listFilteredProducto: any = [];
   indiceItemElegidoGrilla: any;
-  itemSeleccionado: any
+  itemSeleccionado: any;
   opciones: any = [];
 
   bodyParams: any;//JC
@@ -61,7 +65,15 @@ export class ConsolidadoRequerimientoEditarComponent implements OnInit, OnDestro
   isActivateCantidadEditar = false; 
   listModalRequerimientoProducto: any = [];
 
-  //isVerModalValeSalida
+  //modal socio de negocio
+  indiceModalSocioNegocio: number;
+  isActivateBusquedaSocioNegocio: boolean = false;
+
+  //modal almacen
+  isActivateBusquedaAlmacen: boolean = false;
+  //variables almacen
+  codAlmacen:string="";
+  
   constructor(
     private readonly fb: FormBuilder,
     private readonly activeRoute: ActivatedRoute,
@@ -78,26 +90,69 @@ export class ConsolidadoRequerimientoEditarComponent implements OnInit, OnDestro
     private readonly utilService: UtilService) { }
 
   ngOnInit(): void {
-    this.buildFormSuperior();
-    this.obtenerParametrosDeRuta();
-    this.opcionesTabla();
-    this.datosAlmacen();
 
-  }
-
-  ngOnDestroy() {
     
+    this.buildFormSuperior();
+    this.opcionesTabla();    
+    this.activeRoute.params.subscribe((params: Params) => {  
+      this.datos(params.id);
+    });
+
   }
 
-  datosAlmacen() {
-    this.almacenService
-      .getAlmacen()
+  datos(id) {
+    
+    this.consolidadoRequerimientoService
+      .getAllById(id)
       .pipe(
         map((resp) => {
-          this.rowAlmacen=[];
-          for (let item of resp) {
-            this.rowAlmacen.push({ label: item.warehouseName, value: item.warehouseCode }); 
+          
+          this.Consolidado=resp;
+
+          this.selectAlmacen={value: this.Consolidado.codAlmacen,label: this.Consolidado.desAlmacen};
+
+          this.formularioSuperior.patchValue({
+            observacion: this.Consolidado.observacion,
+          });
+
+
+          for (const itemDato of this.Consolidado.consolidadoItem) {
+            var newRq = {
+              idRequerimiento:itemDato.idRequerimiento,
+              codArticulo:itemDato.codArticulo,
+              desArticulo: itemDato.desArticulo,
+              codSocioNegocioCompra:itemDato.codSocioNegocioCompra,
+              codUnidadMedida: itemDato.codUnidadMedida,
+              cantidad: itemDato.cantidad,
+              cantidadCompra: itemDato.cantidadCompra,
+              idRequerimientoItem:itemDato.idRequerimientoItem
+            }
+            
+            this.listRequerimientoItem.push(newRq);
           }
+
+          const tabla = {};
+          const unicos = this.listRequerimientoItem.filter((indice) => {
+
+            return tabla.hasOwnProperty(indice.idRequerimiento) ? false : (tabla[indice.idRequerimiento] = true);
+          });
+
+          //this.listRequerimiento=unicos;
+
+          for (const item of unicos) {
+
+            var obj = {
+              idRequerimiento: item.idRequerimiento,
+              ConsolidadoItem: this.listRequerimientoItem.filter(x=>x.idRequerimiento==item.idRequerimiento)
+            }
+            
+            this.listRequerimiento.push(obj);
+          }
+
+          this.getAlmacenById(this.selectAlmacen.value);
+
+          this.setearListProducts();
+          
         })
       )
       .subscribe(
@@ -111,31 +166,40 @@ export class ConsolidadoRequerimientoEditarComponent implements OnInit, OnDestro
           
   }
 
+  ngOnDestroy() {
+    
+  }
+
+  getAlmacenById(id) {
+    this.almacenService
+      .getAlmacenByid(id)
+      .pipe(
+        map((resp) => {
+          debugger
+          this.formularioSuperior.patchValue({
+            almacen: resp.warehouseName,
+          });
+        })
+      )
+      .subscribe(
+        (resp) => {
+          //this.loading = false;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+          
+  }
+
 private buildFormSuperior() {
   this.formularioSuperior = this.fb.group({
     fechaConsolidado: [new Date()],
-    cbalmacen:'',
+    almacen:'',
     responsable:this.userContextService.getNombreCompletoUsuario(),
     observacion:'',
     
   });
-}
-
-obtenerParametrosDeRuta() {
-  this.activeRoute.queryParamMap
-  .pipe(
-    map((params) => {
-      this.bodyParams = {
-        idUsuario: Number(params.get('idUsuario')),
-        codCentroCosto: params.get('codCentroCosto'),
-        desCentroCosto: params.get('desCentroCosto'),        
-      };
-      this.formularioSuperior.patchValue({
-        observacionValeSalida: this.bodyParams.codCentroCosto,
-      });
-    })
-  )
-  .subscribe();
 }
 
   clickActivateBuscarArticulo() {
@@ -151,11 +215,13 @@ obtenerParametrosDeRuta() {
     
      const loadRqItem = (numFunc, callback) =>{
 
+     
+      
       var numRecord=0;
     
         for (const item of event) {
           
-            this.requerimientoItemService.getByIdRequerimiento(item.idRequerimiento)
+            this.requerimientoItemService.getByIdRequerimiento(item.idRequerimiento,"")
             .subscribe(   
               (resp) => {
               if (resp) {
@@ -250,7 +316,7 @@ obtenerParametrosDeRuta() {
   }
 
   editarCantida() {
-    
+
     const { codArticulo } = this.itemSeleccionado;
     this.listModalRequerimientoProducto=this.listRequerimientoItem.filter(x=>x.codArticulo==codArticulo);
 
@@ -260,9 +326,7 @@ obtenerParametrosDeRuta() {
   quitar() {
 
     this.listFilteredProducto.splice(+this.indiceItemElegidoGrilla, 1);
-     var element = this.itemSeleccionado.codArticulo;
-
-    
+    var element = this.itemSeleccionado.codArticulo;
 
     for (var i =0; i < this.listRequerimiento.length; i++){
       for (var j =0; j < this.listRequerimiento[i].ConsolidadoItem.length; j++) {
@@ -288,17 +352,13 @@ obtenerParametrosDeRuta() {
   }
 
   clickGuardar(){
-    
-    
+        
     const {
-      cbalmacen,
       observacion
     } = this.formularioSuperior.value;
     
-    //idusuario=this.userContextService.getCodigoCentroCosto(),
 
-
-    if(cbalmacen==""){
+    if(this.codAlmacen==""){
       this.mensajePrimeNgService.onToErrorMsg(null, "SELECCIONE EL ALMACEN")
       return;
     }
@@ -308,9 +368,12 @@ obtenerParametrosDeRuta() {
       return;
     }
     
+
     var value={
       //FecValeSalida:this.fechas_DDMMAAAA(fechaReg),
-      CodAlmacen:(cbalmacen.value==undefined)?'':cbalmacen.value,
+      IdConsolidado:this.Consolidado.idConsolidado,
+      CodAlmacen: this.codAlmacen,//(cbalmacen.value==undefined)?'':cbalmacen.value,
+      //DesAlmacen:(cbalmacen.value==undefined)?'':cbalmacen.label,
       CodCentroCosto:this.userContextService.getCodigoCentroCosto(),
       Observacion:observacion,
       RegCreateIdUsuario:this.userContextService.getIdUsuario(),
@@ -318,9 +381,10 @@ obtenerParametrosDeRuta() {
 
     }
     
-    this.consolidadoRequerimientoService.setConsolidadoRegistrar(value).subscribe(
+    this.consolidadoRequerimientoService.setConsolidadoActualizar(value).subscribe(
       (result: IMensajeResultadoApi) =>
         {
+    
           document.getElementById("btnsave").remove();
           this.sessionStorage.setItemEncrypt('idconsolidado', result["idRegistro"]);
           this.mensajePrimeNgService.onToExitoMsg(null, result["resultadoDescripcion"]);
@@ -394,6 +458,50 @@ obtenerParametrosDeRuta() {
 
   clickActivateEditarCantidad() {
     this.isActivateCantidadEditar = !this.isActivateCantidadEditar;
+  }
+
+  socioNegocioSeleccionado(event: any) {
+    
+    this.listFilteredProducto[this.indiceModalSocioNegocio].codSocioNegocioCompra =  event.cardCode;
+    
+    Array.from(this.listRequerimiento, el => {
+
+      Array.from(el["ConsolidadoItem"], x => {
+        if(this.listFilteredProducto[this.indiceModalSocioNegocio].codArticulo ==x["codArticulo"]){
+            x["codSocioNegocioCompra"]=event.cardCode
+          }
+      });
+    });
+
+    Array.from(this.listRequerimientoItem, el => {
+        if(this.listFilteredProducto[this.indiceModalSocioNegocio].codArticulo ==el["codArticulo"]){
+          el["codSocioNegocioCompra"]=event.cardCode
+        }
+    });
+
+    this.activarModalSocioNegocio();
+    
+  }
+
+
+  activarModalSocioNegocio(indice?: number) {
+    this.indiceModalSocioNegocio = indice;
+    this.isActivateBusquedaSocioNegocio = !this.isActivateBusquedaSocioNegocio; 
+  }
+
+  almacenSeleccionado(event: any) {
+   
+    this.codAlmacen = event.warehouseCode;
+
+    this.formularioSuperior.patchValue({
+      almacen: event.warehouseName,
+    });
+
+  }
+
+  activarModalAlmacen() {
+    
+    this.isActivateBusquedaAlmacen = !this.isActivateBusquedaAlmacen;
   }
 
 }

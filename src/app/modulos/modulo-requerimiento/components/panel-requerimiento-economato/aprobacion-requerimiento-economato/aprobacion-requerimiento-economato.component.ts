@@ -161,7 +161,7 @@ export class AprobacionRequerimientoEconomatoComponent implements OnInit {
       { field: 'origen', header: 'Origen', visibility: false, tipoFlag: "", formatoFecha: ""  },
       { field: 'fecRequerimiento', header: 'Fecha Req.', visibility: true, tipoFlag: "", formatoFecha: ""  },
       { field: 'idUsuario', header: 'idUsuario', visibility: false, tipoFlag: "", formatoFecha: ""  },
-      { field: 'usuario', header: 'Usuario', visibility: true, tipoFlag: "", formatoFecha: ""  },
+      { field: 'usuario', header: 'Solicitante', visibility: true, tipoFlag: "", formatoFecha: ""  },
       { field: 'codCentroCosto', header: 'Cod. Centro de Costo', visibility: false, tipoFlag: "", formatoFecha: ""  },
       { field: 'desCentroCosto', header: 'Centro de Costo', visibility: true, tipoFlag: "", formatoFecha: ""  },
       { field: 'idSolicitudSAP', header: 'Solicitud SAP', visibility: true, tipoFlag: "", formatoFecha: ""  },

@@ -58,8 +58,8 @@ export class RequerimientoVerDetalleComponent implements OnInit {
     this.cols = [
       { field: 'numLinea', header: 'Línea' },
       // { field: 'nroOrdenTrabajo', header: 'Nro. Orden T.' },
-      { field: 'codArticulo', header: 'Cod. Servicio' },
-      { field: 'desArticulo', header: 'Descripción Servicio' },
+      { field: 'codArticulo', header: 'Cod. Artículo' },
+      { field: 'desArticulo', header: 'Descripción Artículo' },
       // { field: 'codUnidadMedida', header: 'Cod. U.M.' },
       // { field: 'codAlmacen', header: 'Cod Almacen'},
       // { field: 'cantidadNecesaria', header: 'Cantidad Necesaria'},      

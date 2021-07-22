@@ -60,7 +60,8 @@ export class ConsolidadoRequerimientoVerComponent implements OnInit {
       { field: 'DesArticulo', header: 'DesArticulo' },
       { field: 'CodSocioNegocioCompra', header: 'CodSocioNegocioCompra' },
       { field: 'Cantidad', header: 'Cantidad' },
-      { field: 'CantidadCompra', header: 'CantidadCompra' }
+      { field: 'CantidadCompra', header: 'CantidadCompra' },
+      { field: 'DocEntry', header: 'DocEntry' }
     ];
   }
 

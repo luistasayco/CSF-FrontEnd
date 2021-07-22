@@ -7,10 +7,10 @@
             <span><strong>Socio Negocio: </strong></span>{{ item.nombreSocioNegocio }}
         </div>
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Almacen Origen: </strong></span>{{  item.almacenOrigen.warehouseName }}
+            <span><strong>Almacén Origen: </strong></span>{{  item.almacenOrigen.warehouseName }}
         </div>
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Almacen Destino: </strong></span>{{ item.almacenDestino.warehouseName }}
+            <span><strong>Almacén Destino: </strong></span>{{ item.almacenDestino.warehouseName }}
         </div>
         <div class="ui-g-12 ui-md-3">
             <span><strong>Motivo:</strong></span> {{ item.motivoSolicitudTraslado.descripcionMotivoSolicitudTraslado}}
@@ -33,21 +33,40 @@
 
 
 <p-panel header="Lista de Articulos" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
-    <p-table [value]="itemSolicitudDetalle" [columns]="cols" [responsive]="true" [autoLayout]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo">
-        <ng-template pTemplate="header" let-columns>
-            <tr>
-                <th *ngFor="let col of columns">{{ col.header }}</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData let-columns="columns">
-            <tr>
-                <td *ngFor="let col of columns">
-                    <span class="p-column-title">{{ rowData[col.field] }}</span>
-                    <span>
-                        {{ rowData[col.field] }}
-                    </span>
-                </td>
-            </tr>
-        </ng-template>
+    <p-table [value]="itemSolicitudDetalle" [responsive]="true" [autoLayout]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo">
+      <!-- Header -->
+      <ng-template pTemplate="header">
+        <tr>
+            <th>Nro Solicitud</th>
+            <th>Num Linea</th>
+            <th>Código Articulo</th>
+            <th>Descripción Articulo</th>
+            <th>Cantidad</th>
+            <th>Cod UM</th>
+        </tr>
+    </ng-template>
+      <!-- body -->
+      <ng-template pTemplate="body" let-modelo let-editing="editing" let-ri="rowIndex">
+        <tr>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.idSolicitudTrasladoItem}}
+            </td>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.numLinea}}
+            </td>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.codArticulo}}
+            </td>
+            <td>
+                <span class="ui-column-title"></span> {{modelo.desArticulo}}
+            </td>
+            <td style="text-align: right">
+                <span class="ui-column-title"></span> {{modelo.cantidadSolicitada}}
+            </td>
+            <td style="text-align: center">
+                <span class="ui-column-title"></span> {{modelo.codUnidadMedida}}
+            </td>
+        </tr>
+    </ng-template>
     </p-table>
 </p-panel>

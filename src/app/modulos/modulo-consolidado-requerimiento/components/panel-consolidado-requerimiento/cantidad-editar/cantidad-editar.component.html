@@ -1,15 +1,15 @@
-<p-dialog header="Editar Cantidad" [(visible)]="isDisplayCantidaEditar" [modal]="true" [transitionOptions]="timeAnimationModal">
-    <p-table [value]="listaRequerimientoItem" [paginator]="true"  [loading]="loading" [rows]="globalConstants.sizePage" dataKey="idRequerimientoItem" selectionMode="multiple" autoLayout="true" [responsive]="true">
+<p-dialog header="Editar Cantidad" [(visible)]="isDisplayCantidaEditar" [modal]="true" [transitionOptions]="timeAnimationModal" [style]="{width: '50vw'}" [autoZIndex]>
+    <p-table [value]="listaRequerimientoItem" [paginator]="true" [loading]="loading" [rows]="globalConstants.sizePage" dataKey="idRequerimientoItem" selectionMode="multiple" autoLayout="true" [responsive]="true">
 
         <ng-template pTemplate="header">
             <tr>
-                 <th>Requerimiento</th>
-                 <th>Requerimiento Item</th>
-                 <th>Cod Articulo</th>
-                 <th>Des Articulo</th>
-                 <th>Stock</th>
-                 <th>Cantidad RQ</th>
-                 <th>Cantidad comprar</th>
+                <th>Requerimiento</th>
+                <th>Requerimiento Item</th>
+                <th>Cod Articulo</th>
+                <th>Des Articulo</th>
+                <th>Stock</th>
+                <th>Cantidad RQ</th>
+                <th>Cantidad comprar</th>
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-modelo>

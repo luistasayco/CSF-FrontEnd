@@ -13,7 +13,7 @@
                 <form [formGroup]="formularioSuperior">
                     <div class="p-grid form-group">
                         <div class="ui-g-12 ui-md-3">
-                            <label>Trabajador: </label>
+                            <label>Solicitante: </label>
                             <!-- <input type="text" size="2" formControlName="idTrabajador" pInputText /> -->
                             <input type="text" size="30" pInputText formControlName="trabajador" />
                             <!-- <ng-container *ngIf="!isAprobadoDesaprobadoAnulado && !isProcesadoSAP">
@@ -49,10 +49,10 @@
                             <label>Nro SAP: </label>
                             <input type="text" formControlName="proceSap" pInputText />
                         </div>
-                        <div class="ui-g-12 ui-md-2">
+                        <!-- <div class="ui-g-12 ui-md-2">
                             <label>Conform: </label>
                             <p-dropdown [options]="arrayComboConformidad" formControlName="conformidad" placeholder="Seleccionar" optionLabel="desOption"></p-dropdown>
-                        </div>
+                        </div> -->
                     </div>
                 </form>
             </div>
@@ -65,13 +65,13 @@
                             <input type="text" pInputText formControlName="desUbicacion" placeholder="Ubicación" />
                         </div>
                         <div class="ui-g-12 ui-md-1">
-                            <button [disabled]="dataGrilla.length > 0" pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalUbicacion()" class="btn btn-block"></button>
+                            <button [disabled]="dataGrilla.length > 0" pButton type="button" icon="{{globalConstants.icoBuscar}}" label="Ubicaciones" (click)="activarModalUbicacion()" class="btn btn-block"></button>
                         </div>
                         <div class="ui-g-12 ui-md-3">
                             <input type="text" pInputText formControlName="groupName" placeholder="Grupo Articulo" />
                         </div>
                         <div class="ui-g-12 ui-md-1">
-                            <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalTipoProducto()" class="btn btn-block"></button>
+                            <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalTipoProducto()" label="Grupo" class="btn btn-block"></button>
                         </div>
                         <div class="ui-g-12 ui-md-2">
                             <button pButton type="button" label="Agregar artículo" icon="pi pi-plus" (click)="clickActivateBuscarArticulo()"></button>
@@ -184,7 +184,7 @@
                 </p-table>
             </ng-container>
             <ng-container *ngIf="isAprobadoDesaprobadoAnulado || isProcesadoSAP">
-                <p-table [value]="dataGrilla" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo" [columns]="cols" #tablaGrilla>
+                <p-table [value]="dataGrilla" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo" [columns]="cols" #tablaGrilla [autoLayout]="true">
                     <ng-template pTemplate="header" let-columns>
                         <tr>
                             <th *ngFor="let col of columns">

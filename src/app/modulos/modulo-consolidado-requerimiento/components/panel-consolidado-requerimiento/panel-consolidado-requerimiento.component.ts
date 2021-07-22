@@ -24,7 +24,7 @@ import { Router } from '@angular/router';
 })
 export class PanelConsolidadoRequerimientoComponent implements OnInit {
    // Titulo del componente
-   titulo = 'Consolidado de RQ';
+   titulo = 'Consolidado de Requerimiento';
   // Name de los botones de accion
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
   timeAnimationModal = ConstantesGenerales.DURACION_ANIMACION_MODAL;
@@ -108,7 +108,7 @@ export class PanelConsolidadoRequerimientoComponent implements OnInit {
         command: () => {
           
           const { idConsolidado } = this.itemSeleccionado;
-          this.router.navigate(['/main/modulo-re/modificar-requerimiento', idConsolidado]);
+          this.router.navigate(['/main/modulo-cr/editar',idConsolidado]);
         },
       },
       {
@@ -118,6 +118,13 @@ export class PanelConsolidadoRequerimientoComponent implements OnInit {
           debugger;
             console.log("anular");
             this.anular();
+        },
+      },
+      {
+        label: 'Enviar SAP',
+        icon: 'pi pi-list',
+        command: () => {
+            this.enviarSAP();
         },
       },
     ];
@@ -169,6 +176,43 @@ export class PanelConsolidadoRequerimientoComponent implements OnInit {
           RegUpdateIdUsuario: 1
         };
         this.consolidadoRequerimientoService.consolidadoAnular(reqAnular).subscribe(
+          (resp: IMensajeResultadoApi) => {
+            this.mensajePrimeNgService.onToExitoMsg(null, resp.resultadoDescripcion);
+            this.onListar();
+          },
+          (error) => {
+            this.mensajePrimeNgService.onToErrorMsg(undefined, error.error);
+          }
+        );
+      },
+    });
+
+  }
+
+  enviarSAP(){
+
+    if (this.itemSeleccionado.idConsolidadoEstado !== 1) {
+      this.mensajePrimeNgService.onToInfoMsg(null, `Estado de requerimiento incorrecto ${this.itemSeleccionado.desConsolidadoEstado}`);
+      return;
+    }
+
+    if (this.itemSeleccionado.idConsolidadoEstado === 4) {
+      this.mensajePrimeNgService.onToInfoMsg(null, `Consolidado ya se encuentra PROCESADO EN SAP ${this.itemSeleccionado.desConsolidadoEstado}`);
+      return;
+    }
+
+    this.confirmationService.confirm({
+      message: `Seguro de enviar a SAP el consolidado ${this.itemSeleccionado.idConsolidado} ?, una vez enviado no se podrá realizar ninguna modificación`,
+      header: this.globalConstants.titleAnular,
+      icon: 'pi pi-info-circle',
+      acceptLabel: 'Si',
+      rejectLabel: 'No',
+      accept: () => {
+        const reqsap: any = {
+          idConsolidado: this.itemSeleccionado.idConsolidado,
+          RegUpdateIdUsuario: 1
+        };
+        this.consolidadoRequerimientoService.consolidadoSap(reqsap).subscribe(
           (resp: IMensajeResultadoApi) => {
             this.mensajePrimeNgService.onToExitoMsg(null, resp.resultadoDescripcion);
             this.onListar();

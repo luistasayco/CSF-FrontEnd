@@ -239,17 +239,17 @@ export class ModificarRequerimientoEconomatoComponent implements OnInit {
   }
   private buildFormSuperior() {
     this.formularioSuperior = this.fb.group({
-      idTrabajador: [null],
-      trabajador: [null],
-      codCentroCosto: [null],
-      desCentroCosto: [null],
+      idTrabajador: [{value: null, disabled: true}],
+      trabajador: [{value: null, disabled: true}],
+      codCentroCosto: [{value: null, disabled: true}],
+      desCentroCosto: [{value: null, disabled: true}],
       observacion: [null],
-      motivo: [null],
+      motivo: [{value: null, disabled: true}],
       conformidad: [{ value: null, disabled: true }],
-      fechaReq: [null],
+      fechaReq: [{value: null, disabled: true}],
       proceSap: [{value: null, disabled: true}],
-      fechaNecesaria: [null],
-      fechaValidez: [null],
+      fechaNecesaria: [{value: null, disabled: true}],
+      fechaValidez: [{value: null, disabled: true}],
     });
   }
 
@@ -380,7 +380,7 @@ export class ModificarRequerimientoEconomatoComponent implements OnInit {
   }
 
   cambioDeEstructuraDeArticulo_AddFechaNecesaria(event: UbicacionPorStockModel[]) {
-    const { fechaNecesaria, codCentroCosto } = this.formularioSuperior.value;
+    const { fechaNecesaria, codCentroCosto } = this.formularioSuperior.getRawValue();
     for (const item of event) {
       const newArticulo: INewArticulo = {
         codArticulo: item.codArticulo,
@@ -428,7 +428,7 @@ export class ModificarRequerimientoEconomatoComponent implements OnInit {
       fechaValidez,
       codCentroCosto,
       observacion,
-    } = this.formularioSuperior.value;
+    } = this.formularioSuperior.getRawValue();
 
     const arrayAnexos: IRequerimientoAnexoModificar[] = [];
     this.arrayUploadedFiles.forEach((el) => {
@@ -474,7 +474,7 @@ export class ModificarRequerimientoEconomatoComponent implements OnInit {
         ? this.motivoSeleccionadoEnCombo.codMotivoRequerimiento
         : this.detalleDelItemSeleccionado.codMotivoRequerimiento,
       observacion: observacion ? observacion : '',
-      codCentroCosto: this.formularioSuperior.value.codCentroCosto,
+      codCentroCosto: codCentroCosto,
       regCreateIdUsuario: 0,
       idRequerimientoEstado: this.detalleDelItemSeleccionado.idRequerimientoEstado,
       lineasRequerimientoItem: data,

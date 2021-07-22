@@ -77,8 +77,16 @@
                     <td>
                         <span class="p-column-title">Des Articulo:</span> {{ modelo.desArticulo }}
                     </td>
-                    <td>
-                        <span class="p-column-title">Cod Socio Compra:</span> {{ modelo.codSocioNegocioCompra }}
+                    <td class="ui-fluid" pEditableColumn>
+                        <span class="p-column-title">Socio de Negocio:</span>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <button pButton type="button" label="Agregar Socio de Negocio" icon="pi pi-plus" (click)="activarModalSocioNegocio(ri)"></button>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ modelo.codSocioNegocioCompra }}
+                            </ng-template>
+                        </p-cellEditor>
                     </td> 
                     <td>
                         {{ modelo.cantidad }}
@@ -124,6 +132,8 @@
     </app-modal-busqueda-almacenes-lt>
 </div>
 
+<app-modal-busqueda-socio-negocio [isDisplayBusqueda]="isActivateBusquedaSocioNegocio" (eventoRegistroSeleccionado)="socioNegocioSeleccionado($event)" (cancel)="activarModalSocioNegocio()">
+</app-modal-busqueda-socio-negocio>
 
 
 

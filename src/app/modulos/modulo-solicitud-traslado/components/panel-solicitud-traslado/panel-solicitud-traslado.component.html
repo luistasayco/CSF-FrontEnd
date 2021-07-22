@@ -26,7 +26,7 @@
             </div>
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-socio">Almacen Origen:</label>
+                    <label class="label-custom" for="float-input-socio">Almacén Origen:</label>
                     <div class="ui-inputgroup">
                         <input type="text" id="float-input-socio" formControlName="almacenOrigen" placeholder="Almacen origen" pInputText  />
                         <button pButton type="button" icon="{{globalConstants.icoEliminar}}" (click)="emptyInputAlmacen('origen')" class="ui-button-ranger"></button>
@@ -34,14 +34,12 @@
                     </div>
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-socio">Almacen Destino:</label>
+                    <label class="label-custom" for="float-input-socio">Almacén Destino:</label>
                     <div class="ui-inputgroup">
                         <input type="text" id="float-input-socio" formControlName="almacenDestino" placeholder="Almacen destino" pInputText  />
                         <button pButton type="button" icon="{{globalConstants.icoEliminar}}" (click)="emptyInputAlmacen('destino')" class="ui-button-ranger"></button>
                         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalAlmacen('destino')" class="ui-button-success"></button>
                     </div>
-                    <!-- <label>Almacen Destino: </label>
-                    <p-dropdown placeholder="Seleccionar" formControlName="comboAlmacenDestino" [options]="rowAlmacenDestino" [(ngModel)]="selectedAlmacenDestino" filter="true" optionLabel="label"></p-dropdown> -->
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <button style="top: 1.2em;" pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" (click)="onToBuscar()" class="btn btn-block"></button>
@@ -100,6 +98,7 @@
                             <span class="label" style="background:green" *ngSwitchCase="1">{{modelo.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}</span>
                             <span class="label" style="background:red" *ngSwitchCase="2">{{modelo.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}</span>
                             <span class="label" style="background:burlywood" *ngSwitchCase="3">{{modelo.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}</span>
+                            <span class="label" style="background:#3f51b5" *ngSwitchCase="4">{{modelo.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}</span>
                             <span class="label" *ngSwitchDefault>{{modelo.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}</span>
                          </span>
                     </td>
@@ -116,6 +115,7 @@
     </p-panel>
     
     <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
+    
     <p-dialog *ngIf="isVerModal" [header]="tituloModalVer" [(visible)]="isVerModal" [transitionOptions]="timeAnimationModal" [modal]="true">
         <app-solicitud-traslado-ver [item]="this.itemSeleccionado">
         </app-solicitud-traslado-ver>

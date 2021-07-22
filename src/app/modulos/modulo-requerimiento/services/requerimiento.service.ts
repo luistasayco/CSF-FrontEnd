@@ -293,7 +293,7 @@ export class RequerimientoService {
     let parametros = new HttpParams();
     parametros = parametros.append('idUbicacion', value.idUbicacion.toString());
 
-    return this.http.get<UbicacionModel[]>(
+    return this.http.get<UbicacionPorStockModel[]>(
       `${environment.url_api_requerimiento}/UbicacionPorStock/Get/` , { params: parametros }
     );
   }

@@ -10,6 +10,8 @@ import { AtencionSolicitudTransferenciaPrimeNgModule } from './modulo-atencion-s
 import { PanelAtensionSolicitudTransferenciaComponent } from './components/panel-atencion-solicitud-transferencia/panel-atencion-solicitud-transferencia.component';
 import { AtensionSolicitudTransferenciaCrearComponent } from './components/panel-atencion-solicitud-transferencia/atencion-solicitud-tranferencia-crear/atencion-solicitud-transferencia-crear.component';
 import { AtencionSolicitudTraslaVerComponent } from './components/panel-atencion-solicitud-transferencia/atencion-solicitud-tranferencia-ver/atencion-solicitud-tranferencia-ver.component';
+import { AtencionSolicitudTrasladoArticuloVerComponent } from './components/panel-atencion-solicitud-transferencia/atencion-solicitud-tranferencia-articulo-ver/atencion-solicitud-tranferencia-articulo-ver.component';
+
 
 import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimiento/modulo-requerimiento-compartido.module';
     
@@ -18,7 +20,8 @@ import { RequerimientoCompartidoModule } from '../modulo-compartido/Requerimient
     declarations: [
         PanelAtensionSolicitudTransferenciaComponent,
         AtensionSolicitudTransferenciaCrearComponent,
-        AtencionSolicitudTraslaVerComponent
+        AtencionSolicitudTraslaVerComponent,
+        AtencionSolicitudTrasladoArticuloVerComponent
         
     ],
     imports: [ CommonModule, AtencionSolicitudTransferenciaPrimeNgModule, AtencionSolicitudTranferenciaRoutingModule, ReactiveFormsModule, FormsModule, RequerimientoCompartidoModule],

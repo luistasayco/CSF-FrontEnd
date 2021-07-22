@@ -1,16 +1,16 @@
 <div class="card card-w-title">
     <h1><strong>{{titulo}}</strong></h1>
-
+    <p-toast key="myKeyAtencion"></p-toast>
       <!-- Filtros -->
       <p-panel header="Busqueda de {{titulo}}" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
         <form [formGroup]="formularioBusqueda">
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-fecha-ini">Fecha Inicio: </label>
+                    <label class="label-custom" for="float-input-fecha-ini">Solicitud Fecha Inicio: </label>
                     <p-calendar id="float-input-fecha-ini" formControlName="fechaInicio" placeholder="Seleccionar Fecha Inicio" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-fecha-fin">Fecha Fin: </label>
+                    <label class="label-custom" for="float-input-fecha-fin">Solicitud Fecha Fin: </label>
                     <p-calendar id="float-input-fecha-fin" formControlName="fechaFin" placeholder="Seleccionar Fecha Fin" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true"></p-calendar>
                 </div>
                 <div class="ui-g-12 ui-md-2">
@@ -20,24 +20,20 @@
             </div>
             <div class="ui-g ui-fluid">
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-socio">Almacen Origen:</label>
+                    <label class="label-custom" for="float-input-socio">Almacén Origen:</label>
                     <div class="ui-inputgroup">
                         <input type="text" id="float-input-socio" formControlName="almacenOrigen" placeholder="Almacen origen" pInputText  />
                         <button pButton type="button" icon="{{globalConstants.icoEliminar}}" (click)="emptyInputAlmacen('origen')" class="ui-button-ranger"></button>
                         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalAlmacen('origen')" class="ui-button-success"></button>
                     </div>
-                    <!-- <label>Almacen origen: </label>
-                    <p-dropdown placeholder="Seleccionar" formControlName="comboAlmacenOrigen" [options]="rowAlmacenOrigen" [(ngModel)]="selectedAlmacenOrigen" filter="true" optionLabel="label"></p-dropdown> -->
                 </div>
                 <div class="ui-g-12 ui-md-2">
-                    <label class="label-custom" for="float-input-socio">Almacen Destino:</label>
+                    <label class="label-custom" for="float-input-socio">Almacén Destino:</label>
                     <div class="ui-inputgroup">
                         <input type="text" id="float-input-socio" formControlName="almacenDestino" placeholder="Almacen destino" pInputText  />
                         <button pButton type="button" icon="{{globalConstants.icoEliminar}}" (click)="emptyInputAlmacen('destino')" class="ui-button-ranger"></button>
                         <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalAlmacen('destino')" class="ui-button-success"></button>
                     </div>
-                    <!-- <label>Almacen Destino: </label>
-                    <p-dropdown placeholder="Seleccionar" formControlName="comboAlmacenDestino" [options]="rowAlmacenDestino" [(ngModel)]="selectedAlmacenDestino" filter="true" optionLabel="label"></p-dropdown> -->
                 </div>
                 <div class="ui-g-12 ui-md-2">
                     <button style="top: 1.2em;" pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" (click)="onToBuscar()" class="btn btn-block"></button>
@@ -69,11 +65,14 @@
                     </td>
                     <td>
                         <span [ngSwitch]="modelo.idAtencionSolicitudTransferenciaEstado">
-                            <span class="label" style="background:green" *ngSwitchCase="1">{{modelo.desAtencionSolicitudTransferenciaEstado}}</span>
+                            <span class="label" style="background:#9e9e9e" *ngSwitchCase="1">{{modelo.desAtencionSolicitudTransferenciaEstado}}</span>
                             <span class="label" style="background:red" *ngSwitchCase="2">{{modelo.desAtencionSolicitudTransferenciaEstado}}</span>
-                            <span class="label" style="background:burlywood" *ngSwitchCase="3">{{modelo.desAtencionSolicitudTransferenciaEstado}}</span>
+                            <span class="label" style="background:#3f51b5" *ngSwitchCase="3">{{modelo.desAtencionSolicitudTransferenciaEstado}}</span>
                             <span class="label" *ngSwitchDefault>{{modelo.desAtencionSolicitudTransferenciaEstado}}</span>
                          </span>
+                    </td>
+                    <td style="text-align: center">
+                        <span class="ui-column-title"></span> {{modelo.fechaAtencionSolicitudTransferencia | date:'MM-dd-yyyy'}}
                     </td>
                     <td class="action-td" style="text-align: center">
                         <span class="ui-column-title"></span> {{modelo.idSolicitudTraslado}}
@@ -86,11 +85,11 @@
                             <span class="label" *ngSwitchDefault>{{modelo.solicitudTrasladoEstado.desSolicitudTrasladoEstado}}</span>
                          </span>
                     </td>
+                    <td style="text-align: center">
+                        <span class="ui-column-title"></span> {{modelo.fechaSolicitudTraslado | date:'dd-MM-yyyy'}}
+                    </td>
                     <td>
                         <span class="ui-column-title"></span> {{modelo.nombreSocioNegocio}}
-                    </td>
-                    <td style="text-align: center">
-                        <span class="ui-column-title"></span> {{modelo.fechaSolicitudTraslado | date:'MM-dd-yyyy'}}
                     </td>
                     <td>
                         <span class="ui-column-title"></span> {{modelo.almacenOrigen.warehouseName}}
@@ -104,7 +103,9 @@
                     <td>
                         <span class="ui-column-title"></span> {{modelo.observacion}}
                     </td>
-                   
+                    <td>
+                        <span class="ui-column-title"></span> {{modelo.docEntry}}
+                    </td>
                 </tr>
             </ng-template>
         </p-table>
@@ -121,5 +122,10 @@
         <app-atencion-solicitud-transferencia-crear [itemSelect]="itemSeleccionado" (cancel)="activarAtencionSolicitudCrear()">
         </app-atencion-solicitud-transferencia-crear>
     </p-dialog>
+
+    <div *ngIf="isActivateBusquedaAlmacen">
+        <app-modal-busqueda-almacenes-lt [isDisplayBusqueda]="isActivateBusquedaAlmacen" (eventoRegistroSeleccionado)="almacenSeleccionado($event)" (cancel)="activarModalAlmacen()">
+        </app-modal-busqueda-almacenes-lt>
+    </div>
    
 </div>

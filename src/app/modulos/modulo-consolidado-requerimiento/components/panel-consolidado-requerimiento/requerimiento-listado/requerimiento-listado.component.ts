@@ -16,6 +16,7 @@ import { ConsolidadoRequerimientoService  } from '../../../services/consolidado-
 //Routing
 import { Router } from '@angular/router';
 
+
 @Component({
   selector: 'app-requerimiento-listado',
   templateUrl: './requerimiento-listado.component.html',
@@ -47,21 +48,17 @@ export class RequerimientoListadoComponent implements OnInit {
   rowMotivoSelect: any;
 
   rowAgrupado: SelectItem[];
-
+  rowAgrupadoSelect: any;
 
   //modal ver
   isVerModalDetalle  = false;
   tituloDetalle: string="";
-
-  // isVerModalValeSalida = false;
-  // tituloValeSalidaVer: any;
-  
-  //
   
   motivoSeleccionadoEnCombo: any=[];
 
   //botton
-  seleccionArticulo=false;
+  //seleccionArticulo=true;
+  seleccionArticulo:any;
 
   // Suscripcion [para realizar el unsuscription al cerrar el formulario]
   subscription$: Subscription;
@@ -107,8 +104,8 @@ export class RequerimientoListadoComponent implements OnInit {
   onTableColumna(){
 
     this.columnas = [
-      { header: 'NumRequerimiento' },
-      { header: 'FecRegistro' },
+      { header: 'Nro Requerimiento' },
+      { header: 'Fec Registro' },
       { header: 'Centro de Costo'},
       { header: 'Responsable' },      
       { header: 'Estado' }
@@ -128,7 +125,7 @@ export class RequerimientoListadoComponent implements OnInit {
   }
 
   ver() {
-   debugger;
+   
     this.isVerModalDetalle = !this.isVerModalDetalle;
     this.itemSeleccionado.origen="PORTAL";
     const { idRequerimiento } = this.itemSeleccionado;
@@ -141,8 +138,6 @@ export class RequerimientoListadoComponent implements OnInit {
   //
   onListar() {
 
-    debugger;
-
     const formBody = this.formularioBusqueda.value;
     const fechaIn = this.utilService.fecha_AAAAMMDD(formBody.fechaInicio);
     const fechaFin = this.utilService.fecha_AAAAMMDD(formBody.fechaFin);
@@ -153,9 +148,12 @@ export class RequerimientoListadoComponent implements OnInit {
     this.subscription$ = this.consolidadoRequerimientoService.getGetParamFecMotivo(fechaIn, fechaFin,idmotivo)
     .subscribe(resp => {
       if (resp) {
-        
+        debugger
         console.log(resp);
           this.listGrilla = resp;
+          if(this.listGrilla.length>0){
+            //this.seleccionArticulo=this.listGrilla[0];
+          }
         }
       },
       (error) => {
@@ -194,21 +192,14 @@ export class RequerimientoListadoComponent implements OnInit {
 
   datosAgrupados(){
 
-    this.rowAgrupado=[
-      {label: "Articulo", value: "01"}
-    ]
+    this.rowAgrupado=[];
+    this.rowAgrupadoSelect={label: "ARTICULO", value: "01"};
+    this.rowAgrupado.push(this.rowAgrupadoSelect);
+
   }
 
-  onChange(event) {
-   
-    // Array.from(this.listRequerimientoItem, x => {
-    //   x["codAlmacen"]=event.value.value,
-    //   x["desAlmacen"]=event.value.label
-    // });
-}
-
 clickAceptar(){
-  debugger;
+
   this.articuloSeleccionado.emit(this.seleccionArticulo);
 }
 

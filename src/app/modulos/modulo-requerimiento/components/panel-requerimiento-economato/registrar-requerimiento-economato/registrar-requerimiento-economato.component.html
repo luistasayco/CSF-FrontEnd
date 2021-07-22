@@ -10,7 +10,7 @@
                 <form [formGroup]="formularioSuperior">
                     <div class="p-grid form-group">
                         <div class="ui-g-12 ui-md-3">
-                            <label>Trabajador: </label>
+                            <label>Solicitante: </label>
                             <!-- <input type="text" size="2" formControlName="idUsuario" pInputText required /> -->
                             <input type="text" size="28" pInputText formControlName="trabajador" required />
                         </div>
@@ -38,16 +38,16 @@
                         <div class="ui-g-12 ui-md-2">
                             <label>Motivo: </label>
                             <!-- <input type="text" size="2" formControlName="codCentroCosto" pInputText /> -->
-                            <p-dropdown placeholder="Seleccionar" formControlName="motivo" [options]="comboMotivo" filter="true" (onChange)="cambioEnComboMotivo($event.value)" optionLabel="desMotivoRequerimiento" required></p-dropdown>
+                            <p-dropdown placeholder="Seleccionar" formControlName="motivo" [options]="comboMotivo" (onChange)="cambioEnComboMotivo($event.value)" optionLabel="desMotivoRequerimiento" required></p-dropdown>
                         </div>
-                        <div class="ui-g-12 ui-md-2">
+                        <!-- <div class="ui-g-12 ui-md-2">
                             <label>Nro SAP: </label>
                             <input type="text" pInputText disabled />
                         </div>
                         <div class="ui-g-12 ui-md-2">
                             <label>Conform: </label>
                             <input type="text" pInputText disabled />
-                        </div>
+                        </div> -->
                     </div>
                 </form>
             </div>
@@ -59,13 +59,13 @@
                         <input type="text" pInputText formControlName="desUbicacion" placeholder="Ubicación" />
                     </div>
                     <div class="ui-g-12 ui-md-1">
-                        <button [disabled]="dataGrilla.length > 0" pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalUbicacion()" class="btn btn-block"></button>
+                        <button [disabled]="dataGrilla.length > 0" pButton type="button" icon="{{globalConstants.icoBuscar}}" label="Ubicaciones" (click)="activarModalUbicacion()" class="btn btn-block"></button>
                     </div>
                     <div class="ui-g-12 ui-md-3">
                         <input type="text" pInputText formControlName="groupName" placeholder="Grupo Articulo" />
                     </div>
                     <div class="ui-g-12 ui-md-1">
-                        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalTipoProducto()" class="btn btn-block"></button>
+                        <button pButton type="button" icon="{{globalConstants.icoBuscar}}" label="Grupo" (click)="activarModalTipoProducto()" class="btn btn-block"></button>
                     </div>
                     <div class="ui-g-12 ui-md-2">
                         <button pButton type="button" label="Agregar artículo" icon="pi pi-plus" (click)="clickActivateBuscarArticulo()"></button>

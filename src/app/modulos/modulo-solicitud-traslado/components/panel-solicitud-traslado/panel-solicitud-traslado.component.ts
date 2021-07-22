@@ -92,8 +92,6 @@ export class PanelSolicitudTraslaComponent implements OnInit {
     
     this.onListar();
     
-    this.idResaltar = (this.sessionStorage.getItemDecrypt('idsolicitudtraslado'))? parseInt(this.sessionStorage.getItemDecrypt('idsolicitudtraslado')):0;
-
   }
 
   private onbuildForm() {
@@ -104,15 +102,11 @@ export class PanelSolicitudTraslaComponent implements OnInit {
       comboMotivo:'',
       almacenOrigen:'',
       almacenDestino:''
-      // comboAlmacenOrigen:'',
-      // comboAlmacenDestino:''
     });
   }
 
   onToCreate(){
 
-    debugger;
-    const formBody = this.formularioBusqueda.value;
     this.router.navigate(['/main/modulo-st/solicitud-traslado-crear']);
     
   }
@@ -128,8 +122,8 @@ export class PanelSolicitudTraslaComponent implements OnInit {
       { header: 'Nro Solicitud' },
       { header: 'Socio de Negocio' },
       { header: 'Fecha Registro' },
-      { header: 'Almacen Origen' },
-      { header: 'Almacen Destino' },
+      { header: 'Almacén Origen' },
+      { header: 'Almacén Destino' },
       { header: 'Tipo Motivo' },
       { header: 'Responsable' },
       { header: 'Comentario' },
@@ -150,7 +144,7 @@ export class PanelSolicitudTraslaComponent implements OnInit {
         label: 'Anular',
         icon: 'pi pi-trash',
         command: () => {
-            console.log("anular");
+            
             this.anular();
             
         },
@@ -160,33 +154,38 @@ export class PanelSolicitudTraslaComponent implements OnInit {
 
   ver() {
 
-    debugger;
+    
     this.isVerModal = true;
     const { idSolicitudTraslado } = this.itemSeleccionado;
     this.tituloModalVer = `Solicitud de traslado Ver - Id: ${idSolicitudTraslado}`;
   }
 
   itemElegido(datosDelSeleccionado) {
+    
     this.itemSeleccionado = datosDelSeleccionado;
+
+    if(this.itemSeleccionado.idSolicitudTrasladoEstado==1) {
+      this.opciones.find(x=>x.label=="Anular").visible=true;
+      }
+      else{
+        this.opciones.find(x=>x.label=="Anular").visible=false;
+      }
+
   }
-  //
+  
   onListar() {
 
-    debugger;
-    
+    this.idResaltar = (this.sessionStorage.getItemDecrypt('idsolicitudtraslado'))? parseInt(this.sessionStorage.getItemDecrypt('idsolicitudtraslado')):0;
+
     const formBody = this.formularioBusqueda.value;
     const fechaIn = this.utilService.fecha_AAAAMMDD(formBody.fechaInicio);
     const fechaFin = this.utilService.fecha_AAAAMMDD(formBody.fechaFin);
 
     const numsolicitud = formBody.numsolicitud;
     var comboMotivo = (formBody.comboMotivo==undefined)? '': formBody.comboMotivo.value;
-    // var comboAlmacenOrigen = formBody.comboAlmacenOrigen.value;
-    // var comboAlmacenDestino = formBody.comboAlmacenDestino.value;
-
-    comboMotivo = (comboMotivo==undefined)? '':comboMotivo;
-    // comboAlmacenOrigen = (comboAlmacenOrigen==undefined)? '':comboAlmacenOrigen;
-    // comboAlmacenDestino = (comboAlmacenDestino==undefined)? '':comboAlmacenDestino;
     
+    comboMotivo = (comboMotivo==undefined)? '':comboMotivo;
+        
     this.loading = true;
 
     this.solicitudTrasladoService
@@ -195,8 +194,6 @@ export class PanelSolicitudTraslaComponent implements OnInit {
       .subscribe(
         (resp) => {
           this.loading = false;
-           console.log("listGrilla");
-           //console.log(this.listGrilla);
         },
         (error) => {
           //console.log(error);
@@ -247,7 +244,7 @@ export class PanelSolicitudTraslaComponent implements OnInit {
   
 
   anular(){
-    debugger;
+    
 
     this.confirmationService.confirm({
       message: `Desea anular la solicitud de traslado con el Id ${this.itemSeleccionado.idSolicitudTraslado} ?`,
@@ -310,7 +307,7 @@ export class PanelSolicitudTraslaComponent implements OnInit {
   }
 
   activarModalAlmacen(input="") {
-    debugger;
+    
     this.inputAlmacen=input;
     this.isActivateBusquedaAlmacen = !this.isActivateBusquedaAlmacen;
   }

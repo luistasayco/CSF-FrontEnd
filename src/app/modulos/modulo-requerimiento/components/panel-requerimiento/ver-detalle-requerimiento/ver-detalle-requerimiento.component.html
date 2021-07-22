@@ -1,10 +1,10 @@
 <p-panel *ngIf="detalleDelItemSeleccionado" header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
     <div class="ui-g ui-fluid">
+        <!-- <div class="ui-g-12 ui-md-3">
+            <span><strong>Id Solicitante:</strong></span>{{ detalleDelItemSeleccionado.idUsuario }}
+        </div> -->
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Id Trabajador:</strong></span>{{ detalleDelItemSeleccionado.idUsuario }}
-        </div>
-        <div class="ui-g-12 ui-md-3">
-            <span><strong>Trabajador:</strong></span>{{ detalleDelItemSeleccionado.usuario }}
+            <span><strong>Solicitante:</strong></span>{{ detalleDelItemSeleccionado.usuario }}
         </div>
         <div class="ui-g-12 ui-md-3">
             <span><strong>COD C.C:</strong></span>{{ detalleDelItemSeleccionado.codCentroCosto }}
@@ -26,7 +26,7 @@
         </div>
     </div>
 </p-panel>
-<p-panel *ngIf="detalleDelItemSeleccionado" header="Lista de Articulos" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+<p-panel *ngIf="detalleDelItemSeleccionado" header="Lista de Servicios" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
     <p-table [value]="detalleDelItemSeleccionado.lineasRequerimientoItem" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo" [columns]="cols" [autoLayout]="true">
 
         <ng-template pTemplate="header" let-columns>

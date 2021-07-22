@@ -1,10 +1,10 @@
 <p-panel *ngIf="detalleDelItemSeleccionado" header="Datos Principal" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
     <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-3">
+        <!-- <div class="ui-g-12 ui-md-3">
             <span><strong>Id Trabajador:</strong></span>{{ detalleDelItemSeleccionado.idUsuario }}
-        </div>
+        </div> -->
         <div class="ui-g-12 ui-md-3">
-            <span><strong>Trabajador:</strong></span>{{ detalleDelItemSeleccionado.usuario }}
+            <span><strong>Solicitante:</strong></span>{{ detalleDelItemSeleccionado.usuario }}
         </div>
         <div class="ui-g-12 ui-md-3">
             <span><strong>COD C.C:</strong></span>{{ detalleDelItemSeleccionado.codCentroCosto }}
@@ -59,7 +59,7 @@
         <a (click)="onAnexoEjecutar(item.idRequerimientoAnexo, item.nombreArchivo)">{{ item.nombreArchivo }}</a>
     </div>
 </div>
-<p-panel *ngIf="detalleDelItemSeleccionado" header="Lista de Aprobadores" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
+<!-- <p-panel *ngIf="detalleDelItemSeleccionado" header="Lista de Aprobadores" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
     <p-table [columns]="cabeceraTablaListAprobacionViible" [value]="dataListaAprobacion" [responsive]="true" [resizableColumns]="true" styleClass="p-datatable-responsive-demo">
         <ng-template pTemplate="header" let-columns>
             <tr>
@@ -77,7 +77,7 @@
             </tr>
         </ng-template>
     </p-table>
-</p-panel>
+</p-panel> -->
 
 <p-dialog header="Descarga" [(visible)]="displayDescarga" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
 

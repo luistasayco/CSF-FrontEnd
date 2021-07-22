@@ -101,7 +101,7 @@ export class ModificarRequerimientoComponent implements OnInit, AfterViewChecked
       {field: 'opciones', header: 'Opciones'},
       {field: 'numLinea', header: 'Num Linea'},
       // {field: 'numOrdenTrabajo', header: 'Nro Orden Trabajo'},
-      {field: 'codArticulo', header: 'Cod Servicio'},
+      // {field: 'codArticulo', header: 'Cod Servicio'},
       {field: 'desArticulo', header: 'Des Servicio'},
       // {field: 'codUnidadMedida', header: 'Cod Unidad Medida'},
       // {field: 'codAlmacen', header: 'Cod Almacen'},
@@ -339,6 +339,7 @@ export class ModificarRequerimientoComponent implements OnInit, AfterViewChecked
   }
   
   clickGuardarGrilla(data: IGrilla[]) {
+    debugger;
     this.quitarNumLineas(data);
     this.agregarNumLineas(data);
     data.forEach((el) => {
@@ -369,7 +370,7 @@ export class ModificarRequerimientoComponent implements OnInit, AfterViewChecked
       fechaValidez,
       codCentroCosto,
       observacion,
-    } = this.formularioSuperior.value;
+    } = this.formularioSuperior.getRawValue();
 
     const arrayAnexos: IRequerimientoAnexoModificar[] = [];
     this.arrayUploadedFiles.forEach((el) => {

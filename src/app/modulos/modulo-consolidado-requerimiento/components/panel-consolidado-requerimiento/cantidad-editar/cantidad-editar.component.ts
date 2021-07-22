@@ -37,6 +37,7 @@ export class CantidadEditarComponent implements OnInit {
   listaRequerimientoItem: any =[];
   //botton
   seleccionArticulo=false;
+
   // Suscripcion [para realizar el unsuscription al cerrar el formulario]
   subscription$: Subscription;
   loading = true; //jc
@@ -64,26 +65,11 @@ export class CantidadEditarComponent implements OnInit {
       modalCantidadCompra: 0
     });
   }
- 
 
-  onChange(event) {
-   
-    // Array.from(this.listRequerimientoItem, x => {
-    //   x["codAlmacen"]=event.value.value,
-    //   x["desAlmacen"]=event.value.label
-    // });
-}
-
-clickAceptar(){
-  debugger;
-  //this.cancel.emit();
-  this.editarCantidaSeleccionado.emit(this.listaRequerimientoItem);
-  
-}
-
-// clickCancelar(){
-
-//   this.cancel.emit();
-// }
+  clickAceptar(){
+    
+    this.editarCantidaSeleccionado.emit(this.listaRequerimientoItem);
+    
+  }
 
 }

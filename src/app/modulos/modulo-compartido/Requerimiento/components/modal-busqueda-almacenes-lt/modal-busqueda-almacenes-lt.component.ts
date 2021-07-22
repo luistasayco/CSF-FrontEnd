@@ -29,7 +29,7 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
   
   
   seleccionArticulo: any;
-  rowListaAlmacen: any[] = [];//rowListaArticulo
+  rowListaAlmacen: any[] = [];
   cols: any;
   loadingTipoArticulo = true;
   loadingArticulo = false;
@@ -46,9 +46,6 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
   //GRILLA
   opciones: any = [];
 
-  //Parametros
-  //bodyParams : any;
-
   constructor(
     private readonly fb: FormBuilder,
     private almacenLtService: AlmacenLtService,
@@ -56,9 +53,7 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     public readonly lenguageService: LanguageService) {}
 
-  ngOnInit(): void {
-    debugger;
-  
+  ngOnInit(): void {  
 
     this.buildFormRq();
     this.cabeceraTabla();
@@ -69,19 +64,15 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
 
   cabeceraTabla() {
     this.cols = [
-      { field: 'warehouseCode', header: 'Cod. Almacen' },
-      { field: 'warehouseName', header: 'Des. Almacen' }
+      { field: 'warehouseCode', header: 'Código Almacén' },
+      { field: 'warehouseName', header: 'Descripción Almacén' }
     ];
   }
   
   getAlmacen() {
 
-    debugger;
-
     const formBody = this.formularioBusquedaAl.value;
-    
     var almacen=formBody.almacen;
-    
     this.loadingArticulo = true;
 
     this.almacenLtService
@@ -114,7 +105,7 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
     this.cancel.emit();
   }
   onToBuscar() {
-    debugger;
+    
     this.getAlmacen();
   }
   
