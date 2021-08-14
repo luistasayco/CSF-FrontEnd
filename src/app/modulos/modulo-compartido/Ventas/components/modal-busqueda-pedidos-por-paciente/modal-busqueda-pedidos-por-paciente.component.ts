@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
 import { TreeNode } from 'primeng/api';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { DemoService } from '../../../../../services/demo.service';
 import { Subscription } from 'rxjs';
-import { VentasService } from '../../../../modulo-venta/services/ventas.service';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
 import { IPedidoPorAtencion, IDetallePedidoPorPedido } from '../../interfaces/pedido-por-atencion.interface';
 import { map } from 'rxjs/operators';
@@ -33,6 +31,10 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit, OnDestr
   isVisualizarProducto: boolean = false;
   isSeleccionItem: IDetallePedidoPorPedido;
 
+  // loading
+  loadingPedidos: boolean;
+  loadingProductos: boolean;
+
   constructor(private ventaCompartidoService: VentaCompartidoService) { }
 
   ngOnInit(): void {
@@ -53,16 +55,19 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit, OnDestr
   }
 
   private onListarPedido() {
+    this.loadingPedidos = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListPedidosPorAtencion(this.isModeloHospital.codatencion)
     .pipe(
       map((resp: IPedidoPorAtencion[]) => {
+        this.loadingPedidos = false;
         this.onBuildTreeNode(resp);
       })
     )
     .subscribe(
       (resp) => {},
       (error) => {
+        this.loadingPedidos = false;
         swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
       }
     );
@@ -95,19 +100,20 @@ export class ModalBusquedaPedidosPorPacienteComponent implements OnInit, OnDestr
   }
 
   goListarDetallePedido(codpedido: string) {
+    this.loadingProductos = true;
     this.listDetallePedido = [];
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListPedidoDetallePorPedido(codpedido)
     .pipe(
       map((resp: IDetallePedidoPorPedido[]) => {
         this.listDetallePedido = resp;
-
-        console.log('this.listDetallePedido', this.listDetallePedido);
+        this.loadingProductos = false;
       })
     )
     .subscribe(
       (resp) => {},
       (error) => {
+        this.loadingProductos = false;
         swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
       }
     );

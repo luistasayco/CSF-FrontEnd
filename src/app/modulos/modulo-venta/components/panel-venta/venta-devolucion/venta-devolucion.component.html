@@ -1,372 +1,345 @@
 <p-card>
     <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-4">
-            <div class="ui-g ui-fluid">
-                <div class="ui-g-12 ui-md-4">
-                    <strong>
-                        <p-radioButton name="devolucion" value="Option 1" label="Devolución" inputId="opt1"></p-radioButton>
-                    </strong>
-                </div>
-                <div class="ui-g-12 ui-md-4">
-                    <strong>
-                        <p-radioButton name="devolucion" value="Option 1" label="Nota Credito" inputId="opt1" (onClick) ="goVisibleNotaCredito()"></p-radioButton>
-                    </strong>
-                </div>
+        <form [formGroup]="formulario">
+            <div class="ui-g-12 ui-md-2">
+                <strong>
+                <p-radioButton name="devolucion" value="01" label="Devolución" inputId="opt01"  formControlName="tipodevolucion" ></p-radioButton>
+            </strong>
             </div>
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" class="btn btn-block"></button>
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" (click)="onConfirmGrabar()" class="btn btn-block"></button>
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <button pButton type="button" label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <button pButton type="button" label="ChecList" icon="{{globalConstants.icoListar}}" class="btn btn-block"></button>
-        </div>
-    </div>
+            <div class="ui-g-12 ui-md-2">
+                <strong>
+                <p-radioButton name="devolucion" value="02" label="Nota Credito" inputId="opt02"  formControlName="tipodevolucion"  (onClick) ="goVisibleNotaCredito()"></p-radioButton>
+            </strong>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" class="btn btn-block"></button>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" (click)="goConfirmGrabar()" class="btn btn-block"></button>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="ChecList" icon="{{globalConstants.icoListar}}" class="btn btn-block"></button>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <label class="label-custom">Devolución: </label>
+                <input type="text" pInputText formControlName="coddevolucion" placeholder="Devolución">
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <label class="label-custom">Fecha Devolución: </label>
+                <p-calendar formControlName="fecdevolucion" placeholder="Seleccionar Fecha Devolución" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <label class="label-custom">Venta Origen: </label>
+                <input type="text" pInputText formControlName="codventadevolucion" placeholder="Venta Origen">
+            </div>
+            <div class="ui-g-12 ui-md-4">
+                <label class="label-custom">Almacen: </label>
+                <input type="text" pInputText formControlName="nombrealmacen" placeholder="Almacén">
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <label class="label-custom">Fecha Venta: </label>
+                <input type="text" pInputText formControlName="fecventa" placeholder="Fecha Venta">
+                <!-- <p-calendar id="float-input-fecha" formControlName="fecventa" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar> -->
+            </div>
 
-    <div class="ui-g ui-fluid">
-        <div class="ui-g-12 ui-md-2">
-            <label class="label-custom" for="float-input-tipo-venta">Devolución: </label>
-            <input id="float-input-tipo-venta" type="number" pInputText placeholder="Devolución">
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <label class="label-custom" for="float-input-fecha">Fecha Devolución: </label>
-            <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <label class="label-custom" for="float-input-tipo-venta">Venta Origen: </label>
-            <input id="float-input-tipo-venta" type="number" pInputText placeholder="Venta Origen">
-        </div>
-        <div class="ui-g-12 ui-md-4">
-            <label class="label-custom" for="float-input-almacen">Almacen: </label>
-            <app-modal-busqueda-almacen></app-modal-busqueda-almacen>
-        </div>
-        <div class="ui-g-12 ui-md-2">
-            <label class="label-custom" for="float-input-fecha">Fecha Venta: </label>
-            <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
-        </div>
-    </div>
+            <div class="ui-g-12">
+                <!-- <form [formGroup]="formularioCabecera"> -->
+                <p-tabView>
+                    <p-tabPanel header="Datos" leftIcon="pi pi-calendar">
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12 ui-md-1 sba-label-tipo-cliente">
+                                <span><strong>Tipo Cliente: </strong> </span>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <input type="text" formControlName="codTipoCliente" pInputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <input type="text" formControlName="nombreTipoCliente" pInputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-6"></div>
+                            <div class="ui-g-12 ui-md-1 sba-label-pedido">
+                                <!-- <span><strong>{{isCodPedido}}</strong> </span> -->
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12">
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Atención</label>
+                                    <app-modal-busqueda-atencion-paciente [isHabilitaControl]="false" [isCodAtencion]="isCodAtencion" (eventoResgistroSeleccionado)="goAtencionSeleccionado($event)"></app-modal-busqueda-atencion-paciente>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label>Paciente/Cliente</label>
+                                    <input type="text" formControlName="nombreClientePaciente" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label>Dirección</label>
+                                    <input type="text" formControlName="direccion" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Cod.Aseguradora</label>
+                                    <input type="text" formControlName="codAseguradora" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-3">
+                                    <label>Aseguradora</label>
+                                    <input type="text" formControlName="aseguradora" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Paciente</label>
+                                    <input type="text" formControlName="paciente" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Médico por Atención</label>
+                                    <input type="text" formControlName="nombremedico" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Plan</label>
+                                    <input type="text" formControlName="plan" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Dscto Plan</label>
+                                    <input type="number" formControlName="descuentoPlan" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Coaseguro</label>
+                                    <input type="number" formControlName="coaseguro" pInputText>
+                                </div>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                    <p-tabPanel header="Detalle" leftIcon="pi pi-inbox">
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12">
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Cod.Contratante</label>
+                                    <input type="text" formControlName="codContratante" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Contratante</label>
+                                    <input type="text" formControlName="contratante" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Titular</label>
+                                    <input type="text" formControlName="titular" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Cama</label>
+                                    <input type="text" formControlName="cama" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Telefono</label>
+                                    <input type="text" formControlName="telefono" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Póliza</label>
+                                    <input type="text" formControlName="poliza" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Cod.Empresa</label>
+                                    <input type="text" formControlName="codEmpresa" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-2">
+                                    <label>Empresa</label>
+                                    <input type="text" formControlName="empresa" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Plan</label>
+                                    <input type="text" formControlName="planPoliza" pInputText>
+                                </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <label>Deducible</label>
+                                    <input type="text" formControlName="deducible" pInputText>
+                                </div>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                    <p-tabPanel header="Nota" leftIcon="pi pi-user">
+                        <div class="ui-g ui-fluid">
+                            <div class="ui-g-12 ui-md-3">
+                                <label>Señor(es)</label>
+                                <input type="text" size="30" pInputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-3">
+                                <label>Dirección</label>
+                                <input type="text" size="30" pInputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>R.U.C.</label>
+                                <input type="text" size="30" pInputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>Fecha</label>
+                                <p-calendar placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>Card Code</label>
+                                <input type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>.</label>
+                                <button pButton type="button" label="Obtener PDF" icon="{{globalConstants.icoPDF}}" class="btn btn-block"></button>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>.</label>
+                                <button pButton type="button" label="Imprimir Nota" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>.</label>
+                                <button pButton type="button" label="¿Cuál toca?" icon="{{globalConstants.icoListar}}" class="btn btn-block"></button>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>Nota</label>
+                                <input type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>.</label>
+                                <input type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>Comprobante</label>
+                                <input type="text" size="30" pInputText disabled>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>% IGV</label>
+                                <input type="text" size="30" pInputText disabled>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>Moneda</label>
+                                <input type="text" size="30" pInputText disabled>
+                            </div>
+                            <div class="ui-g-12 ui-md-2">
+                                <label>Tipo Motivo</label>
+                                <app-modal-busqueda-tipo-motivo-nota-credito></app-modal-busqueda-tipo-motivo-nota-credito>
+                            </div>
+                            <div class="ui-g-12 ui-md-5">
+                                <label>Concepto</label>
+                                <input type="text" size="30" pInputText>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                </p-tabView>
+                <!-- </form> -->
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="Elegir Venta" icon="{{globalConstants.icoListar}}" (click)="goVisibleVenta()" [disabled]="isGrabar" class="btn btn-block"></button>
+            </div>
+            <div class="ui-g-12 ui-md-2">
+                <button pButton type="button" label="Elegir Pedido" icon="{{globalConstants.icoListar}}" (click)="goVisiblePedido()" [disabled]="isGrabar" class="btn btn-block"></button>
+            </div>
+            <div class="ui-g-12 ui-md-8">
+                <input id="float-input-producto" type="text" pInputText formControlName="observacion" placeholder="Observación">
+            </div>
 
-    <div class="ui-g ui-fluid">
-        <div class="ui-g-12">
-            <p-tabView>
-                <p-tabPanel header="Datos" leftIcon="pi pi-calendar">
-                    <div class="ui-g ui-fluid">
-                        <div class="ui-g-12 ui-md-1">
-                            Tipo Cliente :
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="ui-g ui-fluid">
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Atención</label>
-                            <app-modal-busqueda-atencion-paciente></app-modal-busqueda-atencion-paciente>
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <label for="float-input">Paciente/Cliente</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <label for="float-input">Dirección</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Cod.Aseguradora</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <label for="float-input">Aseguradora</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <!-- <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Cliente</label>
-                            <app-modal-busqueda-cliente-externo></app-modal-busqueda-cliente-externo>
-                        </div> -->
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Cod. Paciente</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <label for="float-input">Médico</label>
-                            <app-modal-busqueda-medico></app-modal-busqueda-medico>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Plan</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Plan</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Dscto Plan</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Coaseguro</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                    </div>
-                </p-tabPanel>
-                <p-tabPanel header="Detalle" leftIcon="pi pi-inbox">
-                    <div class="ui-g ui-fluid">
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Cliente</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Contratante</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Titular</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Cama</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Telefono</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Póliza</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Empresa</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Empresa</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Plan</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <!-- <span class="ui-float-label"> -->
-                            <label for="float-input">Deducible</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-
-                            <!-- </span> -->
-                        </div>
-                    </div>
-                </p-tabPanel>
-                <p-tabPanel header="Nota" leftIcon="pi pi-user">
-                    <div class="ui-g ui-fluid">
-                        <div class="ui-g-12 ui-md-3">
-                            <label for="float-input">Señor(es)</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <label for="float-input">Dirección</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">R.U.C.</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Fecha</label>
-                            <p-calendar id="float-input-fecha" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Card Code</label>
-                            <input id="float-input" type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">.</label>
-                            <button pButton type="button" label="Obtener PDF" icon="{{globalConstants.icoPDF}}" class="btn btn-block"></button>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">.</label>
-                            <button pButton type="button" label="Imprimir Nota" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">.</label>
-                            <button pButton type="button" label="¿Cuál toca?" icon="{{globalConstants.icoListar}}" class="btn btn-block"></button>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Nota</label>
-                            <input id="float-input" type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">.</label>
-                            <input id="float-input" type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Comprobante</label>
-                            <input id="float-input" type="text" size="30" pInputText disabled>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">% IGV</label>
-                            <input id="float-input" type="text" size="30" pInputText disabled>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            <label for="float-input">Moneda</label>
-                            <input id="float-input" type="text" size="30" pInputText disabled>
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <label for="float-input">Tipo Motivo</label>
-                            <app-modal-busqueda-tipo-motivo-nota-credito></app-modal-busqueda-tipo-motivo-nota-credito>
-                        </div>
-                        <div class="ui-g-12 ui-md-5">
-                            <label for="float-input">Concepto</label>
-                            <input id="float-input" type="text" size="30" pInputText>
-                        </div>
-                    </div>
-                </p-tabPanel>
-            </p-tabView>
-        </div>
+        </form>
 
         <div class="ui-g-12">
-            <div class="ui-g-12 ui-md-9">
-                <p-panel header="Lista de Productos a devolver" [toggleable]="true" [style]="{'margin-bottom':'20px'}">
-                    <div class="ui-g ui-fluid">
-                        <div class="ui-g-12 ui-md-2">
-                            <button pButton type="button" label="Elegir Venta" icon="{{globalConstants.icoListar}}" (click)="isVisible = true" class="btn btn-block"></button>
-                        </div>
-                        <div class="ui-g-12 ui-md-2">
-                            <button pButton type="button" label="Elegir Pedido" icon="{{globalConstants.icoListar}}" (click)="goVisiblePedido()" class="btn btn-block"></button>
-                        </div>
-                        <div class="ui-g-12 ui-md-1">
-                            Observación :
-                        </div>
-                        <div class="ui-g-12 ui-md-7">
-                            <input id="float-input-producto" type="text" pInputText placeholder="Observación">
-                        </div>
+            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th colspan="1">Acciones</th>
+                        <th *ngFor="let col of columns">
+                            {{col.header}}
+                        </th>
 
-                    </div>
-                    <footer>
-                        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
-                            <ng-template pTemplate="header" let-columns>
-                                <tr>
-                                    <th colspan="1">Acciones</th>
-                                    <th *ngFor="let col of columns">
-                                        {{col.header}}
-                                    </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-index="rowIndex">
+                    <tr>
+                        <td class="custom-td-ico">
+                            <button *ngIf="!isGrabar" type="button" pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger" (click)="goEliminarItemDetalleVenta(index)"></button>
+                        </td>
+                        <td *ngFor="let col of columns" [ngSwitch]="col.field">
+                            <span class="p-column-title">{{col.header}}</span>
 
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-rowData let-columns="columns">
-                                <tr>
-                                    <td class="custom-td-ico">
-                                        <button pButton icon="{{globalConstants.icoEliminar}}" class="ui-button-danger"></button>
-                                    </td>
-                                    <td *ngFor="let col of columns" [ngSwitch]="col.field">
-                                        <span class="p-column-title">{{col.header}}</span>
-
-                                        <!-- <span *ngSwitchCase="'codProd'"><app-modal-consulta-producto [isCodProducto] ="rowData[col.field]"></app-modal-consulta-producto>{{ rowData[col.field] }}</span> -->
-                                        <!-- <span *ngSwitchCase="'lote'"><app-modal-consulta-lote [isCodVenta] ="" [isCodDetalleVenta] ="rowData['coddetalle']" [isCodProducto] ="rowData['codProd']"></app-modal-consulta-lote></span> -->
-                                        <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </footer>
-                </p-panel>
-            </div>
-            <div class="ui-g-12 ui-md-3">
+                            <span *ngSwitchCase="'cntxdev'">
+                                <div *ngIf="!isGrabar">
+                                    <input  type="number" [disabled]="rowData['flgbtchnum']" [(ngModel)]="rowData[col.field]"  min="0" pInputText (keyup.enter)="goChangeCantidad(rowData, index)">
+                                </div>
+                                <div *ngIf="isGrabar">
+                                    {{ rowData[col.field] }}
+                                </div>
+                            </span>
+                            <span *ngSwitchCase="'codproducto'"><i class="fa fa-arrow-right" (click)="goChangeVisibleProducto(rowData, index)"></i>{{ rowData[col.field] }}</span>
+                            <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum || rowData.binactivat" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
+                            <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="ui-g-12 ui-md-12">
+            <form [formGroup]="formularioTotales">
                 <div class="ui-g ui-fluid">
-                    <div class="ui-g-12">
-                        <div class="ui-g-12 ui-md-6">
-                            <label class="label-custom" for="float-input-dscto-plan">M. Dscto Plan: </label>
-                            <input id="float-input-dscto-plan" type="number" pInputText placeholder="Dscto. Plan">
-                        </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom">M. Dscto Plan: </label>
+                        <input type="number" pInputText placeholder="Dscto. Plan" formControlName="montoDescuentoPlan">
                     </div>
-                    <div class="ui-g-12">
-                        <div class="ui-g-12 ui-md-3">
-                            <label class="label-custom" for="float-input-sub-total">Sub Total: </label>
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <input id="float-input-sub-total" type="number" pInputText placeholder="Sub Total">
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <input id="float-input-sub-total" type="number" pInputText placeholder="Sub Total">
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <input id="float-input-sub-total" type="number" pInputText placeholder="Sub Total">
-                        </div>
+                    <div class="ui-g-12 ui-md-8"></div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom">Sub Total: </label>
+                        <input type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotal">
                     </div>
-                    <div class="ui-g-12">
-                        <div class="ui-g-12 ui-md-3">
-                            <label class="label-custom" for="float-input-sub-total">IGV: </label>
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <input id="float-input-sub-total" type="number" pInputText placeholder="IGV">
-                        </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom">Sub Total (Paciente): </label>
+                        <input type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotalPaciente">
                     </div>
-                    <div class="ui-g-12">
-                        <div class="ui-g-12 ui-md-3">
-                            <label class="label-custom" for="float-input-sub-total">Total: </label>
-                        </div>
-                        <div class="ui-g-12 ui-md-3">
-                            <input id="float-input-sub-total" type="number" pInputText placeholder="Total">
-                        </div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom">Sub Total (Asegurado): </label>
+                        <input type="number" pInputText placeholder="Sub Total" style="background-color: rgb(216, 240, 213);" formControlName="montoSubTotalAseguradora">
                     </div>
+                    <div class="ui-g-12 ui-md-9"></div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom">IGV: </label>
+                        <input type="number" pInputText placeholder="IGV" style="background-color: rgb(181, 235, 174);" formControlName="montoIGV">
+                    </div>
+                    <div class="ui-g-12 ui-md-2"></div>
+                    <div class="ui-g-12 ui-md-9"></div>
+                    <div class="ui-g-12 ui-md-1">
+                        <label class="label-custom">Total: </label>
+                        <input type="number" pInputText placeholder="Total" style="background-color: rgb(154, 230, 144);" formControlName="montoTotal">
+                    </div>
+                    <div class="ui-g-12 ui-md-2"></div>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </p-card>
 
-<p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
-
-<p-dialog header="Ventas por Atención" [(visible)]="isVisible" [modal]="true">
-    <app-modal-busqueda-venta-por-atencion></app-modal-busqueda-venta-por-atencion>
+<p-dialog header="Ventas por Atención" *ngIf="isVisible" [(visible)]="isVisible" [modal]="true" [autoZIndex] [closable]="false" [style]="{width: '70vw'}">
+    <app-modal-busqueda-venta-por-atencion [isCodAtencion]="isCodAtencion" (eventoAceptar)="goVentaPorAtencionAceptar($event)" (eventoCerrar)="goVentaPorAtencionSalir()"></app-modal-busqueda-venta-por-atencion>
 </p-dialog>
 
 <p-dialog header="Ingresar Pedido" [(visible)]="isVisiblePedido" [modal]="true" [baseZIndex]="10000">
     <app-modal-busqueda-pedido-devolucion></app-modal-busqueda-pedido-devolucion>
 </p-dialog>
 
-<p-dialog header="Ingresar Nota de Crédito" [(visible)]="isVisibleNotaCredito" [modal]="true" [baseZIndex]="10000">
-    <app-modal-busqueda-nota-credito-devolucion></app-modal-busqueda-nota-credito-devolucion>
+<p-dialog header="Ingresar Nota de Crédito" *ngIf="isVisibleNotaCredito" [(visible)]="isVisibleNotaCredito" [modal]="true" [autoZIndex] [closable]="false">
+    <app-modal-busqueda-nota-credito-devolucion (eventoAceptar)="goAceptarNotaCredito()" (eventoCancelar)="goCancelarNotaCredito()"></app-modal-busqueda-nota-credito-devolucion>
+</p-dialog>
+
+<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [autoZIndex] [closable]="false">
+    <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalle.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
+</p-dialog>
+
+<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalleLote.codproducto}} - {{isSeleccionItemVentaDetalleLote.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
+    <app-modal-consulta-lote [isActivoVenta]="false" [isActivoDevolucion]="true" [isActivoVerVenta]="false" [isActivoProducto]="false" [IsActivaLote]="isSeleccionItemVentaDetalleLote.manBtchNum" [isListVentaDetalleLote]="isSeleccionItemVentaDetalleLote.listVentasDetalleLotes"
+        (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()" [IsActivaUbicacion]="isSeleccionItemVentaDetalleLote.binactivat"></app-modal-consulta-lote>
+</p-dialog>
+
+<p-dialog *ngIf="isAutenticar" header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
+    <app-modal-autenticacion [isAnular]="false" (eventoAceptar)="goAutenticarAceptar($event)" (eventoCancelar)="goAutenticarCancelar()"></app-modal-autenticacion>
+</p-dialog>
+
+<p-dialog header="Grabar" [(visible)]="isDisplaySave" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+    Guardando Informacion...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
 </p-dialog>

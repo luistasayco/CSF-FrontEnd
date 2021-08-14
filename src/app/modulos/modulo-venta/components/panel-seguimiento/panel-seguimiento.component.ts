@@ -3,13 +3,13 @@ import { MenuItem } from 'primeng';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { BreadcrumbService } from '../../../../services/breadcrumb.service';
 import { LanguageService } from '../../../../services/language.service';
-import { MensajePrimeNgService } from '../../../../services/mensaje-prime-ng.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IResultBusquedaPedido } from '../../interface/pedido.interface';
 import { Subscription } from 'rxjs';
 import { VentasService } from '../../services/ventas.service';
 import { map } from 'rxjs/operators';
 import { IVentaCabeceraSingle } from '../../interface/venta.interface';
+import { ISeguimiento } from '../../interface/seguimiento';
 import swal from'sweetalert2';
 
 @Component({
@@ -34,8 +34,11 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
   items: MenuItem[];
   // Formulario
   formularioBusqueda: FormGroup;
-  itemSeleccionadoGrilla: IResultBusquedaPedido;
+  itemSeleccionadoGrilla: IResultBusquedaPedido[];
   subscription$: Subscription;
+
+  // loading
+  loading: boolean;
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
               private readonly formBuilder: FormBuilder,
@@ -51,13 +54,15 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
     this.onHeaderGrilla();
     this.onOpcionesGrilla();
     this.goListar();
+
+    this.itemSeleccionadoGrilla = [];
   }
 
   private buildForm() {
     this.formularioBusqueda = this.formBuilder.group({
       fechaini: [new Date()],
       fechafin: [new Date()],
-      ccosto: ['11']
+      ccosto: ['078']
     });
   }
 
@@ -65,6 +70,7 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
     this.columnas = [
       { field: 'codventa', header: 'Cod.Venta' },
       { field: 'codatencion', header: 'Cod.Atención' },
+      { field: 'nompaciente', header: 'Nombre' },
       { field: 'cama', header: 'Cama' },
       { field: 'codpedido', header: 'Pedido' },
       { field: 'tipopedido', header: 'T. Pedido' },
@@ -95,10 +101,6 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
     ];
   }
 
-  onItemElegido(data: IResultBusquedaPedido) { 
-    this.itemSeleccionadoGrilla = data;
-  }
-
   onDetalle(data: IResultBusquedaPedido) {
     debugger
     let codventa = data.codventa === undefined ? null : data.codventa.trim();
@@ -115,16 +117,20 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
   goListar() {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
+
+    this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getListaPedidosSeguimientoPorFiltro(body.fechaini, body.fechafin, body.ccosto, 2)
+    this.subscription$ = this.ventasService.getListaPedidosSeguimientoPorFiltro(body.fechaini, body.fechafin, body.ccosto, 1)
     .pipe(
       map((resp: IResultBusquedaPedido[]) => {
         this.listModelo = resp;
+        this.loading = false;
       })
     )
     .subscribe(
       (resp) => {},
       (error) => {
+        this.loading = false;
         swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
       }
     );
@@ -156,17 +162,51 @@ export class PanelSeguimientoComponent implements OnInit, OnDestroy {
   }
 
   onEnviar() {
+    this.onGenerarModelo(1);
   }
 
   onRecepcion() {
+    this.onGenerarModelo(2);
   }
 
   onCancelarEnvio() {
-
+    this.onGenerarModelo(3);
   }
 
   onCancelarRecepcion() {
-    
+    this.onGenerarModelo(4);
+  }
+
+  onGenerarModelo(opcion: number) {
+
+    if (this.itemSeleccionadoGrilla.length === 0) {
+      swal.fire(this.globalConstants.msgInfoSummary, 'Seleccionar Ventas...Favor de validar', 'info');
+      return;
+    }
+
+    let linea: ISeguimiento = {
+      opcion: opcion,
+      listaSeguimientoVenta: []
+    }
+
+    for (let item of this.itemSeleccionadoGrilla) {
+      linea.listaSeguimientoVenta.push({codventa: item.codventa});
+    }
+
+    this.onUpdateSeguimiento(linea);
+  }
+
+  onUpdateSeguimiento(value: ISeguimiento) {
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.setUpdateSeguimiento( value )
+    .subscribe(() =>  {
+      this.itemSeleccionadoGrilla = [];
+      this.goListar();
+      swal.fire(this.globalConstants.msgExitoSummary, this.globalConstants.msgExitoDetail, 'success');
+    },
+      (error) => {
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
   }
 
   ngOnDestroy() {

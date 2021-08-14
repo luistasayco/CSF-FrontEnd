@@ -264,7 +264,7 @@
                                 </div>
                             </span>
                             <span *ngSwitchCase="'codproducto'"><i class="fa fa-arrow-right" (click)="goChangeVisibleProducto(rowData, index)"></i>{{ rowData[col.field] }}</span>
-                            <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
+                            <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum || rowData.binactivat" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
 
                             <span *ngSwitchCase="'tipoAutorizacion'">
                                 <div *ngIf="!isGrabar">
@@ -401,8 +401,8 @@
 </p-dialog>
 
 <p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalleLote.codproducto}} - {{isSeleccionItemVentaDetalleLote.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
-    <app-modal-consulta-lote [isActivoVenta]="true" [isActivoVentaDetalleLote]="false" [isCantidadInput]="isSeleccionItemVentaDetalleLote.cantidad" [isCodProducto]="isSeleccionItemVentaDetalleLote.codproducto" [isListLoteVta]="isSeleccionItemVentaDetalleLote.listStockLote"
-        [isCodAlmacen]="isWarehouseCode" (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
+    <app-modal-consulta-lote [isActivoVenta]="true" [isActivoDevolucion]="false" [isActivoVerVenta]="false" [isActivoProducto]="false" [isCantidadInput]="isSeleccionItemVentaDetalleLote.cantidad" [isCodProducto]="isSeleccionItemVentaDetalleLote.codproducto"
+        [isListLoteVta]="isSeleccionItemVentaDetalleLote.listStockLote" [isCodAlmacen]="isWarehouseCode" (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()" [IsActivaLote]="isSeleccionItemVentaDetalleLote.manBtchNum" [IsActivaUbicacion]="isSeleccionItemVentaDetalleLote.binactivat"></app-modal-consulta-lote>
 </p-dialog>
 
 <p-dialog header="Chequear Ventas Anteriores : {{isCodPaciente}}" *ngIf="isVisibleChequearVentaAnterior" [(visible)]="isVisibleChequearVentaAnterior" [modal]="true" [closable]="false" [autoZIndex]>
@@ -416,4 +416,10 @@
     <div class="ui-g ui-fluid">
         <app-venta-simulador (eventoSalir)="goSalirVentaSimulada()"></app-venta-simulador>
     </div>
+</p-dialog>
+
+<p-dialog header="VALE DELIVERY" #appendVale *ngIf="isVisibleValeDelivery" [(visible)]="isVisibleValeDelivery" [modal]="true" [closable]="false" [autoZIndex] [style]="{width: '60vw'}">
+    <!-- <div class="ui-g ui-fluid"> -->
+    <app-panel-vale-delivery (eventAceptar)="goValeDeliveryAceptar()" (eventCancelar)="goValeDeliveryCancelar()" [isAppendVale]="appendVale" [isAtencion]="isModeloPaciente.codatencion" [isModeloPaciente]="isModeloPaciente"></app-panel-vale-delivery>
+    <!-- </div> -->
 </p-dialog>

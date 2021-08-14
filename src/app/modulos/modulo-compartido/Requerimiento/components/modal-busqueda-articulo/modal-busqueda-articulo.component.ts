@@ -63,7 +63,7 @@ export class ModalBusquedaArticuloComponent implements OnInit, OnChanges {
   }
 
   clickAceptar() {
-    debugger;
+    
     this.articuloSeleccionado.emit(this.seleccionArticulo);
   }
   clickCancelar() {

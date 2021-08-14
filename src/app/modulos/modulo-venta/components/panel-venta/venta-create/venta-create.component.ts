@@ -27,6 +27,7 @@ import { IAutenticarResponse } from '../../../../modulo-compartido/Ventas/interf
 import { ISeriePorMaquina } from '../../../../modulo-compartido/Ventas/interfaces/serie-por-maquina.interface';
 import { FunctionDblocalService } from '../../../../modulo-base-datos-local/function-dblocal.service';
 import { ConstantsTablasIDB } from '../../../../modulo-base-datos-local/constants/constants-tablas-indexdb';
+import { debug } from 'console';
 import swal from'sweetalert2';
 
 @Component({
@@ -94,6 +95,7 @@ export class VentaCreateComponent implements OnInit {
   isCodMedicoPedido: string = '';
   isPedidoORecetaValido: boolean;
   isCodPaciente: string = "";
+  isModeloPaciente: IPaciente;
 
   // Habilita Boton
   isHabilitaBotonPedido: boolean = false;
@@ -103,6 +105,7 @@ export class VentaCreateComponent implements OnInit {
   isVisualizarProducto: boolean = false;
   isVisualizarLote: boolean = false;
   isVisibleChequearVentaAnterior: boolean = false;
+  isVisibleValeDelivery: boolean = false;
 
   isSeleccionItemVentaDetalle: INewVentaDetalle;
 
@@ -235,7 +238,7 @@ export class VentaCreateComponent implements OnInit {
       }},
       {label: 'Vale Delivery', icon: this.globalConstants.icoSimulacion,
         command: () => {
-        // this.update();
+        this.goValeDelivery();
       }},
       
     ];
@@ -471,7 +474,7 @@ export class VentaCreateComponent implements OnInit {
   }
 
   goAtencionSeleccionado(item: IPaciente) {
-
+    this.isModeloPaciente = item;
     this.isPedidoORecetaValido = true;
 
     if (item.codatencion.substring(0,1) === 'J') {
@@ -716,6 +719,7 @@ export class VentaCreateComponent implements OnInit {
     // Obtenermos los datos de la cabecera
     const bodyCabecera = this.formularioCabecera.getRawValue();
 
+    producto.binActivat = item.binActivat === 'Y' ? true : false;
 
     if (this.isTipoCliente === '01') {
       if (bodyCabecera.idegctipoatencionmae !== null) {
@@ -890,6 +894,8 @@ export class VentaCreateComponent implements OnInit {
 
       const newDetalle: INewVentaDetalle  = {
         manBtchNum: producto.manbtchnum,
+        binactivat: producto.binActivat,
+        flgbin: false,
         codalmacen: bodyCabecera.codAlmacen,
         tipomovimiento: 'DV',
         codproducto: producto.itemCode,
@@ -912,6 +918,7 @@ export class VentaCreateComponent implements OnInit {
         igvproducto: producto.valorIGV,
         narcotico: producto.narcotico,
         ventasDetalleDatos: {
+          codproducto: producto.itemCode,
           tipodocumentoautorizacion: '00',
           numerodocumentoautorizacion: ''
         },
@@ -925,7 +932,7 @@ export class VentaCreateComponent implements OnInit {
       }
 
       this.listModelo.push(newDetalle);
-debugger;
+
       if (codPedido.length === 14) {
         let index = this.listModelo.indexOf(newDetalle);
   
@@ -1409,6 +1416,7 @@ debugger;
   }
 
   goAceptarLote(value: IStock[]){
+
     debugger;
     this.isVisualizarLote =!this.isVisualizarLote; 
 
@@ -1427,8 +1435,10 @@ debugger;
 
     if (isCantidadTotal === 0) {
       this.listModelo[this.isIndexItemVentaDetalle].flgbtchnum = false;
+      this.listModelo[this.isIndexItemVentaDetalle].flgbin = false;
     } else {
       this.listModelo[this.isIndexItemVentaDetalle].flgbtchnum = true;
+      this.listModelo[this.isIndexItemVentaDetalle].flgbin = true;
     }
     
     this.goChangeCantidad(this.listModelo[this.isIndexItemVentaDetalle], this.isIndexItemVentaDetalle);
@@ -1485,6 +1495,8 @@ debugger;
 
     let cadenaProductoMontoCero: string = '';
 
+    let cadenaProductoSinSeleccionarBin: string = '';
+
     // Validamos que la cantidad y el monto del detalle no sean 0
     this.listModelo.forEach(xFila => {
       if (xFila.cantidad === 0) {
@@ -1494,7 +1506,14 @@ debugger;
       if (xFila.totalconigv === 0) {
         cadenaProductoMontoCero = cadenaProductoMontoCero + `Producto: ${xFila.codproducto} - ${xFila.nombreproducto} <br>`;
       }
+      
+      if (xFila.binactivat) {
+        if (!xFila.flgbin){
+          cadenaProductoSinSeleccionarBin = cadenaProductoSinSeleccionarBin + `Producto: ${xFila.codproducto} - ${xFila.nombreproducto} <br>`;
+        }
+      }
     });
+
 
     if (cadenaProductoCantidadCero !== '') {
       this.isDisplayValidacion = false;
@@ -1505,6 +1524,12 @@ debugger;
     if (cadenaProductoMontoCero !== '') {
       this.isDisplayValidacion = false;
       swal.fire("Productos con Monto 0", cadenaProductoMontoCero,'error')
+      return;
+    }
+
+    if (cadenaProductoSinSeleccionarBin !== '') {
+      this.isDisplayValidacion = false;
+      swal.fire("Seleccionar Ubicación para los Productos ", cadenaProductoSinSeleccionarBin,'error')
       return;
     }
 
@@ -1653,6 +1678,7 @@ debugger;
       nombremaquina: this.isNombreMaquina,
       listaVentaDetalle: this.listModelo,
       usuario: usuario,
+      listVentasDetalleUbicacion: [],
       flgsinstock: bodyCabecera.sinStock
     }
 
@@ -1675,6 +1701,7 @@ debugger;
         this.isAutenticar =!this.isAutenticar;
       }
     })
+
   }
 
   goAceptarGrabar(value: IAutenticarResponse) {
@@ -1713,6 +1740,30 @@ debugger;
             xFila.ventasDetalleDatos.numerodocumentoautorizacion = xFila.numerodocumentoautorizacion;
           }  
         }
+      }
+
+      if (xFila.binactivat) {
+        xFila.listStockLote.forEach(xLineaDetalleLote => {
+          if (xLineaDetalleLote.quantityinput > 0) {
+debugger;
+            let xExisteUbicacion = [...bodyVenta.listVentasDetalleUbicacion].filter(xLineaUbicacionExiste => 
+              xLineaUbicacionExiste.ubicacion === xLineaDetalleLote.binAbs && xLineaUbicacionExiste.codproducto === xLineaDetalleLote.itemCode 
+            ).length;
+
+            if (xExisteUbicacion > 0) {
+              bodyVenta.listVentasDetalleUbicacion.find(xLineaUbicacionFind => 
+                xLineaUbicacionFind.ubicacion === xLineaDetalleLote.binAbs && xLineaUbicacionFind.codproducto === xLineaDetalleLote.itemCode 
+              ).cantidad += xLineaDetalleLote.quantityinput;
+            } else {
+              bodyVenta.listVentasDetalleUbicacion.push({
+                ubicacion: xLineaDetalleLote.binAbs,
+                codproducto: xFila.codproducto,
+                ubicaciondescripcion: xLineaDetalleLote.binCode,
+                cantidad: xLineaDetalleLote.quantityinput
+              });
+            }
+          }
+        });
       }
     });
 
@@ -1792,6 +1843,22 @@ debugger;
 
   goSalirVentaSimulada(){
     this.isVisibleSimuladorVentas =! this.isVisibleSimuladorVentas;
+  }
+
+  goValeDelivery() {
+    if (this.isModeloPaciente === null || this.isModeloPaciente === undefined) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Ingresar Atención','info')
+      return;
+    }
+    this.isVisibleValeDelivery =! this.isVisibleValeDelivery;
+  }
+
+  goValeDeliveryAceptar() {
+    this.isVisibleValeDelivery =! this.isVisibleValeDelivery;
+  }
+
+  goValeDeliveryCancelar() {
+    this.isVisibleValeDelivery =! this.isVisibleValeDelivery;
   }
 
   onCaja(){

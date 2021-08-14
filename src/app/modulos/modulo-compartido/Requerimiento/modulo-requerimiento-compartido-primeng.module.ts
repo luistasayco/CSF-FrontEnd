@@ -7,6 +7,7 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { PanelModule } from 'primeng/panel';
 import { CalendarModule } from 'primeng/calendar';
 import { DropdownModule } from 'primeng/dropdown';
+import {ToastModule} from 'primeng/toast';
 @NgModule({
   exports: [
     TableModule,
@@ -16,7 +17,8 @@ import { DropdownModule } from 'primeng/dropdown';
     SplitButtonModule,
     PanelModule,
     CalendarModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule
   ],
 })
 export class RequerimientoCompartidoPrimeNgModule {}

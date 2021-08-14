@@ -74,7 +74,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   private buildColumnas() {
     this.columnas = [
       { field: 'itemCode', header: 'Código' },
-      { field: 'lote', header: 'Lote' },
+      { field: 'lote', header: 'Lote/Ubi' },
       { field: 'itemName', header: 'Nombre' },
       { field: 'u_SYP_CS_LABORATORIO', header: 'Laboratorio' },
       { field: 'price', header: 'Precio' },
@@ -83,7 +83,7 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
     this.columnasGenerico = [
       { field: 'itemCode', header: 'Código' },
-      { field: 'lote', header: 'Lote' },
+      { field: 'lote', header: 'Lote/Ubi' },
       { field: 'itemName', header: 'Nombre' },
       { field: 'u_SYP_CS_LABORATORIO', header: 'Laboratorio' },
       { field: 'price', header: 'Precio' },
@@ -96,25 +96,21 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
 
     if (this.isCodAlmacen === null) {
       swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
       return;
     }
 
     if (formBody.nombreVisor === null) {
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Código a consultar`});
       swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Código a consultar`,'info')
       return;
     }
 
     if (formBody.nombreVisor.length === 0) {
       swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Código a consultar`,'info')
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Código a consultar`});
       return;
     }
 
     if (formBody.nombreVisor.length !== 8) {
       swal.fire(this.globalConstants.msgInfoSummary,`Código a consultar Incorrecto`,'info')
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Código a consultar Incorrecto`});
       return;
     }
 
@@ -133,7 +129,6 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     },
     (error) => {
       swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
-      // this.messageService.add({severity:'error', summary: this.globalConstants.msgErrorSummary, detail:error.error.resultadoDescripcion});
     });
   }
 
@@ -141,40 +136,31 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     const formBody = this.formularioBusqueda.value;
 
     if (this.isCodAlmacen === undefined) {
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
       swal.fire({
        title: this.globalConstants.msgInfoSummary,
         text: `Ingresar Almacén a consultar`,
         icon: 'error'
       })
-
-      // swal.fire(customClass: {
-      //   container: 'my-swal'
-      // },this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
       return;
     }
 
     if (this.isCodAlmacen === null) {
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Almacén a consultar`});
       swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Almacén a consultar`,'info')
       return;
     }
 
     if (formBody.codigo.length === 0 && formBody.nombre.length === 0) {
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Ingresar Nombre o Código a consultar`});
       swal.fire(this.globalConstants.msgInfoSummary,`Ingresar Código a consultar`,'info')
       return;
     }
 
     if (formBody.codigo.length === 0 && formBody.nombre.length < 3) {
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Nombre debe de tener 3 caracteres como minímo`});
       swal.fire(this.globalConstants.msgInfoSummary,`Nombre debe de tener 3 caracteres como minímo`,'info')
       return;
     }
 
     if (formBody.codigo.length > 0 && formBody.codigo.length < 8) {
       swal.fire(this.globalConstants.msgInfoSummary,`Código tiene 8 caracteres`,'info')
-      // this.messageService.add({severity:'info', summary: this.globalConstants.msgInfoSummary, detail:`Código tiene 8 caracteres`});
       return;
     }
 
@@ -186,10 +172,8 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
     this.subscription$ = this.ventaCompartidoService.getListStockPorFiltro(this.isCodAlmacen, formBody.nombre, formBody.codigo, true)
     .pipe(
       map((data: IStock[])=> {
-
-        console.log('this.listModelo', this.listModelo);
-
         this.listModelo = [];
+        debugger;
         this.listModelo = data;
 
         this.listModeloGenerico = [];
@@ -239,6 +223,14 @@ export class ModalBusquedaProductoComponent implements OnInit, OnDestroy {
   clickAceptar() {
     this.isVisualizar = false;
     this.eventoAceptar.emit(this.seleccionItem);
+
+    if (this.isCodAlmacen === '*')
+    {
+      this.formularioVisor.patchValue({
+        nombreVisor: this.seleccionItem.itemName,
+      });
+    }
+
     this.LimpiarFiltroBusqueda();
   }
 

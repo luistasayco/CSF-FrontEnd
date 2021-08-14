@@ -25,14 +25,17 @@
                 <label class="label-custom">Estado: </label>
                 <p-dropdown class="ui dropdown-item-text" [options]="listTablaEstadoReceta" formControlName="estado" placeholder="Seleccionar Estado Receta" optionLabel="label" [showClear]="true" [appendTo]="append"></p-dropdown>
             </div>
-            <div class="ui-g-12">
+            <div class="ui-g-12 ui-md-6">
                 <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goListarPedido()"></button>
+            </div>
+            <div class="ui-g-12 ui-md-6">
+                <button pButton type="button" label="Vale Delivery" icon="{{globalConstants.icoGenerico}}" class="btn btn-block ui-button-warning" (click)="goValeDelivery()"></button>
             </div>
         </div>
     </form>
 </p-panel>
 
-<p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePageModal" dataKey="key" [(selection)]="seleccionItem" selectionMode="single" autoLayout="true" [responsive]="true">
+<p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePageModal" dataKey="key" [(selection)]="seleccionItem" selectionMode="single" autoLayout="true" [responsive]="true" [loading]="loading">
     <ng-template pTemplate="header" let-columns>
         <tr>
             <th *ngFor="let col of columns">
@@ -64,7 +67,7 @@
                 <button pButton icon="{{globalConstants.icoPDF}}" class="ui-button-danger"></button>
             </td>
             <td class="action-td">
-                <button pButton icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goVisualizarObservacion(rowData.atencion)"></button>
+                <button pButton icon="{{globalConstants.icoBuscar}}" class="btn btn-block" (click)="goVisualizarObservacion(rowData)"></button>
             </td>
         </tr>
     </ng-template>
@@ -81,4 +84,15 @@
     </footer>
 </div>
 
-<app-modal-receta-observacion [(isVisualizar)]="isVisualizarObservacion" [isAtencion]="isAtencionObservacion"></app-modal-receta-observacion>
+
+<p-dialog *ngIf="isVisualizarObservacion" header="Receta - {{isModeloReeceta.ide_receta}}" [(visible)]="isVisualizarObservacion" [modal]="true" [style]="{width: '70vw'}" [autoZIndex] [closable]="false">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <app-modal-receta-observacion [isAtencion]="isModeloReeceta.cod_atencion" [isIdReceta]="isModeloReeceta.ide_receta" (eventCancelar)="goCancelarRecetaObservacion()"></app-modal-receta-observacion>
+        </div>
+    </div>
+</p-dialog>
+
+<p-dialog header="LISTADO - VALE DELIVERY" #appendVale *ngIf="isVisibleValeDelivery" [(visible)]="isVisibleValeDelivery" [modal]="true" [closable]="false" [autoZIndex] [style]="{width: '70vw'}">
+    <app-lista-vale-delivery (eventCancelar)="goValeDeliveryCancelar()"></app-lista-vale-delivery>
+</p-dialog>

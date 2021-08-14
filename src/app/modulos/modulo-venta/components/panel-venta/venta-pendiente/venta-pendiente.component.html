@@ -22,7 +22,7 @@
     </p-panel>
 
     <!-- Grilla de Datos     -->
-    <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
+    <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true" [loading]="loading">
         <ng-template pTemplate="header" let-columns>
             <tr>
                 <th colspan="1">Acciones</th>

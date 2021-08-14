@@ -54,7 +54,7 @@
 
         <div class="ui-g ui-fluid">
             <div class="ui-g-12">
-                <app-venta-datos [modeloItem]="modeloItem"></app-venta-datos>
+                <app-venta-datos [modeloItem]="modeloItem" [isDevolucion]="false"></app-venta-datos>
             </div>
 
             <div class="ui-g-12 ui-md-1">
@@ -86,7 +86,7 @@
                                 <span class="p-column-title">{{col.header}}</span>
 
                                 <span *ngSwitchCase="'codproducto'"><i class="fa fa-arrow-right" (click)="goChangeVisibleProducto(rowData, index)"></i>{{ rowData[col.field] }}</span>
-                                <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
+                                <span *ngSwitchCase="'lote'"><i *ngIf="rowData.manBtchNum || rowData.binactivat" class="fa fa-list" (click)="goChangeVisibleLote(rowData, index)"></i></span>
 
                                 <span *ngSwitchDefault>{{ rowData[col.field] }}</span>
                             </td>
@@ -138,12 +138,12 @@
     <app-modal-autenticacion [isAnular]="true" (eventoAceptar)="goAceptarAnular($event)" (eventoCancelar)="goCancelarAnular()"></app-modal-autenticacion>
 </p-dialog>
 
-<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [closable]="false">
+<p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [autoZIndex] [closable]="false">
     <app-modal-consulta-producto [isCodigoProducto]="isSeleccionItemVentaDetalle.codproducto" [isVisualizarProducto]="isVisualizarProducto" (eventoSalir)="goSalirProducto()"></app-modal-consulta-producto>
 </p-dialog>
 
-<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
-    <app-modal-consulta-lote [isActivoVenta]="false" [isActivoVentaDetalleLote]="true" [isListVentaDetalleLote]="isSeleccionItemVentaDetalle.listVentasDetalleLotes" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
+<p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [autoZIndex] [closable]="false">
+    <app-modal-consulta-lote [isActivoVenta]="false" [isActivoDevolucion]="false" [isActivoVerVenta]="true" [isActivoProducto]="false" [isListVentaDetalleLote]="isSeleccionItemVentaDetalle.listVentasDetalleLotes" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
 </p-dialog>
 
 <p-dialog header="Validaciones" [(visible)]="isDisplayValidacion" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">

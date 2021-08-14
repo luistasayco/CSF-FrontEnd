@@ -798,6 +798,8 @@ export class VentaSimuladorComponent implements OnInit {
 
       const newDetalle: INewVentaDetalle  = {
         manBtchNum: producto.manbtchnum,
+        binactivat: producto.binActivat,
+        flgbin: false,
         codalmacen: bodyCabecera.codAlmacen,
         tipomovimiento: 'DV',
         codproducto: producto.itemCode,
@@ -820,6 +822,7 @@ export class VentaSimuladorComponent implements OnInit {
         igvproducto: producto.valorIGV,
         narcotico: producto.narcotico,
         ventasDetalleDatos: {
+          codproducto: producto.itemCode,
           tipodocumentoautorizacion: '00',
           numerodocumentoautorizacion: ''
         },
@@ -1335,7 +1338,8 @@ export class VentaSimuladorComponent implements OnInit {
       nombremaquina: this.isNombreMaquina,
       listaVentaDetalle: this.listModelo,
       usuario: usuario,
-      flgsinstock: bodyCabecera.sinStock
+      flgsinstock: bodyCabecera.sinStock,
+      listVentasDetalleUbicacion: []
     }
 
     return bodyVenta;

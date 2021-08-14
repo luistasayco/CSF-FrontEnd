@@ -12,6 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ToastModule } from 'primeng/toast';
 import { CheckboxModule } from 'primeng/checkbox';
+import { InputMaskModule } from 'primeng/inputmask';
 
 @NgModule({
   exports: [
@@ -27,7 +28,8 @@ import { CheckboxModule } from 'primeng/checkbox';
     DropdownModule,
     InputTextareaModule,
     ToastModule,
-    CheckboxModule
+    CheckboxModule,
+    InputMaskModule
   ],
 })
 export class VentasCompartidoPrimeNgModule {}

@@ -4,6 +4,7 @@ import { map } from 'rxjs/operators';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 // const
 import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
 
@@ -51,6 +52,7 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
     private almacenLtService: AlmacenLtService,
     private readonly utils: UtilService,
     private activeRoute: ActivatedRoute,
+    private messageService: MessageService,
     public readonly lenguageService: LanguageService) {}
 
   ngOnInit(): void {  
@@ -77,7 +79,15 @@ export class ModalBusquedaAlmacenLtComponent implements OnInit {
 
     this.almacenLtService
       .getAlmacenByName(almacen)
-      .pipe(map((resp) => (this.rowListaAlmacen = resp)))
+      .pipe(map((resp:any) =>{
+
+        if(resp.error==null){
+         this.rowListaAlmacen = resp.value;
+        }else{
+          this.messageService.add({key: 'myKeyAlmacen', severity:'warn', summary: 'Mensaje', detail: `SELECCIONE UN ALMACEN`});
+        }
+
+      }))
       .subscribe(
         (resp) => {
           this.loadingArticulo = false;

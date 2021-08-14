@@ -9,6 +9,7 @@ import { map } from 'rxjs/operators';
 import { ITabla } from '../../../../modulo-venta/interface/tabla.interface';
 import { SelectItem } from 'primeng';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-modal-busqueda-receta',
@@ -30,11 +31,15 @@ export class ModalBusquedaRecetaComponent implements OnInit, OnDestroy {
   seleccionItem: IReceta;
 
   isVisualizarObservacion: boolean;
-  isAtencionObservacion: string;
+  isModeloReeceta: IReceta;
+
+  isVisibleValeDelivery: boolean;
 
   @Output() eventoAceptar = new EventEmitter<IReceta>();
   @Output() eventoCancelar = new EventEmitter<IReceta>();
 
+  // loading
+  loading: boolean;
   constructor(public lenguageService: LanguageService,
               private readonly ventasService: VentasService,
               private readonly formBuilder: FormBuilder,
@@ -66,6 +71,7 @@ export class ModalBusquedaRecetaComponent implements OnInit, OnDestroy {
     this.subscription$ = this.ventasService.getListTablaClinicaPorFiltros('MEDISYN_ESTADO_CONSULTA_MEDICA', '', 34, 0, -1)
     .pipe(
       map((resp: ITabla[]) => {
+        debugger;
         this.listTablaEstadoConsultaMedica = [];
         for (let item of resp) {
           this.listTablaEstadoConsultaMedica.push({ value: item.codigo.trim(), label: item.nombre.trim() })
@@ -106,19 +112,29 @@ export class ModalBusquedaRecetaComponent implements OnInit, OnDestroy {
     let tipoconsultamedica = body.tipoconsultamedica === null ? '' : body.tipoconsultamedica.value
     let estado = body.estado === null ? '' : body.estado.value
 
+    this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventaCompartidoService.getListRecetasPorFiltro(body.fechainicio, body.fechafin, tipoconsultamedica, body.codreceta, body.nombre, estado)
     .pipe(
       map((resp: IReceta[]) => {
+        this.loading = false;
         this.listModelo = resp;
       })
     )
-    .subscribe();
+    .subscribe(() => {},
+    (error) => {
+      this.loading = false;
+      swal.fire(this.globalConstants.msgInfoSummary,error.error.resultadoDescripcion,'error')
+    });
   }
 
-  goVisualizarObservacion(atencion: string) {
+  goVisualizarObservacion(value: IReceta) {    
+    this.isModeloReeceta = value;
     this.isVisualizarObservacion = !this.isVisualizarObservacion;
-    this.isAtencionObservacion = atencion;
+  }
+
+  goValeDelivery() { 
+    this.isVisibleValeDelivery = !this.isVisibleValeDelivery;
   }
 
   clickAceptar() {
@@ -140,6 +156,14 @@ export class ModalBusquedaRecetaComponent implements OnInit, OnDestroy {
       nombre: '',
       estado: null
     });
+  }
+
+  goCancelarRecetaObservacion() {
+    this.isVisualizarObservacion = !this.isVisualizarObservacion;
+  }
+
+  goValeDeliveryCancelar() {
+    this.isVisibleValeDelivery = !this.isVisibleValeDelivery;
   }
 
   ngOnDestroy() {

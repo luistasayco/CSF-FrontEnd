@@ -3,13 +3,13 @@
         <h1> <strong>PACIENTE {{isModeloHospital.codatencion}} (CAMA ==> {{isModeloHospital.cama}})</strong> </h1>
     </div>
     <div class="ui-g-12 ui-md-3">
-        <p-tree [value]="isNode" [filter]="true" selectionMode="single" (onNodeSelect)="goSelectNodePedido($event)" scrollHeight="400px"></p-tree>
+        <p-tree [value]="isNode" selectionMode="single" (onNodeSelect)="goSelectNodePedido($event)" scrollHeight="400px" [loading]="loadingPedidos"></p-tree>
     </div>
     <div class="ui-g-12 ui-md-9">
         <div *ngIf="isSelectItemPedido">
             <h2> <strong>{{isSelectItemPedido.codpedido}} ({{isSelectItemPedido.fechaatencion | date: 'd MMM y h:mm:ss a'}}) => {{isSelectItemPedido.estado === 'G' ? 'OK' : 'INCOMPLET'}} , {{isSelectItemPedido.listado === 'L' ? 'LIST' : 'NO LIST'}}</strong></h2>
         </div>
-        <p-table [value]="listDetallePedido" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePageModal" autoLayout="true" [responsive]="true">
+        <p-table [value]="listDetallePedido" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePageModal" autoLayout="true" [responsive]="true" [loading]="loadingProductos">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th *ngFor="let col of columns">

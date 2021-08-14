@@ -34,9 +34,9 @@ import { ModalBusquedaUbicacionLtComponent } from './components/modal-busqueda-u
         ModalBusquedaArticuloStockComponent,
         ModalBusquedaAlmacenLtComponent,
         ModalBusquedaSocioNegocioLtComponent,
+        ModalBusquedaUbicacionLtComponent,
         LoadingComponent,
-        TableCompartidoComponent,
-        ModalBusquedaUbicacionLtComponent],
+        TableCompartidoComponent],
     imports: [ CommonModule, 
                RequerimientoCompartidoPrimeNgModule, 
                FormsModule,
@@ -54,9 +54,9 @@ import { ModalBusquedaUbicacionLtComponent } from './components/modal-busqueda-u
         ModalBusquedaArticuloStockComponent,
         ModalBusquedaAlmacenLtComponent,
         ModalBusquedaSocioNegocioLtComponent,
+        ModalBusquedaUbicacionLtComponent,
         LoadingComponent,
-        TableCompartidoComponent,
-        ModalBusquedaUbicacionLtComponent],
+        TableCompartidoComponent],
     providers: [ ],
 })
 export class RequerimientoCompartidoModule {}

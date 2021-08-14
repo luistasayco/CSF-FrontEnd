@@ -8,9 +8,6 @@ import { ActivatedRoute } from '@angular/router';
 // const
 import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
 
-//interfaces
-//services
-
 import { SolicitudTrasladoService } from '../../../../modulo-solicitud-traslado/services/solicitud-traslado.service';
 
 import { LanguageService } from '../../../../../services/language.service';
@@ -34,7 +31,6 @@ export class ModalBusquedaArticuloStockComponent implements OnInit {
   
   rowListaArticulo: any[] = [];
   seleccionArticulo: any;
-
 
   cols: any;
   loadingTipoArticulo = true;
@@ -77,7 +73,7 @@ export class ModalBusquedaArticuloStockComponent implements OnInit {
     this.cols = [
       { field: 'itemCode', header: 'Código Articulo' },
       { field: 'itemName', header: 'Descripción Articulo' },
-      { field: 'stock', header: 'Stock' }
+      { field: 'onHandALM', header: 'Stock' }
     ];
   }
   

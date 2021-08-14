@@ -28,7 +28,7 @@
     <!-- Grilla de Datos     -->
     <p-panel header="Lista de {{titulo}}">
 
-        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="key" editMode="row" autoLayout="true" [responsive]="true">
+        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" [(selection)]="itemSeleccionadoGrilla" [loading]="loading" dataKey="key" editMode="row" autoLayout="true" [responsive]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th colspan="1">Acciones</th>
@@ -44,7 +44,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns">
                 <tr>
                     <td class="custom-td-splitButton">
-                        <p-splitButton label="Detalle" icon="fa fa-list-ol " (onDropdownClick)="onItemElegido(rowData)" (onClick)="onDetalle(rowData)" appendTo="body"></p-splitButton>
+                        <button pButton type="button" label="Detalle" icon="{{globalConstants.icoListar}}" class="btn btn-block" (click)="onDetalle(rowData)"></button>
                     </td>
                     <td class="custom-td-checkbox">
                         <p-tableCheckbox [value]="rowData"></p-tableCheckbox>

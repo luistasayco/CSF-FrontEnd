@@ -27,7 +27,8 @@ export class GlobalsConstantsForm {
     cAlternatico: string;
     cCerrar: string;
     cAnular: string;
-
+    cFiltro: string;
+    cDelivery: string;
     cToastPosition: string;
 
     // Modulos
@@ -69,6 +70,8 @@ export class GlobalsConstantsForm {
     icoPlus: string;
     icoMinus: string;
     icoSalir: string;
+    icoFiltro: string;
+    icoDelivery: string;
 
     // Variables titulos
     titleEliminar: string;
@@ -128,6 +131,8 @@ export class GlobalsConstantsForm {
         this.cReceta = 'Receta';
         this.cCerrar = 'Cerrar';
         this.cAnular = 'Anular';
+        this.cFiltro = 'Limpiar';
+        this.cDelivery = 'Vale Delivery';
 
         this.cToastPosition = 'bottom-right';
 
@@ -167,7 +172,8 @@ export class GlobalsConstantsForm {
         this.icoPlus = 'fa fa-plus';
         this.icoMinus = 'fa fa-minus';
         this.icoSalir = 'fa fa-power-off';
-
+        this.icoFiltro = 'fa fa-filter';
+        this.icoDelivery = 'fa fa-medkit';
         // Titulo
         this.titleEliminar = 'Confirmación de Eliminación';
         this.subTitleEliminar = '¿Seguro de Eliminar el registro seleccionado?';

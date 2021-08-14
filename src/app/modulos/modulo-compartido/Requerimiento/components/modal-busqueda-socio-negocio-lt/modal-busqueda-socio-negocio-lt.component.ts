@@ -34,8 +34,6 @@ export class ModalBusquedaSocioNegocioLtComponent implements OnInit {
 
   ngOnInit() {
 
-    debugger;
-
     this.buildForm();
     this.cabeceraTabla();
     this.datosSociosNegocio();
@@ -57,7 +55,7 @@ export class ModalBusquedaSocioNegocioLtComponent implements OnInit {
 
   datosSociosNegocio() {
     
-    debugger;
+    
     const formBody = this.formularioBusquedaSocio.value;
    
     this.servicioSociosNegocio

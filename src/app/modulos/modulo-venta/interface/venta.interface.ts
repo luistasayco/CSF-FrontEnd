@@ -104,13 +104,11 @@ export interface IVentaDetalle {
     tipomovimiento: string;
     codproducto: string;
     cantidad: number;
-    // cantidad_fraccion: number;
     preciounidadcondcto: number;
     precioventaPVP: number;
     valorVVF: number;
     valorVVP: number;
     stockalmacen: number;
-    // stockalm_fraccion: number;
     porcentajedctoproducto: number;
     montototal: number;
     montopaciente: number;
@@ -118,27 +116,38 @@ export interface IVentaDetalle {
     fechagenera: Date;
     fechaemision: Date;
     stockfraccion: number;
-    // costocompra: number;
-    // promedio: number;
     estado: string;
     gnc: string;
     codpedido: string;
-    // cant_traentcon: number;
-    // cant_deventcon: number;
-    // cant_tramencon: number;
-    // cant_devmencon: number;
-    // promediomn: number;
     nombreproducto: string;
     porcentajedctoplan: number;
     porcentajecoaseguro: number;
     valor_dscto: number;
     manBtchNum: boolean;
     flgnarcotico: boolean;
+    totalconigv?: number;
+    totalsinigv?: number;
+    codtipoproducto?: string;
+    igvproducto?: number;
+    cnt_dev?: number;
+    cntxdev?: number;
+    binactivat: boolean;
+    flgbtchnum: boolean;
+    flgbin: boolean;
     listVentasDetalleLotes: IVentaDetalleLote[];
 }
 
 export interface IVentaDetalleLote {
-
+    codproducto: string;
+    dsc_producto: string;
+    coddetalle: string;
+    lote: string;
+    fechavencimiento?: Date;
+    cantidad: number;
+    ubicacion: number;
+    ubicaciondescripcion: string;
+    cantidaddev: number;
+    cantidadxdev: number;
 }
 
 export interface INewVentaCabecera {
@@ -178,12 +187,60 @@ export interface INewVentaCabecera {
     nombremaquina: string;
     usuario?: string;
     listaVentaDetalle: INewVentaDetalle[];
+    listVentasDetalleUbicacion: INewVentaDetalleUbicacion[];
     flgsinstock: boolean;
+}
+
+export interface INewVentaDevolucion {
+    codalmacen: string;
+    tipomovimiento: string;
+    codempresa: string;
+    codtipocliente: string;
+    codcliente: string;
+    codpaciente: string;
+    nombre: string;
+    cama: string;
+    codmedico: string;
+    codatencion: string;
+    codpoliza: string;
+    planpoliza: string;
+    deducible: number;
+    codaseguradora: string;
+    codcia: string;
+    porcentajecoaseguro: number;
+    porcentajeimpuesto: number;
+    montodctoplan: number;
+    porcentajedctoplan: number;
+    moneda: string;
+    montototal: number;
+    montoigv: number;
+    montoneto: number;
+    codplan: string;
+    montopaciente: number;
+    montoaseguradora: number;
+    observacion: string;
+    codcentro: string;
+    nombremedico: string;
+    nombreaseguradora: string;
+    nombrecia: string;
+    codventadevolucion: string;
+    tipocambio: number;
+    codpedido: string;
+    nombrediagnostico: string;
+    flagpaquete: string;
+    // flg_gratuito: boolean;
+    nombremaquina: string;
+    usuario?: string;
+    listaVentaDetalle: IVentaDetalle[];
+    flgsinstock: boolean;
+    listVentasDetalleUbicacion: INewVentaDetalleUbicacion[];
 }
 
 export interface INewVentaDetalle {
     codalmacen: string;
     manBtchNum: boolean;
+    flgbin: boolean; // Indicador que si la ubicacion es seleccionado manuealmente
+    binactivat: boolean; // Indicador si tiene ubicaciones
     tipomovimiento: string;
     codproducto: string;
     nombreproducto: string;
@@ -215,6 +272,7 @@ export interface INewVentaDetalle {
 }
 
 export interface INewVentaDetalleDato {
+    codproducto: string,
     tipodocumentoautorizacion: string;
     numerodocumentoautorizacion: string;
 }
@@ -371,4 +429,34 @@ export interface IVentaCabeceraAnular {
     tienedevolucion: boolean;
     usuario?: string;
     motivoanulacion?: string;
+}
+
+export interface IVentaCabeceraSinStock {
+    codventa: string;
+}
+
+export interface IVentaDevolucion {
+    codatencion: string;
+    codventa: string;
+    codalmacen: string;
+    nombrealmacen: string;
+    fechaemision: Date;
+    codproducto: string;
+    nombreproducto: string;
+    cantidad: number;
+    cnt_dev: number;
+    nombrelaboratorio: string;
+    tipomovimiento: string;
+}
+
+export interface IVentaDevolucionSingle {
+    codventa: string;
+    fechaemision: Date;
+}
+
+export interface INewVentaDetalleUbicacion {
+    ubicacion: number;
+    codproducto: string;
+    ubicaciondescripcion: string;
+    cantidad: number;
 }

@@ -29,10 +29,10 @@
         </div>
     </p-panel>
 
-    <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="fecha" selectionMode="single" autoLayout="true" [responsive]="true">
+    <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="codPedido" selectionMode="single" autoLayout="true" [responsive]="true">
         <ng-template pTemplate="header" let-columns>
             <tr>
-                <th colspan="1">Acciones</th>
+                <!-- <th colspan="1">Acciones</th> -->
                 <th *ngFor="let col of columns">
                     {{col.header}}
                 </th>
@@ -40,9 +40,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr [pSelectableRow]="rowData">
-                <td class="custom-td-splitButton">
+                <!-- <td class="custom-td-splitButton">
                     <p-splitButton class="ui-splitbutton-button" label="Detalle" icon="fa fa-list-ol " appendTo="body"></p-splitButton>
-                </td>
+                </td> -->
                 <td *ngFor="let col of columns">
                     {{rowData[col.field]}}
                 </td>

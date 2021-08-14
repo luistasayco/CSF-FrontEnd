@@ -35,6 +35,9 @@ export class VentaPendienteComponent implements OnInit {
   items: MenuItem[];
   itemSeleccionadoGrilla: IResultBusquedaVenta;
   subscription$: Subscription;
+
+  // loading
+  loading: boolean;
   constructor(private breadcrumbService: BreadcrumbService,
               public lenguageService: LanguageService,
               // public mensajePrimeNgService: MensajePrimeNgService,
@@ -98,17 +101,20 @@ export class VentaPendienteComponent implements OnInit {
 
   goListar() {
     let body = this.formularioBusqueda.value;
+    this.loading = true;
     this.listModelo = [];
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.getVentaCabeceraPendientePorFiltro(body.fecha)
     .pipe(
       map((resp: IResultBusquedaVenta[]) => {
         this.listModelo = resp;
+        this.loading = false;
       })
     )
     .subscribe(
       (resp) => {},
       (error) => {
+        this.loading = false;
         swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
       }
     );

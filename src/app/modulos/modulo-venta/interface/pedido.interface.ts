@@ -1,6 +1,7 @@
 export interface IResultBusquedaPedido {
     codventa: string;
     codatencion: string;
+    nompaciente: string;
     cama: string;
     codpoliza: string;
     fechagenera: Date;

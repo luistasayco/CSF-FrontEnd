@@ -11,12 +11,12 @@ import { IProducto } from '../interfaces/producto.interface';
 import { ISeriePorMaquina } from '../interfaces/serie-por-maquina.interface';
 import { IPedidoPorAtencion, IDetallePedidoPorPedido, IListarPedido } from '../interfaces/pedido-por-atencion.interface';
 import { UtilService } from '../../../../services/util.service';
-import { IReceta, IDetalleReceta } from '../interfaces/receta.interface';
-import { ICentroCosto } from '../../../modulo-administracion/models/aprobadorCentroCosto.interface';
+import { IReceta, IRecetaObservacion, IRecetaObservacionModificar, IRecetaObservacionRegistrar } from '../interfaces/receta.interface';
 import { ICentro } from '../interfaces/centro.interface';
 import { IStock } from '../interfaces/stock.interface';
-import { IVentaDetalle } from '../../../modulo-venta/interface/venta.interface';
+import { IVentaDetalle, IVentaDevolucion } from '../../../modulo-venta/interface/venta.interface';
 import { IGenerico } from '../interfaces/generico.interface';
+import { UserContextService } from '../../../../services/user-context.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +24,8 @@ import { IGenerico } from '../interfaces/generico.interface';
 export class VentaCompartidoService {
 
   constructor(private http: HttpClient,
-              private utils: UtilService) { }
+              private utils: UtilService,
+              private userContextService: UserContextService) { }
 
 
   getListWarehousesContains(warehouseName: string) {
@@ -215,6 +216,13 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Receta/GetListRecetasPorFiltro/`, { params: parametros });
   }
 
+  getListRecetasObservacionPorReceta(ide_receta: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('ide_receta', ide_receta.toString());
+    return this.http.get<IRecetaObservacion[]>
+    (`${environment.url_api_venta}Receta/GetListRecetasObservacionPorReceta/`, { params: parametros });
+  }
+
   getListCentroContains(nombre: string) {
     let parametros = new HttpParams();
     parametros = parametros.append('nombre', nombre);
@@ -256,6 +264,15 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Stock/GetListStockLotePorFiltro/`, { params: parametros });
   }
 
+  getListStockUbicacionPorFiltro(codalmacen: string, codproducto: string, constock: boolean) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codalmacen', codalmacen);
+    parametros = parametros.append('codproducto', codproducto);
+    parametros = parametros.append('constock', constock.toString());
+    return this.http.get<IStock[]>
+    (`${environment.url_api_venta}Stock/GetListStockUbicacionPorFiltro/`, { params: parametros });
+  }
+
   getProductoyStockAlmacenesPorCodigo(codproducto: string) {
     let parametros = new HttpParams();
     parametros = parametros.append('codproducto', codproducto);
@@ -269,5 +286,40 @@ export class VentaCompartidoService {
     parametros = parametros.append('cuantosmesesantes', cuantosmesesantes.toString());
     return this.http.get<IVentaDetalle[]>
     (`${environment.url_api_venta}Venta/GetVentasChequea1MesAntes/`, { params: parametros });
+  }
+
+  getVentasPorAtencion(codatencion: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codatencion', codatencion);
+    return this.http.get<IVentaDevolucion[]>
+    (`${environment.url_api_venta}VentaDevolucion/GetVentasPorAtencion/`, { params: parametros });
+  }
+
+  registrarRecetaObservacion(value: IRecetaObservacionRegistrar) {
+    value = this.setAsignaValoresAuditabilidad<IRecetaObservacionRegistrar>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Receta/RegistrarRecetaObservacion';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  modificarRecetasObservacion(value: IRecetaObservacionModificar) {
+    value = this.setAsignaValoresAuditabilidad<IRecetaObservacionModificar>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Receta/ModificarRecetasObservacion';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
+        url,
+        param
+    );
+  }
+
+  private setAsignaValoresAuditabilidad<T>(data: any): T{
+    data.regIdUsuario = this.userContextService.getIdUsuario();
+    // data.regEstacion = VariablesGlobales._DISPOSITIVO.nombreDispositivo;
+    return data;
   }
 }

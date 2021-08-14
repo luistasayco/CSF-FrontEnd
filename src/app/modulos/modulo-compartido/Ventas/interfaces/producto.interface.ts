@@ -30,6 +30,7 @@ export interface IProducto {
     codPedido: string;
     cantidadPedido: number;
     manbtchnum: boolean;
+    binActivat: boolean;
 }
 
 export interface IProductoHistorial {

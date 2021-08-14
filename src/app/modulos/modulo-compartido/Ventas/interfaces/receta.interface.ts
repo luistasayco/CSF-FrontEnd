@@ -21,3 +21,29 @@ export interface IDetalleReceta {
     num_frecuencia: string;
     num_dosis: string;
 }
+
+export interface IRecetaObservacion {
+    idobs: number;
+    id_receta: number;
+    codatencion: string;
+    fecharegistro: Date;
+    idusuarioregistro: number;
+    usuarioregistro: string;
+    comentario: string;
+    idusuarioanulacion: number;
+    usuarioanulacion: string;
+    fechaanulacion?: Date;
+}
+
+
+export interface IRecetaObservacionRegistrar {
+    id_receta: number;
+    codatencion: string;
+    idusuarioregistro: number;
+    comentario: string;
+}
+
+export interface IRecetaObservacionModificar {
+    idobs: number;
+    idusuarioanulacion: number;
+}

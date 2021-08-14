@@ -9,6 +9,7 @@ import { VentasService } from '../../services/ventas.service';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { IMensajeResultadoApi } from '../../../modulo-compartido/Requerimiento/interfaces/mensajeRespuestaApi.interface';
 import { PlanesModel } from '../../models/planes.model';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-panel-planes',
@@ -86,31 +87,31 @@ export class PanelPlanesComponent implements OnInit {
         }
       },
       (error) => {
-        this.mensajePrimeNgService.onToErrorMsg(error.error);
+      swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
       }
     );
   }
 
   onRowEditInit(modelo: PlanesModel) {
-    this.modelocloned[modelo.idPlan] = {...modelo};
+    this.modelocloned[modelo.codPlan] = {...modelo};
   }
 
   onRowEditSave(modelo: PlanesModel) {
+    debugger;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.setPlanesModificar(modelo)
     .subscribe((resp: IMensajeResultadoApi) => {
-      delete this.modelocloned[modelo.idPlan];
-      console.log('resp', resp);
-      this.mensajePrimeNgService.onToExitoMsg(null, resp);
+      delete this.modelocloned[modelo.codPlan];
+      swal.fire(this.globalConstants.msgExitoSummary, this.globalConstants.msgExitoDetail, 'success');
     },
       (error) => {
-        this.mensajePrimeNgService.onToErrorMsg(null, error.error);
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error');
       });
   }
 
   onRowEditCancel(modelo: PlanesModel, index: number) {
-    this.listModelo[index] = this.modelocloned[modelo.idPlan];
-    delete this.modelocloned[modelo.idPlan];
+    this.listModelo[index] = this.modelocloned[modelo.codPlan];
+    delete this.modelocloned[modelo.codPlan];
   }
 
   onToRowSelectDelete(modelo: PlanesModel) {
@@ -123,18 +124,20 @@ export class PanelPlanesComponent implements OnInit {
   }
 
   onConfirmDelete() {
-    this.confirmationService.confirm({
-        message: this.globalConstants.subTitleEliminar,
-        header: this.globalConstants.titleEliminar,
-        icon: 'pi pi-info-circle',
-        acceptLabel: 'Si',
-        rejectLabel: 'No',
-        accept: () => {
-          this.onToDelete();
-        },
-        reject: () => {
-          this.mensajePrimeNgService.onToCancelMsg(this.globalConstants.msgCancelSummary, this.globalConstants.msgCancelDetail);
-        }
+
+    swal.fire({
+      title: this.globalConstants.titleEliminar,
+      text: this.globalConstants.subTitleEliminar,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'No',
+      confirmButtonText: 'Si'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.onToDelete();
+      }
     });
   }
 
@@ -142,12 +145,11 @@ export class PanelPlanesComponent implements OnInit {
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.setPlanesEliminar(this.modeloEliminar)
     .subscribe((resp: IMensajeResultadoApi) => {
-      this.listModelo = this.listModelo.filter(datafilter => datafilter.idPlan !== this.modeloEliminar.idPlan );
-      console.log('object', resp);
-      this.mensajePrimeNgService.onToExitoMsg(null, resp);
+      this.listModelo = this.listModelo.filter(datafilter => datafilter.codPlan !== this.modeloEliminar.codPlan );
+      swal.fire(this.globalConstants.msgExitoSummary, this.globalConstants.msgExitoDetail, 'success')
     },
       (error) => {
-        this.mensajePrimeNgService.onToErrorMsg(null, error.error);
+        swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error');
       });
   }
 

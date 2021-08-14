@@ -184,6 +184,7 @@ export class VentaVerComponent implements OnInit, OnDestroy {
   }
 
   goChangeVisibleLote(event: IVentaDetalle, index: number) {
+    debugger;
     this.isSeleccionItemVentaDetalle = event;
     this.isIndexItemVentaDetalle = index;
     this.isVisualizarLote =!this.isVisualizarLote; 

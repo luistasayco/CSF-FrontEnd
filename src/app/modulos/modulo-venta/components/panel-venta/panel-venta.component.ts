@@ -112,11 +112,12 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
       {label: this.globalConstants.cImprimir, icon: this.globalConstants.icoImprimir, command: () => {
         this.onImprimirVenta();
       }},
-      {label: this.globalConstants.cImprimirComprobante, icon: this.globalConstants.icoImprimir, command: () => {
-        this.onImprimirComprobante();
-      }},
       {label: this.globalConstants.cImprimirVencimiento, icon: this.globalConstants.icoImprimir, command: () => {
         this.onImprimirVencimiento();
+      }},
+      {separator: true},
+      {label: this.globalConstants.cImprimirComprobante, icon: this.globalConstants.icoImprimir, command: () => {
+        this.onImprimirComprobante();
       }},
       {label: this.globalConstants.cPdfElectronico, icon: this.globalConstants.icoImprimir, command: () => {
         this.onImprimirPDF();
@@ -273,7 +274,27 @@ export class PanelVentaComponent implements OnInit, OnDestroy {
   }
 
   onImprimirVencimiento(){
+    this.isDisplayVisualizar =! this.isDisplayVisualizar;
 
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.getGenerarValeVentaLotePrint( this.itemSeleccionadoGrilla.codventa )
+    .subscribe((resp: any) =>  {
+
+      switch (resp.type) {
+        case HttpEventType.DownloadProgress:
+          break;
+        case HttpEventType.Response:
+          this.isDataBlob = new Blob([resp.body], {type: resp.body.type});
+          this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+          this.isDisplayVisualizarDocumento = !this.isDisplayVisualizarDocumento;
+          break;
+      }
+    },
+      (error) => {
+        this.isDisplayVisualizar =! this.isDisplayVisualizar;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
   }
 
   ngOnDestroy() {

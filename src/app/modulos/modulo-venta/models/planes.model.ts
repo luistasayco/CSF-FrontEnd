@@ -1,5 +1,4 @@
 export class PlanesModel {
-    idPlan?: number;
     codPlan?: string;
     nombre: string;
     porcentajeDescuento?: number;
@@ -8,7 +7,6 @@ export class PlanesModel {
     regEstacion?: string;
 
     constructor() {
-        this.idPlan = 0; 
         this.codPlan = '';
         this.nombre = '';
         this.porcentajeDescuento = 0;

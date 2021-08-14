@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular, IVentaCabeceraSinStock, INewVentaDevolucion } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -13,6 +13,8 @@ import { IVentaConfiguracion, IVentaConfiguracionRegistrar, IVentaConfiguracionM
 import { ISeriePorMaquina, ISeriePorMaquinaEliminar, ISerie, ISerieRegistrar, ISeriePorMaquinaRegistrar, ISeriePorMaquinaModificar } from '../interface/serie-por-maquina.interface';
 import { ITabla } from '../interface/tabla.interface';
 import { IProducto } from '../../modulo-compartido/Ventas/interfaces/producto.interface';
+import { ISeguimiento } from '../interface/seguimiento';
+import { IValeDelivery } from '../interface/vale-delivery';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +43,16 @@ export class VentasService {
     (`${environment.url_api_venta}Venta/GetAll/`, { params: parametros });
   }
 
+  getVentasSinStockPorFiltro(codcomprobante: string, codventa: string, fecinicio: Date, fecfin: Date) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codcomprobante', codcomprobante);
+    parametros = parametros.append('codventa', codventa);
+    parametros = parametros.append('fecinicio', this.utils.fecha_AAAAMMDD(fecinicio));
+    parametros = parametros.append('fecfin', this.utils.fecha_AAAAMMDD(fecfin));
+    return this.http.get<IResultBusquedaVenta[]>
+    (`${environment.url_api_venta}Venta/GetAllSinStock/`, { params: parametros });
+  }
+
   getListMedicoPorAtencion(codAtencion: string) {
     let parametros = new HttpParams();
     parametros = parametros.append('codAtencion', codAtencion);
@@ -62,11 +74,12 @@ export class VentasService {
     (`${environment.url_api_venta}Venta/GetVentaCabeceraPendientePorFiltro/`, { params: parametros });
   }
 
-  getListaComprobantesPorFiltro(codcomprobante: string, fecinicio: Date, fecfin: Date) {
+  getListaComprobantesPorFiltro(codcomprobante: string, fecinicio: Date, fecfin: Date, opcion: number) {
     let parametros = new HttpParams();
     parametros = parametros.append('codcomprobante', codcomprobante);
     parametros = parametros.append('fecinicio', this.utils.fecha_AAAAMMDD(fecinicio));
     parametros = parametros.append('fecfin', this.utils.fecha_AAAAMMDD(fecfin));
+    parametros = parametros.append('opcion', opcion.toString());
     return this.http.get<IResultBusquedaComprobante[]>
     (`${environment.url_api_venta}Comprobante/getListaComprobantesPorFiltro/`, { params: parametros });
   }
@@ -326,14 +339,12 @@ export class VentasService {
     (`${environment.url_api_venta}Convenios/GetConveniosPorFiltros/`, { params: parametros });
   }
 
-  // getListProductoAlternativoPorCodigo(codproducto: string, codaseguradora: string, codcia: string) {
-  //   let parametros = new HttpParams();
-  //   parametros = parametros.append('codaseguradora', codaseguradora);
-  //   parametros = parametros.append('codcia', codcia);
-  //   parametros = parametros.append('codproducto', codproducto);
-  //   return this.http.get<IProducto[]>
-  //   (`${environment.url_api_venta}Producto/GetListProductoAlternativoPorCodigo/`, { params: parametros });
-  // }
+  getListValeDeliveryPorCodAtencion(codatencion: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codatencion', codatencion);
+    return this.http.get<IValeDelivery[]>
+    (`${environment.url_api_venta}ValeDelivery/GetListValeDeliveryPorCodAtencion/`, { params: parametros });
+  }
 
   getGetObtieneTipoCambio() {
     return this.http.get<ITipoCambio[]>
@@ -343,6 +354,12 @@ export class VentasService {
   getGenerarValeVentaPrint(codventa: string) {
     return this.http.get
     (`${environment.url_api_venta}Venta/GenerarValeVentaPrint/${codventa}`,
+    {responseType: 'blob',  observe: 'response', reportProgress: true });
+  }
+
+  getGenerarValeVentaLotePrint(codventa: string) {
+    return this.http.get
+    (`${environment.url_api_venta}Venta/GenerarValeVentaLotePrint/${codventa}`,
     {responseType: 'blob',  observe: 'response', reportProgress: true });
   }
 
@@ -368,6 +385,17 @@ export class VentasService {
     );
   }
 
+  setRegistrarVentaDevolucion(value: INewVentaDevolucion) {
+    value = this.setAsignaValoresAuditabilidad<INewVentaDevolucion>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Venta/RegistrarVentaDevolucion';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
   setValidacionAnularVenta(value: IVentaCabeceraAnular) {
     value = this.setAsignaValoresAuditabilidad<IVentaCabeceraAnular>(value);
     console.log(value);
@@ -385,6 +413,50 @@ export class VentasService {
     const url = environment.url_api_venta + 'Venta/RegistrarAnularVenta';
     const param: string = JSON.stringify(value);
     return this.http.post(
+        url,
+        param
+    );
+  }
+
+  setUpdateSinStockVenta(value: IVentaCabeceraSinStock) {
+    value = this.setAsignaValoresAuditabilidad<IVentaCabeceraSinStock>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'Venta/UpdateSinStockVenta';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  // Seguimiento
+  setUpdateSeguimiento(value: ISeguimiento) {
+    value = this.setAsignaValoresAuditabilidad<ISeguimiento>(value);
+    const url = environment.url_api_venta + 'Venta/UpdateSeguimiento';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
+        url,
+        param
+    );
+  }
+
+  setRegistrarValeDelivery(value: IValeDelivery) {
+    value = this.setAsignaValoresAuditabilidad<IValeDelivery>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'ValeDelivery/RegistrarValeDelivery';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  setModificarValeDelivery(value: IValeDelivery) {
+    value = this.setAsignaValoresAuditabilidad<IValeDelivery>(value);
+    console.log(value);
+    const url = environment.url_api_venta + 'ValeDelivery/ModificarValeDelivery';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
         url,
         param
     );

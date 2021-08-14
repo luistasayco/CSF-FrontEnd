@@ -26,7 +26,7 @@
     <!-- Grilla de Datos     -->
     <p-panel header="Lista de {{titulo}}">
 
-        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" autoLayout="true" [responsive]="true">
+        <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" autoLayout="true" [responsive]="true" [loading]="loading">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th colspan="1">Acciones</th>

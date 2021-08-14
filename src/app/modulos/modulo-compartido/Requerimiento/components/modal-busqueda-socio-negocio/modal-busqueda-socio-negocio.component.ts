@@ -27,7 +27,6 @@ export class ModalBusquedaSocioNegocioComponent implements OnInit {
 
   ngOnInit() {
 
-    debugger;
 
 
     this.cabeceraTabla();
@@ -35,8 +34,7 @@ export class ModalBusquedaSocioNegocioComponent implements OnInit {
   }
 
   datosSociosNegocio() {
-    
-    debugger;
+  
 
     this.servicioSociosNegocio
       .getSociosNegocio()

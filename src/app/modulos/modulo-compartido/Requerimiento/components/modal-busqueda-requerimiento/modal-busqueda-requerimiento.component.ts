@@ -72,8 +72,6 @@ export class ModalBusquedaRequerimientoComponent implements OnInit, OnChanges {
   //numRq
   getRequerimiento() {
 
-    debugger;
-
     const formBody = this.formularioBusquedaRq.value;
     const fechaIn = this.utils.fecha_AAAAMMDD(formBody.fechaInicio);
     const fechaFin = this.utils.fecha_AAAAMMDD(formBody.fechaFin);

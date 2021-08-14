@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
-import { IResultBusquedaVenta, IVentaCabeceraSingle } from '../../../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IVentaCabeceraSinStock } from '../../../interface/venta.interface';
 import { MenuItem } from 'primeng';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
@@ -10,6 +10,7 @@ import { ConfirmationService } from 'primeng/api';
 import { VentasService } from '../../../services/ventas.service';
 import { map } from 'rxjs/operators';
 import { LanguageService } from '../../../../../services/language.service';
+import swal from'sweetalert2';
 
 @Component({
   selector: 'app-venta-sin-stock',
@@ -31,6 +32,7 @@ export class VentaSinStockComponent implements OnInit {
   // PrimeNG
   items: MenuItem[];
   itemSeleccionadoGrilla: IResultBusquedaVenta;
+  itemIndex: number;
 
   // Formulario
   formularioBusqueda: FormGroup;
@@ -39,12 +41,16 @@ export class VentaSinStockComponent implements OnInit {
   isVerModalDetalle: boolean;
   isAnular: boolean;
 
+  // Generar Entrega
+  isDisplaySave: boolean;
+
+  // loading
+  loading: boolean;
+
   subscription$: Subscription;
 
   constructor(private readonly breadcrumbService: BreadcrumbService,
-              public readonly mensajePrimeNgService: MensajePrimeNgService,
               private readonly formBuilder: FormBuilder,
-              private readonly confirmationService: ConfirmationService,
               private readonly ventasService: VentasService,
               public lenguageService: LanguageService) {
     this.breadcrumbService.setItems([
@@ -75,7 +81,7 @@ export class VentaSinStockComponent implements OnInit {
 
   private onHeaderGrilla() {
     this.columnas = [
-      { field: 'flg_gratuito', header: 'Sin Stock' },
+      { field: 'flg_gratuito', header: 'Gratuito' },
       { field: 'codventa', header: 'Cod.Venta' },
       { field: 'tipomovimiento', header: 'T.Mov' },
       { field: 'nombretipocliente', header: 'T.Cliente' },
@@ -91,14 +97,15 @@ export class VentaSinStockComponent implements OnInit {
     ];
   }
 
-  onItemElegido(data: IResultBusquedaVenta) { 
+  onItemElegido(data: IResultBusquedaVenta, index: number) { 
     this.itemSeleccionadoGrilla = data;
+    this.itemIndex = index;
   }
 
   private onOpcionesGrilla() {
     this.items = [
-      {label: 'Regularizar Venta', icon: 'fa fa-times', command: () => {
-          this.setAnular();
+      {label: 'Generar Entrega', icon: 'fa fa-check', command: () => {
+          this.onGenerarEntrega();
       }}
     ];
   }
@@ -106,19 +113,31 @@ export class VentaSinStockComponent implements OnInit {
   goListar() {
     let body = this.formularioBusqueda.value;
     this.listModelo = [];
+
+    this.loading = true;
+
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getVentasPorFiltro(body.codcomprobante, body.codventa, body.fechaIni, body.fechaFin)
+    this.subscription$ = this.ventasService.getVentasSinStockPorFiltro(body.codcomprobante, body.codventa, body.fechaIni, body.fechaFin)
     .pipe(
       map((resp: IResultBusquedaVenta[]) => {
         this.listModelo = resp;
-        console.log('this.listModelo', this.listModelo );
+        this.loading = false;
       })
     )
-    .subscribe();
+    .subscribe(
+      () => {},
+      (error) => {
+        this.loading = false;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
   }
 
   onDetalle(data: IResultBusquedaVenta) {
     this.goGetVentaPorCodVenta(data.codventa,'DETALLE');
+  }
+
+  goCerrarDetalle() {
+    this.isVerModalDetalle = !this.isVerModalDetalle;
   }
 
   goGetVentaPorCodVenta(codventa: string, opcion: string) {
@@ -141,24 +160,25 @@ export class VentaSinStockComponent implements OnInit {
     .subscribe();
   }
 
-  private setAnular() {
-    this.goGetVentaPorCodVenta(this.itemSeleccionadoGrilla.codventa,'ANULAR');
-  }
+  private onGenerarEntrega() {
 
-  onCaja() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onCaja');
-  }
+    let bodyVenta: IVentaCabeceraSinStock = {
+      codventa : this.itemSeleccionadoGrilla.codventa
+    }
 
-  onImpVenta() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenta');
-  }
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.setUpdateSinStockVenta( bodyVenta )
+    .subscribe((resp: boolean) =>  {
 
-  onImpComp() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpComp');
-  }
+      this.isDisplaySave = false;
+      this.listModelo.splice(+this.itemIndex, 1);
 
-  onImpVenc() {
-    this.mensajePrimeNgService.onToExitoMsg(null, 'onImpVenc');
+      swal.fire(this.globalConstants.msgExitoSummary, this.globalConstants.msgExitoDetail, 'success');
+    },
+      (error) => {
+        this.isDisplaySave = false;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
   }
 
   ngOnDestroy() {

@@ -31,6 +31,9 @@ import { ModalBusquedaHistorialVentaComponent } from './components/modal-busqued
 import { ModalBusquedaMaestroGenericoComponent } from './components/modal-busqueda-maestro-generico/modal-busqueda-maestro-generico.component';
 import { ModalVisorPdfComponent } from './components/modal-visor-pdf/modal-visor-pdf.component';
 import { NgxDocViewerModule } from 'ngx-doc-viewer';
+import { RegistrarRecetaObservacionComponent } from './components/modal-receta-observacion/registrar-receta-observacion/registrar-receta-observacion.component';
+import { ModalBusquedaValeDeliveryComponent } from './components/modal-busqueda-receta/modal-busqueda-vale-delivery/modal-busqueda-vale-delivery.component';
+import { ListaValeDeliveryComponent } from './components/modal-busqueda-receta/lista-vale-delivery/lista-vale-delivery.component';
 
 @NgModule({
     declarations: [
@@ -62,7 +65,10 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
         ModalAutenticacionComponent,
         ModalBusquedaHistorialVentaComponent,
         ModalBusquedaMaestroGenericoComponent,
-        ModalVisorPdfComponent
+        ModalVisorPdfComponent,
+        RegistrarRecetaObservacionComponent,
+        ModalBusquedaValeDeliveryComponent,
+        ListaValeDeliveryComponent
     ],
     imports: [ 
         CommonModule,

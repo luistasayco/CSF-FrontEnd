@@ -15,6 +15,20 @@ export class UtilService {
     return fechaFinal;
   }
 
+  fecha_DDMMYYYYHHMM(fecha: Date): string {
+    const day = this.padLeft(new Date(fecha).getDate(),2);
+    const month = this.padLeft(new Date(fecha).getMonth() + 1,2);
+    const year = new Date(fecha).getFullYear();
+    const hour = this.padLeft(new Date(fecha).getHours(),2);
+    const minute = this.padLeft(new Date(fecha).getMinutes(),2);
+    const fechaFinal = `${day}/${month}/${year} ${hour}:${minute}`;
+    return fechaFinal;
+  }
+
+  padLeft(value: number, lon: number): string {
+    return value.toString().padStart(lon,'0')
+  }
+
   recortarMensajeApiExito(msg: string): string {
     return msg.split(',')[0];
   }

@@ -36,6 +36,9 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
 
   isModeloHospital: IHospital;
 
+  // loading
+  loading: boolean;
+
   constructor(private breadcrumbService: BreadcrumbService,
               private readonly formBuilder: FormBuilder,
               private readonly ventasService: VentasService) {
@@ -125,17 +128,20 @@ export class PanelPedidosPorPacienteComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.loading = true;
     this.subscription$ = new Subscription();
     this.subscription$ = this.ventasService.getListHospitalPacienteClinicaPorFiltros(body.pabellon.value, body.piso.value, '0')
     .pipe(
       map((resp: IHospital[]) => {
         this.listModelo = [];
         this.listModelo = resp;
+        this.loading = false;
       })
     )
     .subscribe(
       (resp) => {},
       (error) => {
+        this.loading = false;
         swal.fire(this.globalConstants.msgErrorSummary, error.error.resultadoDescripcion,'error')
       }
     );

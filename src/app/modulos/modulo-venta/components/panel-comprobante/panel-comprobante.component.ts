@@ -93,14 +93,13 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
 
   private onOpcionesGrilla() {
     this.items = [
-      {separator: true},
       {label: 'Imp.Venta', icon: 'fa fa-print ', command: () => {
         this.onImprimirVenta();
       }},
+      {separator: true},
       {label: 'Imp.Comp', icon: 'fa fa-print ', command: () => {
         this.onImprimirComprobante();
       }},
-      {separator: true},
       {label: 'PDF Electronico', icon: 'fa fa-print ', command: () => {
         this.onImprimirPDF();
       }}
@@ -120,7 +119,7 @@ export class PanelComprobanteComponent implements OnInit, OnDestroy {
     this.listModelo = [];
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventasService.getListaComprobantesPorFiltro(body.codcomprobante, body.fechaIni, body.fechaFin)
+    this.subscription$ = this.ventasService.getListaComprobantesPorFiltro(body.codcomprobante, body.fechaIni, body.fechaFin, 0)
     .pipe(
       map((resp: IResultBusquedaComprobante[]) => {
           this.listModelo = resp;
