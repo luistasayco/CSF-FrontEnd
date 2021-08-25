@@ -192,6 +192,7 @@ export interface INewVentaCabecera {
 }
 
 export interface INewVentaDevolucion {
+    tipodevolucion: string;
     codalmacen: string;
     tipomovimiento: string;
     codempresa: string;
@@ -228,12 +229,21 @@ export interface INewVentaDevolucion {
     codpedido: string;
     nombrediagnostico: string;
     flagpaquete: string;
-    // flg_gratuito: boolean;
+    flg_gratuito: boolean;
     nombremaquina: string;
     usuario?: string;
     listaVentaDetalle: IVentaDetalle[];
     flgsinstock: boolean;
     listVentasDetalleUbicacion: INewVentaDetalleUbicacion[];
+    //Nota de Credito
+    codcomprobante: string;
+    tipo: string;
+    anombredequien: string;
+    concepto: string;
+    direccion: string;
+    ruc: string;
+    codmotivo: string;
+    cardcode: string;
 }
 
 export interface INewVentaDetalle {

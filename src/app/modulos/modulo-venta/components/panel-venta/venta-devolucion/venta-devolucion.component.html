@@ -12,7 +12,7 @@
             </strong>
             </div>
             <div class="ui-g-12 ui-md-2">
-                <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" class="btn btn-block"></button>
+                <button pButton type="button" label="{{globalConstants.cNuevo}}" icon="{{globalConstants.icoNuevo}}" (click)="onLimpiarForm('01')" class="btn btn-block"></button>
             </div>
             <div class="ui-g-12 ui-md-2">
                 <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" (click)="goConfirmGrabar()" class="btn btn-block"></button>
@@ -47,7 +47,7 @@
 
             <div class="ui-g-12">
                 <!-- <form [formGroup]="formularioCabecera"> -->
-                <p-tabView>
+                <p-tabView [activeIndex]="isIndexTabView">
                     <p-tabPanel header="Datos" leftIcon="pi pi-calendar">
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-12 ui-md-1 sba-label-tipo-cliente">
@@ -69,7 +69,7 @@
                             <div class="ui-g-12">
                                 <div class="ui-g-12 ui-md-2">
                                     <label>Atención</label>
-                                    <app-modal-busqueda-atencion-paciente [isHabilitaControl]="false" [isCodAtencion]="isCodAtencion" (eventoResgistroSeleccionado)="goAtencionSeleccionado($event)"></app-modal-busqueda-atencion-paciente>
+                                    <app-modal-busqueda-atencion-paciente [isHabilitaControl]="false" [(isCodAtencion)]="isCodAtencion" (eventoResgistroSeleccionado)="goAtencionSeleccionado($event)"></app-modal-busqueda-atencion-paciente>
                                 </div>
                                 <div class="ui-g-12 ui-md-3">
                                     <label>Paciente/Cliente</label>
@@ -160,63 +160,60 @@
                         <div class="ui-g ui-fluid">
                             <div class="ui-g-12 ui-md-3">
                                 <label>Señor(es)</label>
-                                <input type="text" size="30" pInputText>
+                                <input type="text" formControlName="anombredenc" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-3">
                                 <label>Dirección</label>
-                                <input type="text" size="30" pInputText>
+                                <input type="text" formControlName="direccionnc" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>R.U.C.</label>
-                                <input type="text" size="30" pInputText>
+                                <input type="text" formControlName="rucnc" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>Fecha</label>
-                                <p-calendar placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
+                                <p-calendar formControlName="fechaemisionnc" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" showTime="true" hourFormat="24" [showIcon]="true"></p-calendar>
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>Card Code</label>
-                                <input type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
+                                <input type="text" formControlName="cardcodenc" pInputText style="background-color: rgb(157, 193, 220);">
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <label>.</label>
-                                <button pButton type="button" label="Obtener PDF" icon="{{globalConstants.icoPDF}}" class="btn btn-block"></button>
+                                <button pButton type="button" label="Obtener PDF" icon="{{globalConstants.icoPDF}}" class="sba-button btn btn-block"></button>
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <label>.</label>
-                                <button pButton type="button" label="Imprimir Nota" icon="{{globalConstants.icoImprimir}}" class="btn btn-block"></button>
+                                <button pButton type="button" label="Imprimir Nota" icon="{{globalConstants.icoImprimir}}" class="sba-button btn btn-block"></button>
                             </div>
                             <div class="ui-g-12 ui-md-1">
-                                <label>.</label>
-                                <button pButton type="button" label="¿Cuál toca?" icon="{{globalConstants.icoListar}}" class="btn btn-block"></button>
+                                <button pButton type="button" label="¿Cuál toca?" icon="{{globalConstants.icoListar}}" class="sba-button btn btn-block"></button>
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>Nota</label>
-                                <input type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
-                            </div>
-                            <div class="ui-g-12 ui-md-1">
-                                <label>.</label>
-                                <input type="text" size="30" pInputText style="background-color: rgb(157, 193, 220);" disabled>
+                                <input type="text" formControlName="codcomprobanteemitirnc" pInputText style="background-color: rgb(157, 193, 220);">
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>Comprobante</label>
-                                <input type="text" size="30" pInputText disabled>
+                                <input type="text" formControlName="codcomprobantenc" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>% IGV</label>
-                                <input type="text" size="30" pInputText disabled>
+                                <input type="number" formControlName="porcentajeimpuestonc" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-1">
                                 <label>Moneda</label>
-                                <input type="text" size="30" pInputText disabled>
+                                <input type="text" formControlName="monedanc" pInputText>
+                            </div>
+                            <div class="ui-g-12 ui-md-1">
+                                <label>Tipo Cambio</label>
+                                <input type="text" formControlName="tipodecambionc" pInputText>
                             </div>
                             <div class="ui-g-12 ui-md-2">
                                 <label>Tipo Motivo</label>
-                                <app-modal-busqueda-tipo-motivo-nota-credito></app-modal-busqueda-tipo-motivo-nota-credito>
+                                <p-dropdown class="ui dropdown-item-text" [options]="listTipoNotaCredito" formControlName="tiponc" placeholder="Seleccionar Tipo" optionLabel="label" [showClear]="true"></p-dropdown>
                             </div>
                             <div class="ui-g-12 ui-md-5">
                                 <label>Concepto</label>
-                                <input type="text" size="30" pInputText>
+                                <input type="text" formControlName="conceptonc" pInputText>
                             </div>
                         </div>
                     </p-tabPanel>
@@ -224,19 +221,21 @@
                 <!-- </form> -->
             </div>
             <div class="ui-g-12 ui-md-2">
-                <button pButton type="button" label="Elegir Venta" icon="{{globalConstants.icoListar}}" (click)="goVisibleVenta()" [disabled]="isGrabar" class="btn btn-block"></button>
+                <button pButton type="button" label="Elegir Venta" icon="{{globalConstants.icoListar}}" (click)="goVisibleVenta()" [disabled]="isListarVenta" class="btn btn-block"></button>
             </div>
             <div class="ui-g-12 ui-md-2">
-                <button pButton type="button" label="Elegir Pedido" icon="{{globalConstants.icoListar}}" (click)="goVisiblePedido()" [disabled]="isGrabar" class="btn btn-block"></button>
+                <button pButton type="button" label="Elegir Pedido" icon="{{globalConstants.icoListar}}" (click)="goVisiblePedido()" [disabled]="isListarPedido" class="btn btn-block"></button>
             </div>
-            <div class="ui-g-12 ui-md-8">
+            <div class="ui-g-12 ui-md-5">
                 <input id="float-input-producto" type="text" pInputText formControlName="observacion" placeholder="Observación">
             </div>
-
+            <div class="ui-g-12 ui-md-3">
+                <input type="text" pInputText formControlName="descripcionpaquete" placeholder="Paquete">
+            </div>
         </form>
 
         <div class="ui-g-12">
-            <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
+            <p-table [value]="listModelo" [columns]="columnas" [loading]="loading" [paginator]="true" [rows]="globalConstants.sizePage" dataKey="idRegistroEquipo" editMode="row" autoLayout="true" [responsive]="true">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th colspan="1">Acciones</th>
@@ -317,7 +316,7 @@
 </p-dialog>
 
 <p-dialog header="Ingresar Nota de Crédito" *ngIf="isVisibleNotaCredito" [(visible)]="isVisibleNotaCredito" [modal]="true" [autoZIndex] [closable]="false">
-    <app-modal-busqueda-nota-credito-devolucion (eventoAceptar)="goAceptarNotaCredito()" (eventoCancelar)="goCancelarNotaCredito()"></app-modal-busqueda-nota-credito-devolucion>
+    <app-modal-busqueda-nota-credito-devolucion (eventoAceptar)="goAceptarNotaCredito($event)" (eventoCancelar)="goCancelarNotaCredito()"></app-modal-busqueda-nota-credito-devolucion>
 </p-dialog>
 
 <p-dialog *ngIf="isVisualizarProducto" header="{{isSeleccionItemVentaDetalle.codproducto}} - {{isSeleccionItemVentaDetalle.nombreproducto}}" [(visible)]="isVisualizarProducto" [modal]="true" [autoZIndex] [closable]="false">

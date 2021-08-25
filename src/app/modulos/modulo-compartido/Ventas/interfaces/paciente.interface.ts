@@ -43,4 +43,5 @@ export interface IPaciente {
     exclusiones: string;
     codatenciondestino: string;
     idegctipoatencionmae: number;
+    descripcionpaquete: string;
 }

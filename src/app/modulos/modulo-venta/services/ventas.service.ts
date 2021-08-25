@@ -10,7 +10,7 @@ import { UtilService } from '../../../services/util.service';
 import { IResultBusquedaComprobante } from '../interface/comprobante.interface';
 import { IResultBusquedaPedido } from '../interface/pedido.interface';
 import { IVentaConfiguracion, IVentaConfiguracionRegistrar, IVentaConfiguracionModificar, IVentaConfiguracionEliminar } from '../interface/venta-configuracion.interface';
-import { ISeriePorMaquina, ISeriePorMaquinaEliminar, ISerie, ISerieRegistrar, ISeriePorMaquinaRegistrar, ISeriePorMaquinaModificar } from '../interface/serie-por-maquina.interface';
+import { ISeriePorMaquina, ISeriePorMaquinaEliminar, ISerie, ISerieRegistrar, ISeriePorMaquinaRegistrar, ISeriePorMaquinaModificar, ISerieConfig } from '../interface/serie-por-maquina.interface';
 import { ITabla } from '../interface/tabla.interface';
 import { IProducto } from '../../modulo-compartido/Ventas/interfaces/producto.interface';
 import { ISeguimiento } from '../interface/seguimiento';
@@ -344,6 +344,25 @@ export class VentasService {
     parametros = parametros.append('codatencion', codatencion);
     return this.http.get<IValeDelivery[]>
     (`${environment.url_api_venta}ValeDelivery/GetListValeDeliveryPorCodAtencion/`, { params: parametros });
+  }
+
+  getListConfigDocumentoPorNombreMaquina(nombremaquina: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('nombremaquina', nombremaquina);
+    return this.http.get<ISerieConfig[]>
+    (`${environment.url_api_venta}Serie/GetListConfigDocumentoPorNombreMaquina/`, { params: parametros });
+  }
+
+  getListComprobanteElectronicoPorFiltro(codempresa: string, codcomprobante: string, codcomprobante_e: string, codsistema: string, tipocomp_sunat: string, orden: number) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codempresa', codempresa);
+    parametros = parametros.append('codcomprobante', codcomprobante);
+    parametros = parametros.append('codcomprobante_e', codcomprobante_e);
+    parametros = parametros.append('codsistema', codsistema);
+    parametros = parametros.append('tipocomp_sunat', tipocomp_sunat);
+    parametros = parametros.append('orden', orden.toString());
+    return this.http.get<ISerieConfig[]>
+    (`${environment.url_api_venta}ComprobanteElectronico/GetListComprobanteElectronicoPorFiltro/`, { params: parametros });
   }
 
   getGetObtieneTipoCambio() {

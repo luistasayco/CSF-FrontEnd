@@ -61,3 +61,28 @@ export interface ISerieEliminar {
     tiposerie: string;
     serie: string;
 }
+
+
+export interface ISerieConfig {
+    boleta: string;
+    factura: string;
+    creditob: string;
+    creditof: string;
+    debitob: string;
+    debitof: string;
+    guiaxlocal: string;
+    flg_electronicof: string;
+    flg_electronicob: string;
+    flg_electronicocb: string;
+    flg_electronicocf: string;
+    flg_electronicodb: string;
+    flg_electronicodf: string;
+    flg_otorgarf: number;
+    flg_otorgarb: number;
+    flg_otorgarcb: number;
+    flg_otorgarcf: number;
+    flg_otorgardb: number;
+    flg_otorgardf: number;
+    flg_electronico: number;
+    generar_e: string;
+}

@@ -48,7 +48,7 @@ export class ModalBusquedaAtencionPacienteComponent implements OnInit, OnDestroy
 
     if (!this.isVisualizar && this.isCodAtencion !== '' && this.isCodAtencion !== undefined) {
       // console.log('Ingreso Atencion', this.isCodAtencion);
-      // this.getPacientePorAtencion(this.isCodAtencion, false);
+      this.getPacientePorAtencion(this.isCodAtencion, false);
       this.formularioVisor.patchValue({
         nombreVisor: this.isCodAtencion
       });

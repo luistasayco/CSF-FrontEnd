@@ -18,4 +18,9 @@ export interface IResultBusquedaComprobante {
     nombretipocliente: string;
     codatencion: string;
     flg_gratuito: boolean;
+    direccion: string;
+    ruc: string;
+    porcentajeimpuesto: string;
+    cardcode: string;
+    tipodecambio: number;
 }

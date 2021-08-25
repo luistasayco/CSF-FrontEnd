@@ -7,7 +7,6 @@ import { VentasCompartidoPrimeNgModule } from './modulo-ventas-compartido-primen
 import { ModalBusquedaClienteExternoComponent } from './components/modal-busqueda-cliente-externo/modal-busqueda-cliente-externo.component';
 import { ModalBusquedaAtencionPacienteComponent } from './components/modal-busqueda-atencion-paciente/modal-busqueda-atencion-paciente.component';
 import { ModalBusquedaMedicoComponent } from './components/modal-busqueda-medico/modal-busqueda-medico.component';
-import { ModalBusquedaTipoMotivoNotaCreditoComponent } from './components/modal-busqueda-tipo-motivo-nota-credito/modal-busqueda-tipo-motivo-nota-credito.component';
 import { ModalBusquedaTipoComprobanteComponent } from './components/modal-busqueda-tipo-comprobante/modal-busqueda-tipo-comprobante.component';
 import { ModalBusquedaProductoComponent } from './components/modal-busqueda-producto/modal-busqueda-producto.component';
 import { ModalBusquedaRecetaComponent } from './components/modal-busqueda-receta/modal-busqueda-receta.component';
@@ -42,7 +41,6 @@ import { ListaValeDeliveryComponent } from './components/modal-busqueda-receta/l
         ModalBusquedaClienteExternoComponent,
         ModalBusquedaAtencionPacienteComponent,
         ModalBusquedaMedicoComponent,
-        ModalBusquedaTipoMotivoNotaCreditoComponent,
         ModalBusquedaTipoComprobanteComponent,
         ModalBusquedaProductoComponent,
         ModalBusquedaRecetaComponent,
@@ -83,7 +81,6 @@ import { ListaValeDeliveryComponent } from './components/modal-busqueda-receta/l
         ModalBusquedaClienteExternoComponent,
         ModalBusquedaAtencionPacienteComponent,
         ModalBusquedaMedicoComponent,
-        ModalBusquedaTipoMotivoNotaCreditoComponent,
         ModalBusquedaTipoComprobanteComponent,
         ModalBusquedaProductoComponent,
         ModalBusquedaRecetaComponent,
