@@ -17,6 +17,7 @@ import { IStock } from '../interfaces/stock.interface';
 import { IVentaDetalle, IVentaDevolucion } from '../../../modulo-venta/interface/venta.interface';
 import { IGenerico } from '../interfaces/generico.interface';
 import { UserContextService } from '../../../../services/user-context.service';
+import { ITabla } from '../../../modulo-venta/interface/tabla.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -88,6 +89,14 @@ export class VentaCompartidoService {
     parametros = parametros.append('nombre', nombre);
     return this.http.get<ICliente[]>
     (`${environment.url_api_venta}Cliente/GetListClientePorFiltro/`, { params: parametros });
+  }
+
+  getListClienteLogisticaPorFiltro(ruc: string, nombre: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('ruc', ruc);
+    parametros = parametros.append('nombre', nombre);
+    return this.http.get<ICliente[]>
+    (`${environment.url_api_venta}Cliente/GetListClienteLogisticaPorFiltro/`, { params: parametros });
   }
 
   getListPersonalClinicaPorNombre(nombre: string) {
@@ -288,9 +297,11 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Venta/GetVentasChequea1MesAntes/`, { params: parametros });
   }
 
-  getVentasPorAtencion(codatencion: string) {
+  getVentasPorAtencion(opcion: string, codatencion: string, codalmacen: string) {
     let parametros = new HttpParams();
+    parametros = parametros.append('opcion', opcion);
     parametros = parametros.append('codatencion', codatencion);
+    parametros = parametros.append('codalmacen', codalmacen);
     return this.http.get<IVentaDevolucion[]>
     (`${environment.url_api_venta}VentaDevolucion/GetVentasPorAtencion/`, { params: parametros });
   }
@@ -315,6 +326,11 @@ export class VentaCompartidoService {
         url,
         param
     );
+  }
+
+  getTerminal() {
+    return this.http.get<ITabla[]>
+    (`${environment.url_api_venta}Terminal/GetTerminal`);
   }
 
   private setAsignaValoresAuditabilidad<T>(data: any): T{

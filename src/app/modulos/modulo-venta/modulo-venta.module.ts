@@ -6,11 +6,9 @@ import { PanelVentaComponent } from './components/panel-venta/panel-venta.compon
 import { VentaCreateComponent } from './components/panel-venta/venta-create/venta-create.component';
 import { VentaDevolucionComponent } from './components/panel-venta/venta-devolucion/venta-devolucion.component';
 import { VentaPendienteComponent } from './components/panel-venta/venta-pendiente/venta-pendiente.component';
-import { PanelCajaComponent } from './components/panel-caja/panel-caja.component';
 import { PanelComprobanteComponent } from './components/panel-comprobante/panel-comprobante.component';
 import { PanelPedidosPorPacienteComponent } from './components/panel-pedidos-por-paciente/panel-pedidos-por-paciente.component';
 import { PanelPlanesComponent } from './components/panel-planes/panel-planes.component';
-import { PanelPlanillaComponent } from './components/panel-planilla/panel-planilla.component';
 import { PanelSeguimientoComponent } from './components/panel-seguimiento/panel-seguimiento.component';
 import { PanelPedidoComponent } from './components/panel-pedido/panel-pedido.component';
 import { ControlsModule } from '../modulo-controls/modulo-controls.module';
@@ -36,6 +34,11 @@ import { PanelSeparacionCuentasComponent } from './components/panel-separacion-c
 import { PanelAsigEstacionTrabajoComponent } from './components/panel-asig-estacion-trabajo/panel-asig-estacion-trabajo.component';
 import { VentaSimuladorComponent } from './components/panel-venta/venta-simulador/venta-simulador.component';
 import { PanelValeDeliveryComponent } from './components/panel-venta/panel-vale-delivery/panel-vale-delivery.component';
+import { PlanillaCrearComponent } from './components/panel-planilla/planilla-crear/planilla-crear.component';
+import { PlanillaUsuarioComponent } from './components/panel-planilla/planilla-usuario/planilla-usuario.component';
+import { PlanillaTipoPagoComponent } from './components/panel-planilla/planilla-tipopago/planilla-tipopago.component';
+import { PanelCajaComponent } from './components/panel-caja/panel-caja.component';
+import { PanelPlanillaComponent } from './components/panel-planilla/panel-planilla.component';
 
 @NgModule({
     declarations: [PanelVentaComponent,
@@ -68,7 +71,10 @@ import { PanelValeDeliveryComponent } from './components/panel-venta/panel-vale-
         PanelSeparacionCuentasComponent,
         PanelAsigEstacionTrabajoComponent,
         VentaSimuladorComponent,
-        PanelValeDeliveryComponent
+        PanelValeDeliveryComponent,
+        PlanillaCrearComponent,
+        PlanillaUsuarioComponent,
+        PlanillaTipoPagoComponent
         ],
     imports: [ CommonModule,
         VentaPrimeNgModule,

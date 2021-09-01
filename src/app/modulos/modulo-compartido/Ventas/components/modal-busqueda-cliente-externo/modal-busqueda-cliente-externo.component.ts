@@ -4,6 +4,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { ICliente } from '../../interfaces/cliente.interface';
 import { VentaCompartidoService } from '../../services/venta-compartido.service';
+import { UtilService } from '../../../../../services/util.service';
 import swal from'sweetalert2';
 
 @Component({
@@ -28,7 +29,8 @@ export class ModalBusquedaClienteExternoComponent implements OnInit, OnDestroy {
   @Output() eventoAceptar = new EventEmitter<ICliente>();
   @Output() eventoCancelar = new EventEmitter<ICliente>();
   constructor(private ventaCompartidoService: VentaCompartidoService,
-              private readonly fb: FormBuilder) { }
+              private readonly fb: FormBuilder,
+              private readonly utilService: UtilService) { }
 
 ngOnInit(): void {
     this.buildColumnas();
@@ -63,12 +65,18 @@ ngOnInit(): void {
   goListClientePorFiltro() {
     const formBody = this.formularioBusqueda.value;
 
-    let codigo = formBody.codigo === null ? '': formBody.codigo.toUpperCase();
-    let nombre = formBody.nombre === null ? '': formBody.nombre.toUpperCase();
+    let codigo: string = '';
+    let nombre: string = '';
+
+    if (formBody.opcion === 'RUC') {
+      codigo = formBody.codigo === null ? '': this.utilService.convertirMayuscula(formBody.codigo);
+    } else {
+      nombre = formBody.nombre === null ? '': this.utilService.convertirMayuscula(formBody.nombre);
+    }
 
     this.loading = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getListClientePorFiltro(formBody.opcion, codigo, nombre)
+    this.subscription$ = this.ventaCompartidoService.getListClienteLogisticaPorFiltro(codigo, nombre)
     .subscribe((data: ICliente[]) => {
       this.listModelo = [];
       this.listModelo = data;

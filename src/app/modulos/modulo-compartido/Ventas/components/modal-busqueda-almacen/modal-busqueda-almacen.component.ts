@@ -23,6 +23,8 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy, OnChang
   isVisualizar: boolean = false;
   @Input() isVenta: boolean = false;
   @Input() isWarehouseCode: string;
+  @Input() isHabilitarInput: boolean;
+  @Input() isHabilitarButton: boolean;
 
   //Columnas de la tabla
   columnas: any;
@@ -63,7 +65,7 @@ export class ModalBusquedaAlmacenComponent implements OnInit, OnDestroy, OnChang
 
   private buildForm() {
     this.formularioBusqueda = this.fb.group({
-      nombre: [''],
+      nombre: [{value: '', disabled: this.isHabilitarInput}],
     });
   }
 

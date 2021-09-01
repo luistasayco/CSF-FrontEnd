@@ -15,6 +15,18 @@ export class UtilService {
     return fechaFinal;
   }
 
+  fecha_AAAAMMDD_F112(fecha: string | Date): string {
+    var day = new Date(fecha).getDate().toString();
+    var month = (new Date(fecha).getMonth() + 1).toString();
+    const year = new Date(fecha).getFullYear();
+    if(Number(day)<10) day="0"+day.toString();
+    if(Number(month)<10) month="0"+month.toString();
+
+    const fechaFinal = `${year}${month}${day}`;
+
+    return fechaFinal;
+  }
+
   fecha_DDMMYYYYHHMM(fecha: Date): string {
     const day = this.padLeft(new Date(fecha).getDate(),2);
     const month = this.padLeft(new Date(fecha).getMonth() + 1,2);

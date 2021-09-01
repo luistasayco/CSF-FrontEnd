@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular, IVentaCabeceraSinStock, INewVentaDevolucion } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular, IVentaCabeceraSinStock, INewVentaDevolucion, IVentaDetalleLote } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -15,6 +15,7 @@ import { ITabla } from '../interface/tabla.interface';
 import { IProducto } from '../../modulo-compartido/Ventas/interfaces/producto.interface';
 import { ISeguimiento } from '../interface/seguimiento';
 import { IValeDelivery } from '../interface/vale-delivery';
+import { IResultBusquedaSalaOperacion, ISalaOperacionCreate, ISalaOperacionEliminar, ISalaOperacionEstado, IResultBusquedaSalaOperacionRol, ISalaOperacionModificarRol } from '../interface/sala-operacion.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +66,13 @@ export class VentasService {
     parametros = parametros.append('codventa', codventa);
     return this.http.get<IVentaCabeceraSingle>
     (`${environment.url_api_venta}Venta/GetVentaPorCodVenta/`, { params: parametros });
+  }
+
+  getDetalleLoteVentaPorCodDetalle(coddetalle: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('coddetalle', coddetalle);
+    return this.http.get<IVentaDetalleLote[]>
+    (`${environment.url_api_venta}Venta/GetDetalleLoteVentaPorCodDetalle/`, { params: parametros });
   }
 
   getVentaCabeceraPendientePorFiltro(fecha: Date) {
@@ -474,6 +482,62 @@ export class VentasService {
     value = this.setAsignaValoresAuditabilidad<IValeDelivery>(value);
     console.log(value);
     const url = environment.url_api_venta + 'ValeDelivery/ModificarValeDelivery';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
+        url,
+        param
+    );
+  }
+
+  // Sala Operacion
+  getListSalaOperacionPorFiltro(fechainicio: Date, fechafin: Date) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechafin', this.utils.fecha_AAAAMMDD(fechafin));
+    return this.http.get<IResultBusquedaSalaOperacion[]>
+    (`${environment.url_api_venta}SalaOperacion/GetListSalaOperacionPorFiltro/`, { params: parametros });
+  }
+
+  getListRolSalaOperacionPorAtencion(codatencion: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codatencion', codatencion);
+    return this.http.get<IResultBusquedaSalaOperacionRol[]>
+    (`${environment.url_api_venta}SalaOperacion/GetListRolSalaOperacionPorAtencion/`, { params: parametros });
+  }
+
+  setRegistrarSalaOperacion(value: ISalaOperacionCreate) {
+    value = this.setAsignaValoresAuditabilidad<ISalaOperacionCreate>(value);
+    const url = environment.url_api_venta + 'SalaOperacion/Registrar';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
+  setEliminarSalaOperacion(value: ISalaOperacionEliminar) {
+    value = this.setAsignaValoresAuditabilidad<ISalaOperacionEliminar>(value);
+    const url = environment.url_api_venta + 'SalaOperacion/Eliminar';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
+        url,
+        param
+    );
+  }
+
+  setEstadoSalaOperacion(value: ISalaOperacionEstado) {
+    value = this.setAsignaValoresAuditabilidad<ISalaOperacionEstado>(value);
+    const url = environment.url_api_venta + 'SalaOperacion/Estado';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
+        url,
+        param
+    );
+  }
+
+  setModificarRolSalaOperacion(value: ISalaOperacionModificarRol) {
+    value = this.setAsignaValoresAuditabilidad<ISalaOperacionModificarRol>(value);
+    const url = environment.url_api_venta + 'SalaOperacion/ModificarRol';
     const param: string = JSON.stringify(value);
     return this.http.put(
         url,

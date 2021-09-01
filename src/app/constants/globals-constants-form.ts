@@ -133,7 +133,7 @@ export class GlobalsConstantsForm {
         this.cAnular = 'Anular';
         this.cFiltro = 'Limpiar';
         this.cDelivery = 'Vale Delivery';
-
+        this.cEditar = 'Editar';
         this.cToastPosition = 'bottom-right';
 
         // Módulos

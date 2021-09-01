@@ -33,6 +33,12 @@ import { NgxDocViewerModule } from 'ngx-doc-viewer';
 import { RegistrarRecetaObservacionComponent } from './components/modal-receta-observacion/registrar-receta-observacion/registrar-receta-observacion.component';
 import { ModalBusquedaValeDeliveryComponent } from './components/modal-busqueda-receta/modal-busqueda-vale-delivery/modal-busqueda-vale-delivery.component';
 import { ListaValeDeliveryComponent } from './components/modal-busqueda-receta/lista-vale-delivery/lista-vale-delivery.component';
+import { ModalBusquedaClienteComponent } from './components/modal-busqueda-cliente/modal-busqueda-cliente.component';
+import { ModalBusquedaDocIdentidadComponent } from './components/modal-busqueda-doc-identidad/modal-busqueda-doc-identidad.component';
+import { ModalBusquedaEntidadComponent } from './components/modal-busqueda-entidad/modal-busqueda-entidad.component';
+import { ModalBusquedaTarjetaCreditoComponent } from './components/modal-busqueda-tarjeta-credito/modal-busqueda-tarjeta-credito.component';
+import { ModalBusquedaTerminalComponent } from './components/modal-busqueda-terminal/modal-busqueda-terminal.component';
+import { ModalBusquedaTipoPagoComponent } from './components/modal-busqueda-tipo-pago/modal-busqueda-tipo-pago.component';
 
 @NgModule({
     declarations: [
@@ -66,7 +72,13 @@ import { ListaValeDeliveryComponent } from './components/modal-busqueda-receta/l
         ModalVisorPdfComponent,
         RegistrarRecetaObservacionComponent,
         ModalBusquedaValeDeliveryComponent,
-        ListaValeDeliveryComponent
+        ListaValeDeliveryComponent,
+        ModalBusquedaClienteComponent,
+        ModalBusquedaDocIdentidadComponent,
+        ModalBusquedaEntidadComponent,
+        ModalBusquedaTarjetaCreditoComponent,
+        ModalBusquedaTerminalComponent,
+        ModalBusquedaTipoPagoComponent
     ],
     imports: [ 
         CommonModule,
@@ -103,7 +115,13 @@ import { ListaValeDeliveryComponent } from './components/modal-busqueda-receta/l
         ModalAutenticacionComponent,
         ModalBusquedaHistorialVentaComponent,
         ModalBusquedaMaestroGenericoComponent,
-        ModalVisorPdfComponent
+        ModalVisorPdfComponent,
+        ModalBusquedaClienteComponent,
+        ModalBusquedaDocIdentidadComponent,
+        ModalBusquedaEntidadComponent,
+        ModalBusquedaTarjetaCreditoComponent,
+        ModalBusquedaTerminalComponent,
+        ModalBusquedaTipoPagoComponent
     ],
     providers: [],
     schemas: [

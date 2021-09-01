@@ -448,6 +448,7 @@ export interface IVentaCabeceraSinStock {
 export interface IVentaDevolucion {
     codatencion: string;
     codventa: string;
+    coddetalle: string;
     codalmacen: string;
     nombrealmacen: string;
     fechaemision: Date;
@@ -457,6 +458,22 @@ export interface IVentaDevolucion {
     cnt_dev: number;
     nombrelaboratorio: string;
     tipomovimiento: string;
+    flgseleccionado: boolean;
+    manbtchnum: boolean;
+    binactivat: boolean;
+}
+
+export interface IVentaDevolucionSeleccionado {
+    codventa: string;
+    coddetalle: string;
+    codalmacen: string;
+    codproducto: string;
+    nombreproducto: string;
+    cantidad: number;
+    cantidadorigen: number;
+    manbtchnum: boolean;
+    binactivat: boolean;
+    listVentasDetalleLotes: IVentaDetalleLote[];
 }
 
 export interface IVentaDevolucionSingle {

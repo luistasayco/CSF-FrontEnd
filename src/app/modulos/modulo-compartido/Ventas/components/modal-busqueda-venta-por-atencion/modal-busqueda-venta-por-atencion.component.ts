@@ -67,7 +67,7 @@ export class ModalBusquedaVentaPorAtencionComponent implements OnInit, OnDestroy
     this.listModelo = [];
     this.loadingVentas = true;
     this.subscription$ = new Subscription();
-    this.subscription$ = this.ventaCompartidoService.getVentasPorAtencion(this.isCodAtencion)
+    this.subscription$ = this.ventaCompartidoService.getVentasPorAtencion('1', this.isCodAtencion, null)
     .pipe(
       map((resp: IVentaDevolucion[]) => {
           this.listModelo = resp;

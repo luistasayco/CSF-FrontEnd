@@ -94,7 +94,7 @@
     </p-dialog>
 
     <p-dialog *ngIf="isVisualizarLote" header="{{seleccionModeloItem.itemCode}} - {{seleccionModeloItem.itemName}}" [(visible)]="isVisualizarLote" [modal]="true">
-        <app-modal-consulta-lote [isActivoVenta]="false" [isActivoDevolucion]="false" [isActivoVerVenta]="false" [isActivoProducto]="true" [isCodProducto]="seleccionModeloItem.itemCode" [isActivoVentaDetalleLote]="false" [isCodAlmacen]="isCodAlmacen" [IsActivaUbicacion]="seleccionModeloItem.binActivat === 'Y'"
+        <app-modal-consulta-lote [isActivoVenta]="false" [isActivoDevolucion]="false" [isActivoVerVenta]="false" [isActivoProducto]="true" [isCodProducto]="seleccionModeloItem.itemCode" [isCodAlmacen]="isCodAlmacen" [IsActivaUbicacion]="seleccionModeloItem.binActivat === 'Y'"
             [IsActivaLote]="seleccionModeloItem.manBtchNum === 'Y'" (eventoSalir)="goSalirLote()"></app-modal-consulta-lote>
     </p-dialog>
 
