@@ -43,6 +43,7 @@ export class ModalBusquedaValeDeliveryComponent implements OnInit, OnDestroy {
     this.formularioVale = this.fb.group({
       idvaledelivery: [{value: 0, disabled: true}],
       codatencion: [{value: null, disabled: true}],
+      
       nombrepaciente: [{value: null, disabled: true}],
       telefono: [{value: null, disabled: true}],
       celular: [{value: null, disabled: true}],

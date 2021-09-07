@@ -93,6 +93,6 @@
     </div>
 </p-dialog>
 
-<p-dialog header="LISTADO - VALE DELIVERY" #appendVale *ngIf="isVisibleValeDelivery" [(visible)]="isVisibleValeDelivery" [modal]="true" [closable]="false" [autoZIndex] [style]="{width: '70vw'}">
-    <app-lista-vale-delivery (eventCancelar)="goValeDeliveryCancelar()"></app-lista-vale-delivery>
+<p-dialog #appendlistDelivery header="LISTADO - VALE DELIVERY" #appendVale *ngIf="isVisibleValeDelivery" [(visible)]="isVisibleValeDelivery" [modal]="true" [closable]="false" [autoZIndex] [style]="{width: '70vw'}">
+    <app-lista-vale-delivery (eventCancelar)="goValeDeliveryCancelar()" [append]="append"></app-lista-vale-delivery>
 </p-dialog>

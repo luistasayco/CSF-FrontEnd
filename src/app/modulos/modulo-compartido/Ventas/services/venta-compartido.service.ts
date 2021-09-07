@@ -333,6 +333,12 @@ export class VentaCompartidoService {
     (`${environment.url_api_venta}Terminal/GetTerminal`);
   }
 
+  getGenerarHojaDatosPrint(codatencion: string) {
+    return this.http.get
+    (`${environment.url_api_venta}Venta/GenerarHojaDatosPrint/${codatencion}`,
+    {responseType: 'blob',  observe: 'response', reportProgress: true });
+  }
+
   private setAsignaValoresAuditabilidad<T>(data: any): T{
     data.regIdUsuario = this.userContextService.getIdUsuario();
     // data.regEstacion = VariablesGlobales._DISPOSITIVO.nombreDispositivo;

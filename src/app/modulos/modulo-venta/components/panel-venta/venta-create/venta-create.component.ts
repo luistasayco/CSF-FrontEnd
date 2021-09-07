@@ -77,6 +77,7 @@ export class VentaCreateComponent implements OnInit {
   isMensajeAviso: string;
   isTabObservacion: string;
   isCodAtencion: string;
+  isIdeReceta: number;
   // isItem: IProducto;
   isModeloTablaValidaVentaTransferencia: ITabla;
   // isListProductoRestringido: IProducto[];
@@ -142,6 +143,7 @@ export class VentaCreateComponent implements OnInit {
     this.isFlgGeneroVenta = false;
     this.isFlagPaquete = 'N';
     this.isPedidoORecetaValido = true;
+    this.isIdeReceta = 0;
 
     this.buildForm();
     this.buildFormTotales();
@@ -417,6 +419,7 @@ export class VentaCreateComponent implements OnInit {
     
     this.isHabilitaBotonPedido = false;
     this.isCodAtencion = '';
+    this.isIdeReceta = 0;
   }
 
   goChangeSinStock(e) {
@@ -476,7 +479,8 @@ export class VentaCreateComponent implements OnInit {
   goAtencionSeleccionado(item: IPaciente) {
     this.isModeloPaciente = item;
     this.isPedidoORecetaValido = true;
-
+    this.isCodAtencion = item.codatencion;
+    
     if (item.codatencion.substring(0,1) === 'J') {
       swal.fire(this.globalConstants.msgInfoSummary,'A Pacientes con tipo de atención J, se vende como tipo cliente EXTERNO ','info');
       this.isPedidoORecetaValido = false;
@@ -1333,7 +1337,7 @@ export class VentaCreateComponent implements OnInit {
   
           if (this.isPedidoORecetaValido) {
             this.isCodAtencion = modelo.cod_atencion;
-
+            this.isIdeReceta = modelo.ide_receta;
             this.onObtieneDetalleReceta(modelo.ide_receta);
           }
           
@@ -1850,6 +1854,17 @@ debugger;
       swal.fire(this.globalConstants.msgInfoSummary,'Ingresar Atención','info')
       return;
     }
+
+    if (!this.isGrabar) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Generar Vale de Venta','info')
+      return;
+    }
+
+    if (this.isIdeReceta === 0) {
+      swal.fire(this.globalConstants.msgInfoSummary,'Seleccionar Receta...Favor de revisar','info')
+      return;
+    }
+
     this.isVisibleValeDelivery =! this.isVisibleValeDelivery;
   }
 

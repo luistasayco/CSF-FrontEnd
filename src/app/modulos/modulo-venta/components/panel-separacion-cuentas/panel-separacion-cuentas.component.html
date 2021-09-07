@@ -98,6 +98,11 @@
                 </p-table>
             </p-panel>
         </div>
+
+        <div class="ui-g-12 ui-md-3">
+            <!-- Productos seleccionados -->
+            <button pButton type="button" label="Procesar Separación Cuenta" icon="{{globalConstants.icoGrabar}}" class="btn btn-block" (click)="goProcesarSeparacionCuenta()"></button>
+        </div>
     </div>
 </div>
 
@@ -108,4 +113,20 @@
 <p-dialog *ngIf="isVisualizarLote" header="{{isSeleccionLoteItemModelo.codproducto}} - {{isSeleccionLoteItemModelo.nombreproducto}}" [(visible)]="isVisualizarLote" [modal]="true" [closable]="false">
     <app-modal-consulta-lote [isActivoVenta]="false" [isActivoDevolucion]="true" [isActivoVerVenta]="false" [isActivoProducto]="false" [IsActivaLote]="isSeleccionLoteItemModelo.manbtchnum" [isListVentaDetalleLote]="isSeleccionLoteItemModelo.listVentasDetalleLotes"
         (eventoAceptar)="goAceptarLote($event)" (eventoSalir)="goSalirLote()" [IsActivaUbicacion]="isSeleccionLoteItemModelo.binactivat"></app-modal-consulta-lote>
+</p-dialog>
+
+
+<p-dialog *ngIf="isVisualizarAutenticar" header="Ingresar Credenciales" [(visible)]="isVisualizarAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
+    <app-modal-autenticacion [isAnular]="false" (eventoAceptar)="goAceptarGrabar($event)" (eventoCancelar)="goCancelarGrabar()"></app-modal-autenticacion>
+</p-dialog>
+
+<p-dialog header="Grabar" [(visible)]="isDisplaySave" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [baseZIndex]="10000" [draggable]="false" [resizable]="false">
+
+    Guardando Informacion...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
 </p-dialog>

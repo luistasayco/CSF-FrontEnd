@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment.prod';
-import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular, IVentaCabeceraSinStock, INewVentaDevolucion, IVentaDetalleLote } from '../interface/venta.interface';
+import { IResultBusquedaVenta, IVentaCabeceraSingle, IHospitalDatos, IHospitalExclusiones, IHospital, IConvenios, INewVentaCabecera, ITipoCambio, IVentaCabeceraAnular, IVentaCabeceraSinStock, INewVentaDevolucion, IVentaDetalleLote, ISeparacionCuentaCreate } from '../interface/venta.interface';
 import { UserContextService } from '../../../services/user-context.service';
 import { VariablesGlobales } from '../../../interface/variables-globales';
 import { PlanesModel } from '../models/planes.model';
@@ -515,6 +515,16 @@ export class VentasService {
     );
   }
 
+  setRegistrarSeparacionCuenta(value: ISeparacionCuentaCreate) {
+    value = this.setAsignaValoresAuditabilidad<ISeparacionCuentaCreate>(value);
+    const url = environment.url_api_venta + 'SeparacionCuenta/RegistrarSeparacionCuenta';
+    const param: string = JSON.stringify(value);
+    return this.http.post(
+        url,
+        param
+    );
+  }
+
   setEliminarSalaOperacion(value: ISalaOperacionEliminar) {
     value = this.setAsignaValoresAuditabilidad<ISalaOperacionEliminar>(value);
     const url = environment.url_api_venta + 'SalaOperacion/Eliminar';
@@ -543,6 +553,38 @@ export class VentasService {
         url,
         param
     );
+  }
+
+  getListValeDeliveryPorRangoFecha(fechainicio: Date, fechaFin: Date) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechafin', this.utils.fecha_AAAAMMDD(fechaFin));
+    return this.http.get<IValeDelivery[]>
+    (`${environment.url_api_venta}ValeDelivery/GetListValeDeliveryPorRangoFecha/`, { params: parametros });
+  }
+
+  getGenerarValeValeDeliveryReporte1Print(fechainicio: Date, fechaFin: Date) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechafin', this.utils.fecha_AAAAMMDD(fechaFin));
+    return this.http.get
+    (`${environment.url_api_venta}ValeDelivery/GetGenerarValeValeDeliveryReporte1Print/`,
+    {responseType: 'blob',  observe: 'response', reportProgress: true, params: parametros });
+  }
+
+  getGenerarValeValeDeliveryReporte2Print(fechainicio: Date, fechaFin: Date) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('fechainicio', this.utils.fecha_AAAAMMDD(fechainicio));
+    parametros = parametros.append('fechafin', this.utils.fecha_AAAAMMDD(fechaFin));
+    return this.http.get
+    (`${environment.url_api_venta}ValeDelivery/GetGenerarValeValeDeliveryReporte2Print/`,
+    {responseType: 'blob',  observe: 'response', reportProgress: true , params: parametros });
+  }
+
+  getGenerarValeDeliveryPrint(idvaledelivery: number) {
+    return this.http.get
+    (`${environment.url_api_venta}ValeDelivery/GenerarValeDeliveryPrint/${idvaledelivery}`,
+    {responseType: 'blob',  observe: 'response', reportProgress: true });
   }
 
   private setAsignaValoresAuditabilidad<T>(data: any): T{

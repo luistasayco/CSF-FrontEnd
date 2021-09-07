@@ -1,3 +1,30 @@
+<form [formGroup]="formularioBusqueda">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom" for="float-input-fecha-ini">Fecha Inicio: </label>
+            <p-calendar id="float-input-fecha-ini" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" [appendTo]="append" formControlName="fechaIni"></p-calendar>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom" for="float-input-fecha-fin">Fecha Fin: </label>
+            <p-calendar id="float-input-fecha-fin" placeholder="Seleccionar Fecha" [showButtonBar]="true" [locale]="lenguageService.es" dateFormat="dd/mm/yy" [showIcon]="true" formControlName="fechaFin"></p-calendar>
+        </div>
+
+        <div class="ui-g-12 ui-md-2">
+            <button pButton type="button" label="Reporte 1" icon="{{globalConstants.icoImprimir}}" class="sba-button btn btn-block" (click)="goGenerarPrintReporte1()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <button pButton type="button" label="Reporte 2" icon="{{globalConstants.icoImprimir}}" class="sba-button btn btn-block" (click)="goGenerarPrintReporte2()"></button>
+        </div>
+
+        <div class="ui-g-12 ui-md-2">
+            <button pButton type="button" label="{{globalConstants.cBuscar}}" icon="{{globalConstants.icoBuscar}}" class="sba-button btn btn-block" (click)="goListValeDeliveryPorRangoFecha()"></button>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <button pButton type="button" class="sba-button btn btn-block ui-button-danger" label="{{globalConstants.cSalir}}" icon="{{globalConstants.icoSalir}}" (click)="goCancelar()"></button>
+        </div>
+    </div>
+</form>
+
 <p-table [value]="listModelo" [columns]="columnas" [paginator]="true" [loading]="loading" [rows]="globalConstants.sizePage" dataKey="idvaledelivery" autoLayout="true" [responsive]="true">
     <ng-template pTemplate="header" let-columns>
         <tr>
@@ -25,15 +52,26 @@
     </ng-template>
 </p-table>
 
-<div class="ui-fluid">
-    <footer>
-        <div class="ui-g-12 ui-md-10"></div>
-        <div class="ui-g-12 ui-md-2">
-            <button pButton type="button" class="btn btn-block ui-button-danger" label="{{globalConstants.cSalir}}" icon="{{globalConstants.icoSalir}}" (click)="goCancelar()"></button>
-        </div>
-    </footer>
-</div>
-
 <p-dialog header="VALE DELIVERY" #appendVale *ngIf="isVisibleValeDelivery" [(visible)]="isVisibleValeDelivery" [modal]="true" [closable]="false" [autoZIndex] [style]="{width: '60vw'}">
     <app-modal-busqueda-vale-delivery (eventAceptar)="goValeDeliveryAceptar()" (eventCancelar)="goValeDeliveryCancelar()" [isAppendVale]="appendVale" [isAtencion]="isModeloValeDelivery.codatencion"></app-modal-busqueda-vale-delivery>
+</p-dialog>
+
+
+<p-dialog *ngIf="isDisplayVisualizar" header="Visualizar" [(visible)]="isDisplayVisualizar" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">
+
+    Generando visor del registro seleccionado...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
+</p-dialog>
+
+<p-dialog *ngIf="isDisplayVisualizarDocumento" [header]="'Reporte'" [(visible)]="isDisplayVisualizarDocumento" [modal]="true" [style]="{width: '80vw'}" [autoZIndex] [maximizable]="true">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <app-modal-visor-pdf [isFile]="isDataBlob"></app-modal-visor-pdf>
+        </div>
+    </div>
 </p-dialog>

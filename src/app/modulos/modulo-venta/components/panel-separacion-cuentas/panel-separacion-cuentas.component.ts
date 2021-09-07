@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../constants/globals-constants-form';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { IWarehouses } from '../../../modulo-compartido/Ventas/interfaces/warehouses.interface';
 import { IPaciente } from '../../../modulo-compartido/Ventas/interfaces/paciente.interface';
-import { IVentaDevolucion, IVentaDevolucionSeleccionado, IVentaDetalleLote } from '../../interface/venta.interface';
+import { IVentaDevolucion, IVentaDevolucionSeleccionado, IVentaDetalleLote, ISeparacionCuentaCreate } from '../../interface/venta.interface';
 import { map } from 'rxjs/operators';
 import { VentaCompartidoService } from '../../../modulo-compartido/Ventas/services/venta-compartido.service';
 import { VentasService } from '../../services/ventas.service';
+import { IAutenticarResponse } from '../../../modulo-compartido/Ventas/interfaces/autenticar.interface';
 import swal from'sweetalert2';
 
 @Component({
@@ -15,7 +16,7 @@ import swal from'sweetalert2';
   templateUrl: './panel-separacion-cuentas.component.html',
   styleUrls: ['./panel-separacion-cuentas.component.css']
 })
-export class PanelSeparacionCuentasComponent implements OnInit {
+export class PanelSeparacionCuentasComponent implements OnInit, OnDestroy {
   // Titulo del componente
   titulo = 'Separación Cuenta';
   // Name de los botones de accion
@@ -48,6 +49,9 @@ export class PanelSeparacionCuentasComponent implements OnInit {
 
   isVisualizarProducto: boolean;
   isVisualizarLote: boolean;
+
+  isVisualizarAutenticar: boolean = false;
+  isDisplaySave: boolean;
 
   constructor(private readonly formBuilder: FormBuilder,
               private readonly ventaCompartidoService: VentaCompartidoService,
@@ -303,4 +307,67 @@ export class PanelSeparacionCuentasComponent implements OnInit {
   goSalirProducto() {
     this.isVisualizarProducto = !this.isVisualizarProducto;
   }
+
+  goProcesarSeparacionCuenta() {
+    if (this.listSeleccionadoModelo.length === 0) {
+      swal.fire(this.globalConstants.msgInfoSummary, 'No existe detalle','info')
+      return;
+    }
+
+    swal.fire({
+      title: 'Procesar Separación de Cuentas',
+      text: "¿Desea de Procesar Separación de Cuentas?",
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'No',
+      confirmButtonText: 'Si'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.isVisualizarAutenticar =!this.isVisualizarAutenticar;
+      }
+    })
+
+  }
+
+  goAceptarGrabar(value: IAutenticarResponse) {
+    this.isVisualizarAutenticar =!this.isVisualizarAutenticar;
+
+    if (!value.valido) {
+      swal.fire(this.globalConstants.msgInfoSummary,value.observacion,'info')
+      return;
+    }
+
+    let body: ISeparacionCuentaCreate = {
+      listSeparacionCuenta: this.listSeleccionadoModelo,
+      usuario: value.usuario
+    }
+
+    this.isDisplaySave = true;
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventasService.setRegistrarSeparacionCuenta( body )
+    .subscribe((resp: any[]) =>  {
+
+      this.isDisplaySave = false;
+
+      swal.fire(this.globalConstants.msgExitoSummary, this.globalConstants.msgExitoDetail, 'success');
+
+    },
+      (error) => {
+        this.isDisplaySave = false;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
+  }
+
+  goCancelarGrabar() {
+
+  }
+
+  ngOnDestroy() {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+  }
+
 }

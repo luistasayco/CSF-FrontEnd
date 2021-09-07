@@ -8,6 +8,7 @@ import { IValeDelivery } from '../../../interface/vale-delivery';
 import { VentasService } from '../../../services/ventas.service';
 import { map } from 'rxjs/operators';
 import swal from'sweetalert2';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-panel-vale-delivery',
@@ -19,12 +20,18 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
   globalConstants: GlobalsConstantsForm = new GlobalsConstantsForm();
 
   @Input() isAtencion: string;
+  @Input() isIdeReceta: number;
+  @Input() isCodVenta: string;
   @Input() isAppendVale: any;
   @Input() isModeloPaciente: IPaciente;
 
   formularioVale: FormGroup;
   // Subscription
   subscription$: Subscription;
+
+  isDisplayVisualizar: boolean;
+  isDisplayVisualizarDocumento: boolean;
+  isDataBlob: Blob;
 
   @Output() eventAceptar = new EventEmitter<boolean>();
   @Output() eventCancelar = new EventEmitter<boolean>();
@@ -45,6 +52,8 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
     this.formularioVale = this.fb.group({
       idvaledelivery: [{value: 0, disabled: true}],
       codatencion: [{value: null, disabled: true}],
+      codventa: [{value: null, disabled: true}],
+      idereceta: [{value: null, disabled: true}],
       nombrepaciente: [{value: null, disabled: false}],
       telefono: [{value: null, disabled: false}],
       celular: [{value: null, disabled: false}],
@@ -62,6 +71,8 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
   onSetearDatos() {
     this.formularioVale.patchValue({
       codatencion: this.isModeloPaciente.codatencion,
+      codventa: this.isCodVenta,
+      idereceta: this.isIdeReceta,
       nombrepaciente: this.isModeloPaciente.nombrepaciente,
       telefono: this.isModeloPaciente.telefono,
       celular: this.isModeloPaciente.telefono,
@@ -74,7 +85,6 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
     this.subscription$ = this.ventaService.getListValeDeliveryPorCodAtencion(this.isAtencion)
     .pipe(
       map((resp: IValeDelivery[]) => {
-        debugger;
         if(resp.length === 0) {
           this.onSetearDatos();
         } else {
@@ -92,6 +102,8 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
     this.formularioVale.patchValue({
       idvaledelivery: resp.idvaledelivery,
       codatencion: resp.codatencion,
+      codventa: this.isCodVenta,
+      idereceta: this.isIdeReceta,
       nombrepaciente: resp.nombrepaciente,
       telefono: resp.telefono,
       celular: resp.celular,
@@ -111,6 +123,8 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
 
     let body: IValeDelivery = {
       idvaledelivery: data.idvaledelivery,
+      ide_receta: this.isIdeReceta,
+      codventa: this.isCodVenta,
       codatencion: data.codatencion,
       nombrepaciente: data.nombrepaciente,
       telefono: data.telefono,
@@ -123,6 +137,7 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
       prioridad_1: data.prioridad_1,
       prioridad_2: data.prioridad_2,
       estado: data.estado,
+      estadovd: 'P'
     }
 
     if (body.idvaledelivery === 0) {
@@ -161,6 +176,35 @@ export class PanelValeDeliveryComponent implements OnInit , OnDestroy{
         swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
     });
   }
+
+  onImprimirValeDelivery() {
+
+    const data = this.formularioVale.getRawValue();
+
+    this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+    this.subscription$ = new Subscription();
+    this.subscription$  = this.ventaService.getGenerarValeDeliveryPrint( data.idvaledelivery )
+    .subscribe((resp: any) =>  {
+
+      switch (resp.type) {
+        case HttpEventType.DownloadProgress:
+          break;
+        case HttpEventType.Response:
+          this.isDataBlob = new Blob([resp.body], {type: resp.body.type});
+          this.isDisplayVisualizar =! this.isDisplayVisualizar;
+
+          this.isDisplayVisualizarDocumento = !this.isDisplayVisualizarDocumento;
+          break;
+      }
+    },
+      (error) => {
+        this.isDisplayVisualizar =! this.isDisplayVisualizar;
+        swal.fire(this.globalConstants.msgErrorSummary,error.error.resultadoDescripcion, 'error');
+    });
+
+  }
+
 
   goCancelar() {
     this.eventCancelar.emit(false);

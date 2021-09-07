@@ -4,6 +4,14 @@
             <label class="label-custom">Cod. Atención: </label>
             <input type="text" formControlName="codatencion" pInputText>
         </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom">Cod. Venta: </label>
+            <input type="text" formControlName="codventa" pInputText>
+        </div>
+        <div class="ui-g-12 ui-md-2">
+            <label class="label-custom">Receta: </label>
+            <input type="number" formControlName="idereceta" pInputText>
+        </div>
         <div class="ui-g-12 ui-md-6">
             <label class="label-custom">Nombre Paciente: </label>
             <input type="text" formControlName="nombrepaciente" pInputText>
@@ -36,26 +44,38 @@
             <label class="label-custom">Lugar Entrega: </label>
             <input type="text" formControlName="lugarentrega" pInputText>
         </div>
-        <!-- <div class="ui-g-12 ui-md-6">
-            <label class="label-custom">Prioridad I: </label>
-            <input type="text" formControlName="prioridad_1" pInputText>
-        </div>
-        <div class="ui-g-12 ui-md-6">
-            <label class="label-custom">Prioridad II: </label>
-            <input type="text" formControlName="prioridad_2" pInputText>
-        </div>
-        <div class="ui-g-12 ui-md-12">
-            <p-checkbox styleClass="sba-checked" formControlName="estado" label="Entregado" binary="true"></p-checkbox>
-        </div> -->
     </form>
 
     <footer>
-        <div class="ui-g-12 ui-md-6">
+        <div class="ui-g-12 ui-md-4">
             <button pButton type="button" label="{{globalConstants.cGrabar}}" icon="{{globalConstants.icoGrabar}}" (click)="goAceptar()"></button>
         </div>
 
-        <div class="ui-g-12 ui-md-6">
-            <button pButton type="button" label="{{globalConstants.cCancelar}}" icon="{{globalConstants.icoCancelar}}" (click)="goCancelar()"></button>
+        <div class="ui-g-12 ui-md-4">
+            <button pButton type="button" label="{{globalConstants.cImprimir}}" icon="{{globalConstants.icoImprimir}}" class="ui-button-info" (click)="onImprimirValeDelivery()"></button>
+        </div>
+
+        <div class="ui-g-12 ui-md-4">
+            <button pButton type="button" label="{{globalConstants.cSalir}}" icon="{{globalConstants.icoSalir}}" (click)="goCancelar()"></button>
         </div>
     </footer>
 </div>
+
+<p-dialog *ngIf="isDisplayVisualizar" header="Visualizar" [(visible)]="isDisplayVisualizar" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">
+
+    Generando visor del registro seleccionado...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
+</p-dialog>
+
+<p-dialog *ngIf="isDisplayVisualizarDocumento" [header]="'Vale Delivery'" [(visible)]="isDisplayVisualizarDocumento" [modal]="true" [style]="{width: '80vw'}" [autoZIndex] [maximizable]="true">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <app-modal-visor-pdf [isFile]="isDataBlob"></app-modal-visor-pdf>
+        </div>
+    </div>
+</p-dialog>

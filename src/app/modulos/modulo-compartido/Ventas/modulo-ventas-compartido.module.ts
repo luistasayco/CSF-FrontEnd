@@ -39,6 +39,7 @@ import { ModalBusquedaEntidadComponent } from './components/modal-busqueda-entid
 import { ModalBusquedaTarjetaCreditoComponent } from './components/modal-busqueda-tarjeta-credito/modal-busqueda-tarjeta-credito.component';
 import { ModalBusquedaTerminalComponent } from './components/modal-busqueda-terminal/modal-busqueda-terminal.component';
 import { ModalBusquedaTipoPagoComponent } from './components/modal-busqueda-tipo-pago/modal-busqueda-tipo-pago.component';
+import { ModalHojaDatosComponent } from './components/modal-hoja-datos/modal-hoja-datos.component';
 
 @NgModule({
     declarations: [
@@ -78,7 +79,8 @@ import { ModalBusquedaTipoPagoComponent } from './components/modal-busqueda-tipo
         ModalBusquedaEntidadComponent,
         ModalBusquedaTarjetaCreditoComponent,
         ModalBusquedaTerminalComponent,
-        ModalBusquedaTipoPagoComponent
+        ModalBusquedaTipoPagoComponent,
+        ModalHojaDatosComponent
     ],
     imports: [ 
         CommonModule,
@@ -121,7 +123,8 @@ import { ModalBusquedaTipoPagoComponent } from './components/modal-busqueda-tipo
         ModalBusquedaEntidadComponent,
         ModalBusquedaTarjetaCreditoComponent,
         ModalBusquedaTerminalComponent,
-        ModalBusquedaTipoPagoComponent
+        ModalBusquedaTipoPagoComponent,
+        ModalHojaDatosComponent
     ],
     providers: [],
     schemas: [

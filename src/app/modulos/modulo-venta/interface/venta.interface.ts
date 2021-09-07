@@ -476,6 +476,11 @@ export interface IVentaDevolucionSeleccionado {
     listVentasDetalleLotes: IVentaDetalleLote[];
 }
 
+export interface ISeparacionCuentaCreate {
+    listSeparacionCuenta: IVentaDevolucionSeleccionado[];
+    usuario: string;
+}
+
 export interface IVentaDevolucionSingle {
     codventa: string;
     fechaemision: Date;

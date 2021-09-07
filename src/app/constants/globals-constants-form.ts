@@ -29,6 +29,7 @@ export class GlobalsConstantsForm {
     cAnular: string;
     cFiltro: string;
     cDelivery: string;
+    cHojaDatos: string;
     cToastPosition: string;
 
     // Modulos
@@ -135,7 +136,7 @@ export class GlobalsConstantsForm {
         this.cDelivery = 'Vale Delivery';
         this.cEditar = 'Editar';
         this.cToastPosition = 'bottom-right';
-
+        this.cHojaDatos = 'Hoja de Datos';
         // Módulos
         this.cModuloRequerimiento = 'Gestión Requerimiento';
 

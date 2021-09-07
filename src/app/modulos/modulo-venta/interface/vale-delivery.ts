@@ -1,5 +1,7 @@
 export interface IValeDelivery{
     idvaledelivery: number;
+    ide_receta?: number;
+    codventa?: string;
     codatencion: string;
     nombrepaciente: string;
     telefono: string;
@@ -12,4 +14,5 @@ export interface IValeDelivery{
     prioridad_1: string;
     prioridad_2: string;
     estado: boolean;
+    estadovd?: string;
 }

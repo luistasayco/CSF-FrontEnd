@@ -86,11 +86,14 @@
                                 <div class="ui-g-12 ui-md-1">
                                     <button pButton type="button" label="Check 1Mes" icon="{{globalConstants.icoGenerico}}" class="sba-button btn btn-block" (click)="goChequearVentaAnterior()"></button>
                                 </div>
+                                <div class="ui-g-12 ui-md-1">
+                                    <app-modal-hoja-datos [isLayoutIcono]="false" [(isCodAtencion)]="isCodAtencion"></app-modal-hoja-datos>
+                                </div>
                                 <div class="ui-g-12 ui-md-3">
                                     <label for="float-input-paciente-cliente">Paciente/Cliente</label>
                                     <input id="float-input-paciente-cliente" type="text" formControlName="nombreClientePaciente" pInputText>
                                 </div>
-                                <div class="ui-g-12 ui-md-3">
+                                <div class="ui-g-12 ui-md-2">
                                     <label for="float-input-direccion">Dirección</label>
                                     <input id="float-input-direccion" type="text" formControlName="direccion" pInputText>
                                 </div>
@@ -420,6 +423,6 @@
 
 <p-dialog header="VALE DELIVERY" #appendVale *ngIf="isVisibleValeDelivery" [(visible)]="isVisibleValeDelivery" [modal]="true" [closable]="false" [autoZIndex] [style]="{width: '60vw'}">
     <!-- <div class="ui-g ui-fluid"> -->
-    <app-panel-vale-delivery (eventAceptar)="goValeDeliveryAceptar()" (eventCancelar)="goValeDeliveryCancelar()" [isAppendVale]="appendVale" [isAtencion]="isModeloPaciente.codatencion" [isModeloPaciente]="isModeloPaciente"></app-panel-vale-delivery>
+    <app-panel-vale-delivery (eventAceptar)="goValeDeliveryAceptar()" (eventCancelar)="goValeDeliveryCancelar()" [isAppendVale]="appendVale" [isAtencion]="isModeloPaciente.codatencion" [isModeloPaciente]="isModeloPaciente" [isIdeReceta]="isIdeReceta" [isCodVenta]="isCodVenta"></app-panel-vale-delivery>
     <!-- </div> -->
 </p-dialog>
