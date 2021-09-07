@@ -531,7 +531,7 @@ export class VentaDevolucionComponent implements OnInit, OnDestroy {
         isIGV = xfila.igvproducto;
 
         if (isIGV > isIGVTemp) {
-          isIGVTemp = isIGV; 0
+          isIGVTemp = isIGV; 
         }
 
         if (isIGV === 0) {
@@ -539,7 +539,7 @@ export class VentaDevolucionComponent implements OnInit, OnDestroy {
           isTotalPaciente_0 = isTotalPaciente_0 + xfila.montopaciente;
           isTotalAseguradora_0 = isTotalAseguradora_0 + xfila.montoaseguradora;
         } else {
-          isSubTotal = isSubTotal + xfila.totalsinigv;
+          isSubTotal = isSubTotal + xfila.totalconigv;
           isTotalPaciente = isTotalPaciente + xfila.montopaciente;
           isTotalAseguradora = isTotalAseguradora + xfila.montoaseguradora;
         }
