@@ -59,14 +59,14 @@ export class VentasCajaService {
       (`${environment.url_api_venta}VentaCaja/GetRucConsultav2PorFiltro/`, { params: parametros });
   }
 
-  getGetMdsynPagosConsulta(codVenta: string) {
+  getGetMdsynPagosConsulta(idPagoBot: string,idmdsynReserva: string,idcorrelReserva: string,liquidacion: string,codVenta: string,orden: string) {
     let parametros = new HttpParams();
-    parametros = parametros.append('ide_pagos_bot', "0");
-    parametros = parametros.append('ide_mdsyn_reserva', "0");
-    parametros = parametros.append('ide_correl_reserva', "0");
-    parametros = parametros.append('cod_liquidacion', "");
+    parametros = parametros.append('ide_pagos_bot', idPagoBot);
+    parametros = parametros.append('ide_mdsyn_reserva', idmdsynReserva);
+    parametros = parametros.append('ide_correl_reserva', idcorrelReserva);
+    parametros = parametros.append('cod_liquidacion',liquidacion);
     parametros = parametros.append('cod_venta', codVenta);
-    parametros = parametros.append('orden', "4");
+    parametros = parametros.append('orden', orden);
     return this.http.get<IVentaCabeceraSingle>
       (`${environment.url_api_venta}VentaCaja/GetMdsynPagosConsulta/`, { params: parametros });
   }
@@ -163,20 +163,62 @@ export class VentasCajaService {
     let parametros = new HttpParams();
     parametros = parametros.append('nombremaquina', nombremaquina);
     return this.http.get<any[]>
-
       (`${environment.url_api_venta}Serie/GetListConfigDocumentoPorNombreMaquina/`, { params: parametros });
-
   }
 
-  // setValidacionRegistraVentaCabecera(value: INewVentaCabecera) {
-  //   value = this.setAsignaValoresAuditabilidad<INewVentaCabecera>(value);
-  //   console.log(value);
-  //   const url = environment.url_api_venta + 'Venta/ValidacionRegistraVentaCabecera';
-  //   const param: string = JSON.stringify(value);
-  //   return this.http.post(
-  //       url,
-  //       param
-  //   );
-  // }
+  getGenerarPreVistaPrint(codventa: string,maquina: string,idusuario: string, orden: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codventa', codventa);
+    parametros = parametros.append('maquina', maquina);
+    parametros = parametros.append('idusuario', idusuario);
+    parametros = parametros.append('orden', orden);
+
+    return this.http.get
+    (`${environment.url_api_venta}VentaCaja/GenerarPreVistaPrint/`,
+    {params: parametros,responseType: 'blob',  observe: 'response', reportProgress: true });
+  }
+
+  getPreVistaValida(codcomprobante: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codComprobante', codcomprobante);
+    return this.http.get
+    (`${environment.url_api_venta}VentaCaja/PreVistaValida/`,
+    {params: parametros });
+  }
+
+  getComprobanteElectrValida(codcomprobante: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codComprobante', codcomprobante);
+    return this.http.get
+    (`${environment.url_api_venta}VentaCaja/ComprobanteElectrValida/`,
+    {params: parametros });
+  }
+
+  getComprobanteElectronicoPrint(codcomprobante: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codComprobante', codcomprobante);
+
+    return this.http.get
+    (`${environment.url_api_venta}VentaCaja/ComprobanteElectronicoPrint/`,
+    {params: parametros,responseType: 'blob',  observe: 'response', reportProgress: true });
+  }
+
+  getVistaPrevia(codComprobante: string) {
+    let parametros = new HttpParams();
+    parametros = parametros.append('codComprobante', codComprobante);
+    return this.http.get<any[]>
+      (`${environment.url_api_venta}VentaCaja/GetVistaPrevia/`, { params: parametros });
+  }
+
+  setComprobanteAnular(value: any) {
+    const url = environment.url_api_venta + 'VentaCaja/Anular';
+    const param: string = JSON.stringify(value);
+    return this.http.put(
+        url,
+        param
+    );
+  }
+
+
 
 }

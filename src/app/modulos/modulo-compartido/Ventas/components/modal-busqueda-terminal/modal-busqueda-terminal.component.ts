@@ -15,7 +15,7 @@ export class ModalBusquedaTerminalComponent implements OnInit {
 
   @Input() isHabilitaControl = false;
   @Output() eventoAceptar = new EventEmitter<any>();
-  @Output() cancel = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter();
 
    // Formulario de Busqueda
    formularioBusquedaSocio: FormGroup;
@@ -32,10 +32,8 @@ export class ModalBusquedaTerminalComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-
     this.cabeceraTabla();
     this.datos();
-
   }
 
   datos() {
@@ -63,6 +61,7 @@ export class ModalBusquedaTerminalComponent implements OnInit {
 
   clickAceptar() {
     this.eventoAceptar.emit(this.registroSeleccionado);
+    this.cancel.emit();
   }
 
   clickCancelar() {

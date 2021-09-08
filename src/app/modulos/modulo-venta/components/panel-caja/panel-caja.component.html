@@ -28,12 +28,7 @@
             </div>
             <div class="ui-g-12 ui-md-1">
                 <p-splitButton label="Opcion" icon="{{globalConstants.icoImprimir}}" [model]="items" styleClass="sba-button"></p-splitButton>
-                <!-- <button pButton type="button" label="Buscar Venta" (click)="isActivateBusquedadVenta =true" class="btn btn-block"></button> -->
             </div>
-            <div class="ui-g-12 ui-md-1">
-                <button pButton type="button" label="Salir" icon="{{globalConstants.icoCerrado}}" class="sba-button btn btn-block"></button>
-            </div>
-
         </div>
 
         <div class="ui-g ui-fluid">
@@ -52,7 +47,6 @@
                                 <button pButton type="button" icon="{{globalConstants.icoBuscar}}" (click)="activarModalCliente()" class="ui-button-success"></button>
                             </div>
                         </div>
-                        <!-- -->
                         <div class="ui-g-12 ui-md-1">
                             <label class="label-custom" for="float-input-tc">Codigo TC: </label>
                             <input type="text" formControlName="codTipoCliente" pInputText disabled>
@@ -61,8 +55,6 @@
                             <label class="label-custom" for="float-input-tc">Tipo Cliente: </label>
                             <input type="text" formControlName="tipoCliente" pInputText disabled>
                         </div>
-
-
                     </div>
                     <div class="ui-g ui-fluid">
                         <div class="ui-g-12 ui-md-8">
@@ -107,9 +99,7 @@
                         <div class="ui-g-12 ui-md-3">
                             <label class="label-custom" for="float-input-tc">Tipo afectación igv (gratuitos): </label>
                             <p-dropdown placeholder="Seleccionar" formControlName="cbTipoAfectacionIgv" [options]="rowTipoAfectacionIgv" [ngModel]="selectTipoAfectacionIgv" filter="true" optionLabel="label" [disabled]="isDisableTipoAfectacion"></p-dropdown>
-                            <!-- <app-modal-busqueda-almacen></app-modal-busqueda-almacen> -->
                         </div>
-                        <!-- <div class="ui-g-12 ui-md-1"></div> -->
                         <div class="ui-g-12 ui-md-1">
                             <label class="label-custom" for="float-input-estado">Estado: </label>
                             <input type="text" formControlName="estado" pInputText disabled>
@@ -229,13 +219,6 @@
                                             {{ modelo.nroOperacion }}
                                         </ng-template>
                                     </td>
-
-                                    <!-- <div *ngIf="modelo.codigoTipoPago==='D' || modelo.codigoTipoPago==='E'">
-                                        <td style="text-align: center" class="action-td">
-                                            (VACIO)
-                                        </td>
-                                        type="text" 
-                                    </div> -->
                                     <td style="text-align: center" class="action-td" pEditableColumn>
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
@@ -253,10 +236,6 @@
                                         <span class="ui-column-title"></span> {{modelo.montoMn}}
                                     </td>
                                     <td style="text-align: center" class="action-td">
-                                        <!-- <div class="ui-inputgroup">
-                                            (VACIO)
-                                            <button pButton icon="pi pi-eye" styleClass="ui-button-outlined ui-button-danger" style="width:5px;margin-left:10px" (click)="activarModalTerminal(modelo,ri)"></button>
-                                        </div> -->
                                         <div class="ui-inputgroup">
                                             {{modelo.terminal}}
                                             <div *ngIf="modelo.codTipoPago==='T'" style="float:right">
@@ -347,12 +326,12 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '50vw'}" [baseZIndex]="10000"></p-confirmDialog>
-<app-modal-busqueda-cliente (eventoAceptar)="goClienteExternoSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaCliente"></app-modal-busqueda-cliente>
-<app-modal-busqueda-doc-identidad (eventoAceptar)="goTipoDocumentoIdentidadSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTDIdentidad"></app-modal-busqueda-doc-identidad>
-<app-modal-busqueda-tipo-pago (eventoAceptar)="goTipoPagoSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTPago"></app-modal-busqueda-tipo-pago>
-<app-modal-busqueda-entidad (eventoAceptar)="goBancosSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaBancos"></app-modal-busqueda-entidad>
-<app-modal-busqueda-tarjeta-credito (eventoAceptar)="goTCreditoSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTCredito"></app-modal-busqueda-tarjeta-credito>
-<app-modal-busqueda-terminal (eventoAceptar)="goTerminalSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTerminal"></app-modal-busqueda-terminal>
+<app-modal-busqueda-cliente (eventoAceptar)="goClienteExternoSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaCliente" (eventoCancelar)="cancelarModalCliente()"></app-modal-busqueda-cliente>
+<app-modal-busqueda-doc-identidad (eventoAceptar)="goTipoDocumentoIdentidadSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTDIdentidad" (eventoCancelar)="cancelarModalTDIdentidad()"></app-modal-busqueda-doc-identidad>
+<app-modal-busqueda-tipo-pago (eventoAceptar)="goTipoPagoSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTPago" (cancel)="cancelarModalTPago()"></app-modal-busqueda-tipo-pago>
+<app-modal-busqueda-entidad (eventoAceptar)="goBancosSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaBancos" (cancel)="cancelarModalBancos()"></app-modal-busqueda-entidad>
+<app-modal-busqueda-tarjeta-credito (eventoAceptar)="goTCreditoSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTCredito" (cancel)="cancelarModalTCredito()"></app-modal-busqueda-tarjeta-credito>
+<app-modal-busqueda-terminal (eventoAceptar)="goTerminalSeleccionado($event)" [isHabilitaControl]="isActivateBusquedaTerminal" (cancel)="cancelarModalTerminal()"></app-modal-busqueda-terminal>
 
 <p-dialog *ngIf="isAutenticar" header="Ingresar Credenciales" [(visible)]="isAutenticar" [modal]="true" [closable]="false" [autoZIndex] [draggable]="false" [resizable]="false">
     <app-modal-autenticacion [isAnular]="false" (eventoAceptar)="goAceptarGrabar($event)" (eventoCancelar)="goCancelarGrabar()"></app-modal-autenticacion>
@@ -371,3 +350,27 @@
         <button pButton label="{{globalConstants.cCancelar}}" (click)="isActivateBusquedadVenta=false" class="ui-button-secondary"></button>
     </footer>
 </p-dialog>
+
+<p-dialog *ngIf="isDisplayVisualizar" header="Visualizar" [(visible)]="isDisplayVisualizar" [closable]="false" [modal]="true" [style]="{width: '50vw'}" [autoZIndex] [draggable]="false" [resizable]="false">
+
+    Generando visor del registro seleccionado...!!!
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <p-progressBar mode="indeterminate" [style]="{'height': '6px'}"></p-progressBar>
+        </div>
+    </div>
+
+</p-dialog>
+
+<p-dialog *ngIf="isDisplayVisualizarDocumento" [(visible)]="isDisplayVisualizarDocumento" [modal]="true" [style]="{width: '80vw'}" [autoZIndex] [maximizable]="true">
+    <div class="ui-g ui-fluid">
+        <div class="ui-g-12">
+            <app-modal-visor-pdf [isFile]="isDataBlob"></app-modal-visor-pdf>
+        </div>
+    </div>
+</p-dialog>
+<!-- [transitionOptions]="timeAnimationModal" -->
+<p-dialog *ngIf="isActivateGenerarPagoBot" [header]="tituloGenerarPagoBot" [(visible)]="isActivateGenerarPagoBot"  [modal]="false" [style]="{width: '35vw'}">
+    <app-generar-pagobot (cancel)="activarGenerarPagoBot()" [isHabilitaControl]="isActivateGenerarPagoBot" [codVenta]="selectCodVenta"></app-generar-pagobot>
+</p-dialog>
+

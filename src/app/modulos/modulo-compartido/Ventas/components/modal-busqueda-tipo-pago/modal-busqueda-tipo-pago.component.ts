@@ -1,10 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
-//import { VentaCompartidoService } from '../../../Ventas/services/venta-compartido.service';
 import { VentasCajaService } from '../../../../modulo-venta/services/ventas-caja.service';
-import { map } from 'rxjs/operators';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-modal-busqueda-tipo-pago',
@@ -15,10 +13,10 @@ export class ModalBusquedaTipoPagoComponent implements OnInit {
 
   @Input() isHabilitaControl = false;
   @Output() eventoAceptar = new EventEmitter<any>();
-  @Output() cancel = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter();
 
-   // Formulario de Busqueda
-   formularioBusquedaSocio: FormGroup;
+  // Formulario de Busqueda
+  formularioBusquedaSocio: FormGroup;
 
   registros: any = [];
   registroSeleccionado: any;
@@ -29,10 +27,10 @@ export class ModalBusquedaTipoPagoComponent implements OnInit {
 
   constructor(
     private ventasCajaService: VentasCajaService
-  ) {}
+  ) { }
 
   ngOnInit() {
-    debugger
+
     this.cabeceraTabla();
     this.datosTipoPagos();
 
@@ -40,19 +38,18 @@ export class ModalBusquedaTipoPagoComponent implements OnInit {
 
   datosTipoPagos() {
 
-    
     this.loading = true;
-    this.ventasCajaService.getListTablaLogisticaPorFiltros("TIPOPAGO","",34,0,-1)
-    .subscribe((data: any[]) => {
-      this.registros = [];
-      this.registros = data;
-      this.loading = false;
-    },
-    (error) => {
-      console.log(error);
-      this.loading = false;
-    });
-    
+    this.ventasCajaService.getListTablaLogisticaPorFiltros("TIPOPAGO", "", 34, 0, -1)
+      .subscribe((data: any[]) => {
+        this.registros = [];
+        this.registros = data;
+        this.loading = false;
+      },
+        (error) => {
+          console.log(error);
+          this.loading = false;
+        });
+
   }
   cabeceraTabla() {
     this.cols = [
@@ -63,11 +60,12 @@ export class ModalBusquedaTipoPagoComponent implements OnInit {
 
   clickAceptar() {
     this.eventoAceptar.emit(this.registroSeleccionado);
-  }
-
-  clickCancelar() {
     this.cancel.emit();
   }
 
+  clickCancelar() {
+    debugger
+    this.cancel.emit();
+  }
 
 }

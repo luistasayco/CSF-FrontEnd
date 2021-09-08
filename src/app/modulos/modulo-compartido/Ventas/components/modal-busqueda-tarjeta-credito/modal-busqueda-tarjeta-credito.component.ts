@@ -1,9 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { GlobalsConstantsForm } from '../../../../../constants/globals-constants-form';
 import { ConstantesGenerales } from '../../../../../constants/Constantes-generales';
-import { VentaCompartidoService } from '../../services/venta-compartido.service';
-import { map } from 'rxjs/operators';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { VentasService } from '../../../../modulo-venta/services/ventas.service';
 
 @Component({
@@ -15,7 +13,7 @@ export class ModalBusquedaTarjetaCreditoComponent implements OnInit {
 
   @Input() isHabilitaControl = false;
   @Output() eventoAceptar = new EventEmitter<any>();
-  @Output() cancel = new EventEmitter<any>();
+  @Output() cancel = new EventEmitter();
 
    // Formulario de Busqueda
    formularioBusquedaSocio: FormGroup;
@@ -63,6 +61,7 @@ export class ModalBusquedaTarjetaCreditoComponent implements OnInit {
 
   clickAceptar() {
     this.eventoAceptar.emit(this.registroSeleccionado);
+    this.cancel.emit();
   }
 
   clickCancelar() {
